@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEDANT_ARCHIVE.EXE | Vedant Gondhali</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+crimson: { 500: '#00FF88', 600: '#00FF88', 700: '#00CC6A', 900: '#005C35' },
+matrix: { 400: '#00FF88', 900: '#003B24' },
+void: { 950: '#020202', 900: '#050505', 800: '#0A0A0A', 700: '#121212' }
+},
+fontFamily: {
+display: ['Orbitron', 'sans-serif'],
+body: ['Rajdhani', 'sans-serif'],
+mono: ['Share Tech Mono', 'monospace']
+},
+backgroundImage: {
+'cyber-grid': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)"
+}
+}
+}
+}
+</script>
+<style>
+html { scroll-behavior: smooth; }
+body { background: #000; overflow-x: hidden; }
+#matrixCanvas { opacity: .78; }
+#boot { background: rgba(0, 0, 0, .72) !important; }
+.scanlines { background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,.26) 50%, rgba(0,0,0,.26)); background-size: 100% 4px; pointer-events: none; }
+.crt { pointer-events: none; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,.3) 50%), linear-gradient(90deg, rgba(0,255,136,.07), rgba(0,255,65,.02), rgba(0,255,136,.05)); background-size: 100% 3px, 4px 100%; }
+.text-glow-red, .text-glow-green { text-shadow: 0 0 10px rgba(0,255,136,.85), 0 0 28px rgba(0,255,136,.42), 0 0 52px rgba(0,255,136,.18); }
+.box-glow-red { box-shadow: 0 0 28px rgba(0,255,136,.18), inset 0 0 20px rgba(0,255,136,.06); }
+.cursor::after { content: '|'; animation: blink 1s step-end infinite; margin-left: 4px; color: #00FF88; }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes flicker { 0%, 100% { opacity: 1; filter: brightness(1); } 8% { opacity: .82; } 10% { opacity: 1; } 45% { filter: brightness(1.25); } 46% { filter: brightness(.8); } 48% { filter: brightness(1.15); } }
+@keyframes glitchPulse { 0% { clip-path: inset(0 0 0 0); transform: translateX(0); } 20% { clip-path: inset(20% 0 55% 0); transform: translateX(-2px); } 40% { clip-path: inset(62% 0 18% 0); transform: translateX(2px); } 60% { clip-path: inset(10% 0 70% 0); transform: translateX(-1px); } 100% { clip-path: inset(0 0 0 0); transform: translateX(0); } }
+.nixie-display { display: inline-block; border: 1px solid rgba(0,255,136,.38); background: linear-gradient(180deg, rgba(0,255,136,.14), rgba(0,0,0,.72)); padding: .18em .34em; image-rendering: pixelated; letter-spacing: .08em; text-shadow: 0 0 8px rgba(0,255,136,.95), 0 0 22px rgba(0,255,136,.65), 0 0 48px rgba(0,255,136,.28); box-shadow: inset 0 0 18px rgba(0,255,136,.12), 0 0 38px rgba(0,255,136,.2); animation: flicker 3.8s infinite; }
+.operator-name { font-size: clamp(1.9rem, 6vw, 4.8rem); color: #00FF88; text-shadow: 0 0 12px rgba(0,255,136,.65), 0 0 28px rgba(0,255,136,.28); animation: flicker 5s infinite; }
+.glass-panel { position: relative; overflow: hidden; border: 1px solid rgba(0,255,136,.28); background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(0,255,136,.075) 42%, rgba(0,0,0,.38)); backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -18px 38px rgba(0,255,136,.045), 0 0 30px rgba(0,255,136,.1); }
+.glass-panel::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 12%, rgba(255,255,255,.24), transparent 22%), radial-gradient(circle at 82% 0%, rgba(0,255,136,.18), transparent 28%), linear-gradient(115deg, transparent 0 34%, rgba(255,255,255,.08) 42%, transparent 52%); opacity: .78; mix-blend-mode: screen; }
+.glass-panel::after { content: ''; position: absolute; inset: 1px; pointer-events: none; border: 1px solid rgba(255,255,255,.05); background: linear-gradient(180deg, rgba(255,255,255,.035), transparent 32%); }
+.glass-panel > * { position: relative; z-index: 1; }
+.reveal { animation: slideUp .7s ease both; }
+.nav-link.active { color: #fff; border-color: #00FF88; background: rgba(0,255,136,.15); box-shadow: 0 0 18px rgba(0,255,136,.18); }
+.nav-link.pulsing { animation: glitchPulse .34s steps(2), flicker .42s; }
+.page-section { display: none; opacity: 0; transform: translateY(12px); min-height: calc(100vh - 8rem); }
+.page-section.active-page { display: block; animation: slideUp .48s ease both; }
+.project-card-content { margin-left: -0.35rem; padding-left: 0.35rem; }
+#portfolio .page-section:not(#home) { color: rgba(163,163,163,.85); }
+#portfolio .page-section:not(#home) .text-white { color: rgba(255,255,255,.85) !important; }
+#portfolio .page-section:not(#home) .text-neutral-300 { color: rgba(212,212,212,.72) !important; }
+#portfolio .page-section:not(#home) .text-neutral-400 { color: rgba(163,163,163,.72) !important; }
+#portfolio .page-section:not(#home) .text-neutral-500 { color: rgba(115,115,115,.72) !important; }
+#portfolio .page-section:not(#home) .text-glow-green { text-shadow: 0 0 8px rgba(0,255,136,.52), 0 0 18px rgba(0,255,136,.2); }
+#pageTransition { background: linear-gradient(90deg, transparent, rgba(0,255,136,.22), transparent); transform: translateX(-120%); }
+#pageTransition.sweeping { animation: scanSweep .52s ease; }
+@keyframes scanSweep { from { transform: translateX(-120%); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+.gallery-card:nth-child(3n+2) { transform: translateY(18px); }
+.gallery-card:hover { transform: translateY(-4px) scale(1.02); }
+.gallery-card:nth-child(3n+2):hover { transform: translateY(10px) scale(1.02); }
+.legacy-modal { animation: powerOn .42s ease both; }
+.tetris-board { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px; image-rendering: pixelated; }
+.tetris-cell { aspect-ratio: 1; border: 1px solid rgba(0,255,136,.08); background: rgba(0,255,136,.035); box-shadow: inset 0 0 8px rgba(0,0,0,.5); }
+.tetris-cell.on { background: #00FF88; box-shadow: 0 0 10px rgba(0,255,136,.72), inset 0 0 6px rgba(255,255,255,.35); }
+@keyframes powerOn { 0% { opacity: 0; transform: scaleY(.04) scaleX(.8); filter: brightness(3); } 55% { opacity: 1; transform: scaleY(1.04) scaleX(1); } 100% { opacity: 1; transform: scale(1); filter: brightness(1); } }
+@media (max-width: 767px) {
+.gallery-card:nth-child(3n+2), .gallery-card:nth-child(3n+2):hover { transform: none; }
+.skew-mobile-reset { transform: skewX(0deg) !important; }
+.unskew-mobile-reset { transform: skewX(0deg) !important; }
+}
+</style>
+</head>
+<body class="bg-void-950 text-neutral-400 font-body antialiased selection:bg-crimson-600 selection:text-black">
+<canvas id="matrixCanvas" class="fixed inset-0 z-0 h-full w-full bg-black"></canvas>
+<div class="fixed inset-0 z-0 opacity-20 pointer-events-none bg-cyber-grid bg-[length:40px_40px]"></div>
+<div class="fixed inset-0 z-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none"></div>
+<div class="fixed inset-0 z-50 mix-blend-overlay scanlines opacity-25 pointer-events-none"></div>
+<div class="fixed inset-0 z-[58] pointer-events-none opacity-0" id="pageTransition"></div>
+
+<section id="boot" class="fixed inset-0 z-[80] flex min-h-screen flex-col items-center justify-center bg-black px-6 text-center transition-all duration-1000">
+<div class="absolute inset-0 crt opacity-45"></div>
+<div class="relative z-10 w-full max-w-4xl space-y-8">
+<div class="flex justify-between text-[10px] md:text-xs uppercase tracking-[0.25em] text-matrix-400/70">
+<span class="animate-pulse">System: Online</span><span>Archive Node</span><span>v.2026</span>
+</div>
+<h1 class="min-h-[1.2em] font-mono text-5xl font-bold tracking-tight text-matrix-400 md:text-7xl">
+<span id="typewriter" class="cursor nixie-display"></span>
+</h1>
+<p id="bootSubtitle" class="operator-name mx-auto max-w-xl font-mono uppercase tracking-[0.18em] opacity-0 transition-opacity duration-1000">Vedant Gondhali</p>
+<div id="bootCta" class="pt-4 opacity-0 transition-opacity duration-1000">
+<button id="initializeBtn" class="group relative border border-matrix-400 bg-black/60 px-8 py-4 font-mono text-sm uppercase tracking-[0.24em] text-matrix-400 transition-all duration-300 hover:bg-matrix-400 hover:text-black">
+<span class="absolute inset-0 border border-matrix-400 blur-[2px] opacity-60 transition-opacity group-hover:opacity-100"></span>
+<span class="relative flex items-center gap-3">Initialize System <i data-lucide="terminal" class="h-4 w-4"></i></span>
+</button>
+</div>
+<div id="bootConsole" class="mx-auto hidden max-w-2xl text-left font-mono text-lg text-matrix-400 text-glow-green md:text-2xl">
+<div id="bootText" class="min-h-[3rem]"></div>
+<div class="mt-4 h-1 bg-matrix-900"><div id="bootProgress" class="h-full w-0 bg-matrix-400 transition-all duration-300"></div></div>
+</div>
+</div>
+</section>
+
+<nav id="navbar" class="fixed left-0 top-0 z-[60] w-full border-b border-neutral-800/80 bg-black/80 backdrop-blur-xl">
+<div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+<a href="#home" class="nav-link font-display text-xl font-black tracking-widest text-glow-red" data-page="home"><span class="text-purple-500">OK</span><span class="text-crimson-500">A</span><span class="text-white">T</span><span class="text-crimson-600">®</span></a>
+<div class="hidden items-center gap-2 md:flex">
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#home" data-page="home">Home</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#about" data-page="about">About</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#archive" data-page="archive">Archive</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#projects" data-page="projects">Projects</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#skills" data-page="skills">Skills</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#academics" data-page="academics">Academics</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#dossier" data-page="dossier">Dossier</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#contact" data-page="contact">Contact</a>
+</div>
+<button id="menuBtn" class="border border-crimson-600 p-2 text-crimson-500 md:hidden" aria-label="Open navigation"><i data-lucide="menu" class="h-5 w-5"></i></button>
+</div>
+</nav>
+<aside id="mobilePanel" class="fixed right-0 top-0 z-[70] h-full w-72 translate-x-full border-l border-crimson-900 bg-black/95 p-6 pt-20 backdrop-blur-xl transition-transform duration-300 md:hidden">
+<button id="closeMenuBtn" class="absolute right-5 top-5 text-crimson-500" aria-label="Close navigation"><i data-lucide="x" class="h-6 w-6"></i></button>
+<div class="flex flex-col gap-3 font-mono text-sm uppercase tracking-[0.22em]">
+<a href="#home" data-page="home" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Home</a>
+<a href="#about" data-page="about" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">About</a>
+<a href="#archive" data-page="archive" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Archive</a>
+<a href="#projects" data-page="projects" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Projects</a>
+<a href="#skills" data-page="skills" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Skills</a>
+<a href="#academics" data-page="academics" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Academics</a>
+<a href="#dossier" data-page="dossier" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Dossier</a>
+<a href="#contact" data-page="contact" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Contact</a>
+</div>
+</aside>
+
+<main id="portfolio" class="relative z-10 mx-auto hidden w-full max-w-7xl px-4 pb-24 pt-28 md:px-8">
+<section id="home" class="page-section active-page reveal">
+<div class="glass-panel p-8 md:p-12">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Home / Booted Archive</span>
+<h2 class="mt-4 font-mono text-4xl font-black uppercase tracking-[0.12em] text-white text-glow-green md:text-6xl">VEDANT_ARCHIVE.EXE</h2>
+<p class="mt-5 max-w-5xl text-lg leading-relaxed text-neutral-300 md:text-xl">A personal archive documenting my journey across graphic design, artificial intelligence, embedded systems, and academic exploration. This portfolio serves as a living repository of posters, branding concepts, visual experiments, AI-powered applications, hardware projects, and research initiatives. From designing digital experiences in GIMP and Photoshop to developing multimodal AI systems, custom mechanical keyboards, and technical prototypes, each project reflects an ongoing pursuit of creativity, engineering, and continuous learning.</p>
+<div class="mt-10 grid gap-3 font-mono text-sm uppercase tracking-[0.14em] md:grid-cols-2">
+<div class="glass-panel p-4"><span class="text-crimson-500">STATUS</span><p class="mt-1 text-white">ONLINE</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">ENTITY TYPE</span><p class="mt-1 text-white">ORGANIC-&gt;MALE</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">LOCATION</span><p class="mt-1 text-white">✪ MUMBAI_CITY</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">PRIMARY FIELD</span><p class="mt-1 text-white">AI_DEVELOPMENT &amp; COMMERCE</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">SECONDARY FIELD</span><p class="mt-1 text-white">EMBEDDED_SYSTEMS</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">TERTIARY FIELD</span><p class="mt-1 text-white">GRAPHIC DESIGN</p></div>
+<div class="glass-panel p-4 md:col-span-2"><span class="text-crimson-500">CURRENT FOCUS</span><p class="mt-1 text-white">DESIGN_SYSTEMS • AI_EXPERIMENTS • HARDWARE_PROJECTS</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">EDUCATION NODE</span><p class="mt-1 text-white">B.COM + BUSINESS_AI</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">CLASSIFICATION</span><p class="mt-1 text-white">PERSONAL_ARCHIVE</p></div>
+<div class="glass-panel p-4 md:col-span-2"><span class="text-crimson-500">BUILD VERSION</span><p class="mt-1 text-white">✪V2.0✪</p></div>
+</div>
+</div>
+</section>
+<section id="about" class="page-section reveal">
+<div class="mb-12 flex flex-col justify-between gap-4 border-b border-neutral-800 pb-6 md:flex-row md:items-end">
+<div>
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">WHY THIS EXISTS</span>
+<h2 class="mt-3 font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">ABOUT THE ARCHIVE</h2>
+</div>
+<button id="legacyIcon" class="group h-10 w-10 border border-neutral-800 text-crimson-500 transition-all hover:border-crimson-600 hover:shadow-[0_0_18px_rgba(0,255,136,.22)]" aria-label="terminal status"><i data-lucide="terminal" class="mx-auto h-5 w-5"></i></button>
+</div>
+<div class="grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
+<article class="glass-panel p-7 md:p-9">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Manifest / Archive Logic</span>
+<div class="mt-5 space-y-5 text-lg leading-relaxed text-neutral-300">
+<p>This portfolio is designed as a digital archive rather than a traditional personal website.</p>
+<p>It documents creative work, technical projects, experiments, academic pursuits, and ideas developed over time.</p>
+<p>The visual identity draws inspiration from terminal interfaces, cyberpunk operating systems, retro computing, and digital preservation aesthetics.</p>
+<p>Rather than presenting information in a conventional format, the archive is intended to feel exploratory - as if navigating a personal operating system containing projects, concepts, and ongoing experiments.</p>
+<p>This site is intentionally built to evolve over time. New projects, experiments, and discoveries are continuously added.</p>
+<p>Think of it less as a portfolio and more as an interactive record of learning, making, designing, and building.</p>
+</div>
+</article>
+<aside class="grid gap-4">
+<div class="glass-panel p-6">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">System Origin</span>
+<div class="mt-5 grid gap-3 font-mono text-sm uppercase tracking-[0.14em]">
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Initialized</span><span class="text-matrix-400">2024</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Status</span><span class="text-matrix-400">Active</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Archive Type</span><span class="text-matrix-400">Personal</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Entity</span><span class="text-matrix-400">Organic_Male</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Mode</span><span class="text-matrix-400">Continuous_Exploration</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Build Method</span><span class="text-matrix-400">Vibe_Coded</span></div>
+<div class="flex justify-between"><span>Version</span><span class="text-matrix-400">2.0</span></div>
+</div>
+</div>
+</aside>
+</div>
+<div class="mt-6 glass-panel p-6">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Inside This Archive</span>
+<div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Graphic Design Work</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Posters</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Branding Studies</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Digital Artwork</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">AI Projects</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Embedded Systems</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Hardware Experiments</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Academic Milestones</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Research Initiatives</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Personal Explorations</span>
+</div>
+</div>
+</section>
+
+<section id="archive" class="page-section">
+<div class="mb-10 flex flex-col justify-between gap-6 border-b border-neutral-800 pb-6 md:flex-row md:items-end">
+<div><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Design Archive</span><h2 class="font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">Visual <span class="text-neutral-700">Records</span></h2></div>
+<div id="galleryFilters" class="flex flex-wrap gap-2"></div>
+</div>
+<button class="gallery-feature group relative mb-10 block w-full overflow-hidden border border-crimson-900/60 bg-void-800 p-2 text-left -skew-x-12 skew-mobile-reset box-glow-red" data-index="0">
+<div class="relative h-[320px] skew-x-12 overflow-hidden bg-black md:h-[430px] unskew-mobile-reset">
+<img class="h-full w-full object-contain opacity-80 grayscale transition-all duration-700 group-hover:scale-105 group-hover:opacity-95 group-hover:grayscale-0" src="assets/archive/utopia.png" alt="Featured utopia artwork">
+<div class="absolute inset-0 crt opacity-45"></div>
+<div class="absolute bottom-0 left-0 p-8"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">FEATURED_ARTWORK</span><h3 class="mt-3 font-display text-4xl font-bold uppercase text-white">UTOPIA</h3><p class="mt-2 text-neutral-300">Poster / Concert collage / Photoshop</p></div>
+</div>
+</button>
+<div id="galleryGrid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+</section>
+
+<section id="projects" class="page-section">
+<div class="mb-8 flex items-end justify-between">
+<h2 class="font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">Project <span class="text-neutral-700">Database</span></h2>
+<div class="hidden gap-4 font-mono text-xs text-crimson-600 md:flex"><span>REC - LIVE</span><span>[CLASSIFIED]</span></div>
+</div>
+<a class="-skew-x-12 skew-mobile-reset block border border-crimson-900/70 bg-void-800 p-3 box-glow-red" href="https://github.com/vedant15y/Tic-Tac-Toe-Game" target="_blank" rel="noopener">
+<div class="skew-x-12 overflow-hidden border border-neutral-800 bg-black unskew-mobile-reset lg:grid lg:grid-cols-[1.1fr_.9fr]">
+<div class="relative min-h-[340px]">
+<img class="absolute inset-0 h-full w-full object-cover opacity-55 grayscale transition-all duration-700 hover:opacity-85 hover:grayscale-0" src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=1400&auto=format&fit=crop" alt="Healthcare AI assistant interface">
+<div class="absolute inset-0 crt opacity-40"></div>
+<div class="absolute bottom-6 left-6"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">PROJECT_001</span><h3 class="mt-2 font-display text-4xl font-bold uppercase text-white">GRAM.AI</h3><p class="text-neutral-300">Healthcare AI Assistant</p></div>
+</div>
+<div class="p-8">
+<div class="mb-6 inline-flex border border-crimson-600 px-4 py-2 font-mono text-xs uppercase tracking-widest text-crimson-500">Status: Active Development</div>
+<p class="text-lg text-neutral-300">Featured dossier for GRAM.AI, a healthcare AI assistant concept exploring multimodal input, local models, cloud APIs, patient history, and medical analysis workflows.</p>
+<div class="mt-8 flex flex-wrap gap-2"><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">FastAPI</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">Ollama</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">Vertex AI</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">SQLite</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">MedGemma</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">Google APIs</span></div>
+<div class="mt-8 inline-flex font-display text-sm font-bold uppercase tracking-widest text-crimson-500">Open GitHub dossier</div>
+</div>
+</div>
+</a>
+<div id="projectGrid" class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+<div id="projectSkillTags" class="mt-10"></div>
+</section>
+
+<section id="skills" class="page-section">
+<div class="mb-12 border-l-4 border-crimson-600 py-2 pl-6"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Capability Matrix</span><h2 class="font-display text-4xl font-black uppercase text-white md:text-6xl">Skills</h2></div>
+<div id="capabilityGrid" class="grid gap-6 md:grid-cols-3"></div>
+</section>
+
+<section id="academics" class="page-section">
+<div class="mb-12 flex flex-col justify-between gap-4 border-b border-neutral-800 pb-6 md:flex-row md:items-end"><div><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Academics Page</span><h2 class="font-display text-4xl font-black uppercase text-white md:text-6xl">Academics</h2></div><span class="font-mono text-xs uppercase tracking-[0.24em] text-neutral-500">Click a tile to expand record</span></div>
+<div id="academicsGrid" class="grid gap-6 md:grid-cols-2"></div>
+</section>
+
+<section id="dossier" class="page-section">
+<div class="grid gap-6 lg:grid-cols-[1fr_.8fr]">
+<article class="border border-neutral-800 bg-black/60 p-8 box-glow-red">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Personnel Dossier</span>
+<h2 class="mt-3 font-display text-4xl font-black uppercase text-white md:text-6xl">Resume.pdf</h2>
+<div class="mt-6 inline-flex border border-matrix-400 px-4 py-2 font-mono text-xs uppercase tracking-widest text-matrix-400">Status: Verified</div>
+<p class="mt-6 max-w-xl text-neutral-300">Verified resume record for education, project work, design archive, AI experiments, and hardware lab activity.</p>
+<div class="mt-8 flex flex-wrap gap-3"><a class="bg-crimson-600 px-6 py-3 font-display text-sm font-bold uppercase tracking-widest text-black transition-colors hover:bg-white" href="Resume.pdf" target="_blank" rel="noopener">View Resume</a><a class="border border-neutral-700 px-6 py-3 font-display text-sm font-bold uppercase tracking-widest text-white transition-colors hover:border-crimson-600" href="Resume.pdf" download>Download Resume</a></div>
+</article>
+<article class="-skew-x-12 skew-mobile-reset border border-neutral-800 bg-void-800 p-8">
+<div class="skew-x-12 unskew-mobile-reset"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Certifications</span><div class="mt-6 space-y-4"><div class="border-l-2 border-crimson-600 pl-4"><h3 class="font-display text-xl font-bold uppercase text-white">Autodesk Fusion 360</h3><p>CAD / product modeling record</p></div><div class="border-l-2 border-crimson-600 pl-4"><h3 class="font-display text-xl font-bold uppercase text-white">Udemy</h3><p>Course archive and self-directed learning</p></div></div></div>
+</article>
+</div>
+</section>
+
+<section id="contact" class="page-section">
+<div class="mb-10 border-l-4 border-crimson-600 py-2 pl-6"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Communication Terminal</span><h2 class="font-display text-4xl font-black uppercase text-white md:text-6xl">Contact Terminal</h2></div>
+<div class="grid gap-6 lg:grid-cols-[1fr_.7fr]">
+<div class="glass-panel p-7 font-mono">
+<p class="text-xs uppercase tracking-[0.24em] text-crimson-500">CONTACT TERMINAL</p>
+<div class="mt-6 grid gap-5 text-lg">
+<div><span class="block text-xs text-neutral-500">STATUS:</span><strong class="text-matrix-400">ONLINE</strong></div>
+<div><span class="block text-xs text-neutral-500">IDENTITY:</span><strong class="text-white">Vedant Gondhali</strong></div>
+<div><span class="block text-xs text-neutral-500">LOCATION:</span><strong class="text-white">MUMBAI_NODE / Mumbai, Maharashtra</strong></div>
+<div><span class="block text-xs text-neutral-500">EMAIL:</span><a class="text-matrix-400 hover:text-white" href="mailto:vng280524@gmail.com">vng280524@gmail.com</a></div>
+<div><span class="block text-xs text-neutral-500">PHONE:</span><a class="text-matrix-400 hover:text-white" href="tel:+919131746918">+91 91317469118</a></div>
+</div>
+</div>
+<div class="grid content-start gap-3">
+<a class="group flex items-center justify-between glass-panel px-5 py-4 font-mono uppercase tracking-widest transition-all hover:text-white" href="https://github.com/vedant15y" target="_blank" rel="noopener"><span>GitHub</span><i data-lucide="arrow-up-right" class="h-4 w-4 text-crimson-500"></i></a>
+<a class="group flex items-center justify-between glass-panel px-5 py-4 font-mono uppercase tracking-widest transition-all hover:text-white" href="https://www.linkedin.com/in/vedant-gondhali-49b9343a7/" target="_blank" rel="noopener"><span>LinkedIn</span><i data-lucide="arrow-up-right" class="h-4 w-4 text-crimson-500"></i></a>
+<a class="group flex items-center justify-between glass-panel px-5 py-4 font-mono uppercase tracking-widest transition-all hover:text-white" href="https://drive.google.com/file/d/1TkLYAruQbBPhG1K1tqAD3mNmyNACz7K0/view?usp=sharing" target="_blank" rel="noopener"><span>Portfolio Drive</span><i data-lucide="hard-drive" class="h-4 w-4 text-crimson-500"></i></a>
+</div>
+</div>
+</section>
+</main>
+
+<div id="galleryModal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md">
+<div class="relative grid max-h-[92vh] w-full max-w-5xl overflow-hidden border border-crimson-900 bg-black lg:grid-cols-[1.2fr_.8fr]">
+<button id="closeModal" class="absolute right-4 top-4 z-10 text-crimson-500"><i data-lucide="x" class="h-7 w-7"></i></button>
+<img id="modalImage" class="h-full min-h-[320px] w-full object-cover" alt="Selected design project">
+<div class="p-8">
+<span id="modalCategory" class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500"></span>
+<h3 id="modalTitle" class="mt-3 font-display text-3xl font-bold uppercase text-white"></h3>
+<p id="modalDescription" class="mt-4 text-neutral-300"></p>
+<div class="mt-6 grid gap-3 font-mono text-sm"><span id="modalSoftware" class="border border-neutral-800 p-3"></span><span id="modalDate" class="border border-neutral-800 p-3"></span></div>
+<div class="mt-8 flex gap-3"><button id="prevArtwork" class="border border-neutral-700 px-5 py-3 font-display text-xs font-bold uppercase tracking-widest text-white hover:border-crimson-600">Previous</button><button id="nextArtwork" class="bg-crimson-600 px-5 py-3 font-display text-xs font-bold uppercase tracking-widest text-black hover:bg-white">Next</button></div>
+</div>
+</div>
+</div>
+
+<div id="academicModal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md">
+<div class="glass-panel relative w-full max-w-2xl p-8">
+<button id="closeAcademicModal" class="absolute right-4 top-4 text-crimson-500"><i data-lucide="x" class="h-7 w-7"></i></button>
+<span id="academicPeriod" class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500"></span>
+<h3 id="academicTitle" class="mt-3 font-display text-3xl font-bold uppercase text-white"></h3>
+<p id="academicDegree" class="mt-2 font-mono text-matrix-400"></p>
+<p id="academicDescription" class="mt-6 text-lg text-neutral-300"></p>
+</div>
+</div>
+
+<div id="legacyModal" class="fixed inset-0 z-[95] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md">
+<div class="legacy-modal glass-panel relative max-h-[92vh] w-full max-w-4xl overflow-y-auto p-5 md:p-7">
+<button id="closeLegacyModal" class="fixed right-6 top-6 z-[120] border border-crimson-900 bg-black/80 p-2 text-crimson-500 transition-all hover:border-crimson-500 hover:text-white"><i data-lucide="x" class="h-7 w-7"></i></button>
+<div class="crt absolute inset-0 opacity-30"></div>
+<div class="relative z-10 grid gap-6 lg:grid-cols-[.72fr_1fr]">
+<aside class="font-mono">
+<span class="text-xs uppercase tracking-[0.24em] text-crimson-500">Legacy Module</span>
+<h3 class="mt-3 font-display text-3xl font-black uppercase text-white text-glow-green">CRT_TETRIS</h3>
+<div id="legacySequence" class="mt-6 space-y-2 text-sm uppercase tracking-[0.16em] text-matrix-400">
+<p>ACCESS GRANTED</p>
+<p>INITIALIZING LEGACY MODULE</p>
+<p>LOADING RETRO ENVIRONMENT</p>
+</div>
+<div class="mt-6 grid gap-3 text-xs uppercase tracking-[0.16em]">
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Score</span><span id="tetrisScore" class="text-matrix-400">0000</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>State</span><span id="tetrisState" class="text-matrix-400">Standby</span></div>
+<button id="soundToggle" class="border border-neutral-800 px-3 py-2 text-left text-crimson-500 transition-all hover:border-crimson-600">Sound: Off</button>
+</div>
+<p class="mt-6 text-xs leading-relaxed text-neutral-500">Controls: arrows move/rotate, space drops. Close exits the legacy runtime.</p>
+</aside>
+<section>
+<div id="tetrisBoard" class="tetris-board mx-auto w-full max-w-[360px] border border-crimson-900 bg-black/70 p-2 shadow-[0_0_28px_rgba(0,255,136,.16)]"></div>
+</section>
+</div>
+</div>
+</div>
+
+<script>
+lucide.createIcons();
+
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
+const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+const alphabet = katakana + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const matrixFontSize = 16;
+let drops = [];
+function resizeCanvas() {
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+drops = Array(Math.ceil(canvas.width / matrixFontSize)).fill(1);
+}
+function drawMatrix() {
+ctx.fillStyle = 'rgba(0,0,0,.045)';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.font = `${matrixFontSize}px Share Tech Mono, monospace`;
+ctx.shadowBlur = 8;
+for (let i = 0; i < drops.length; i++) {
+const x = i * matrixFontSize;
+const y = drops[i] * matrixFontSize;
+ctx.shadowColor = '#00FF88';
+ctx.fillStyle = Math.random() > .975 ? '#D8FFF0' : '#00FF88';
+ctx.fillText(alphabet[Math.floor(Math.random() * alphabet.length)], x, y);
+if (y > canvas.height && Math.random() > .972) drops[i] = 0;
+drops[i]++;
+}
+ctx.shadowBlur = 0;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+setInterval(drawMatrix, 33);
+
+const typewriter = document.getElementById('typewriter');
+const titleText = 'RESUME.EXE';
+let titleIndex = 0;
+function typeIntro() {
+if (titleIndex < titleText.length) {
+typewriter.textContent += titleText[titleIndex++];
+setTimeout(typeIntro, 90);
+} else {
+document.getElementById('bootSubtitle').classList.remove('opacity-0');
+document.getElementById('bootCta').classList.remove('opacity-0');
+}
+}
+setTimeout(typeIntro, 500);
+
+async function startBootSequence() {
+const bootConsole = document.getElementById('bootConsole');
+const bootText = document.getElementById('bootText');
+const bootProgress = document.getElementById('bootProgress');
+document.getElementById('bootCta').classList.add('hidden');
+bootConsole.classList.remove('hidden');
+const lines = ['Authenticating operator...', 'Mounting design archive...', 'Loading project database...', 'Skills matrix online.', 'Portfolio initialized.'];
+for (let line of lines) {
+bootText.textContent = '';
+bootProgress.style.width = '0%';
+for (let i = 0; i <= line.length; i++) {
+bootText.textContent = line.slice(0, i) + (i < line.length ? '|' : '');
+bootProgress.style.width = `${(i / line.length) * 100}%`;
+await new Promise(resolve => setTimeout(resolve, 28));
+}
+await new Promise(resolve => setTimeout(resolve, 360));
+}
+document.getElementById('boot').classList.add('opacity-0', 'pointer-events-none');
+document.getElementById('portfolio').classList.remove('hidden');
+showPage('home', false);
+}
+document.getElementById('initializeBtn').addEventListener('click', startBootSequence);
+
+const galleryItems = [
+{ title: 'UTOPIA', category: 'Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/utopia.png', description: 'A maximal concert-poster composition built with red heat, layered crowd energy, typography, flames, and heavy grain.' },
+{ title: 'Night Drive Signal', category: 'Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/audi-poster.png', description: 'Automotive poster experiment using radial distortion, deep blue shadows, red light trails, and aggressive display typography.' },
+{ title: 'Ambient Jack System', category: 'Digital Art', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/cactus-ambient.png', description: 'Soft abstract visual study with liquid gradients, central sigil placement, blur fields, and low-light atmosphere.' },
+{ title: 'Moonline Interface', category: 'UI Concepts', software: 'Photoshop', date: '2026', image: 'assets/archive/cyberpunk-layout.png', description: 'Cyberpunk-inspired layout with high-contrast yellow UI framing, anime composition, and poster-grid structure.' },
+{ title: 'Storm Signal', category: 'Photo Manipulation', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/cactus-storm.png', description: 'Photo manipulation and texture study mixing portrait overlays, lightning, bloom, and chromatic haze.' },
+{ title: 'GOVO Product Grid', category: 'Branding', software: 'Photoshop', date: '2026', image: 'assets/archive/govo-ad.png', description: 'Product-focused earbud creative with repeated brand marks, neon green contrast, and technical callout styling.' },
+{ title: 'Manga Garage Board', category: 'Digital Art', software: 'GIMP', date: '2026', image: 'assets/archive/manga-cars.png', description: 'Automotive manga collage built from panel framing, monochrome car imagery, and illustrated motion marks.' },
+{ title: 'Sushi Collage', category: 'Social Media', software: 'Photoshop', date: '2026', image: 'assets/archive/sushi-collage.png', description: 'Food collage visual with layered sushi assets, Japanese print references, and noisy editorial texture.' },
+{ title: 'Market Survey Sheet', category: 'Event Creatives', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/market-survey.png', description: 'Academic and entrepreneurship poster using diagram fragments, stamp motifs, type experiments, and paper texture.' },
+{ title: 'Vandalizer Study', category: 'Digital Art', software: 'Photoshop', date: '2026', image: 'assets/archive/vandalize.png', description: 'Statue-based digital artwork with neon vandal marks, repeated typography, and purple-green contrast.' }
+];
+const categories = ['All', 'Posters', 'Social Media', 'Branding', 'Digital Art', 'Thumbnails', 'Photo Manipulation', 'Event Creatives', 'UI Concepts'];
+const galleryGrid = document.getElementById('galleryGrid');
+const filters = document.getElementById('galleryFilters');
+let activeCategory = 'All';
+let activeArtwork = 0;
+function renderFilters() {
+filters.innerHTML = categories.map(category => `<button class="gallery-filter border ${category === activeCategory ? 'border-crimson-600 text-white bg-crimson-600/10' : 'border-neutral-800 text-neutral-500'} px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition-all hover:border-crimson-600" data-category="${category}">${category}</button>`).join('');
+document.querySelectorAll('.gallery-filter').forEach(button => button.addEventListener('click', () => { activeCategory = button.dataset.category; renderFilters(); renderGallery(); }));
+}
+function renderGallery() {
+const visible = galleryItems.filter(item => activeCategory === 'All' || item.category === activeCategory);
+galleryGrid.innerHTML = visible.map(item => {
+const index = galleryItems.indexOf(item);
+return `<button class="gallery-card group relative h-80 overflow-hidden border border-neutral-800 bg-void-800 text-left transition-all duration-300 hover:border-crimson-600" data-index="${index}"><img class="h-full w-full object-cover opacity-60 grayscale transition-all duration-500 group-hover:scale-110 group-hover:opacity-90 group-hover:grayscale-0" src="${item.image}" alt="${item.title}"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent"></div><div class="absolute inset-0 crt opacity-0 transition-opacity group-hover:opacity-40"></div><div class="absolute bottom-0 p-5"><span class="font-mono text-[10px] uppercase tracking-[0.24em] text-crimson-500">${item.category}</span><h3 class="mt-2 font-display text-xl font-bold uppercase text-white">${item.title}</h3><p class="font-mono text-xs text-neutral-400">${item.software}</p><span class="mt-4 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-crimson-500 opacity-0 transition-opacity group-hover:opacity-100">View Artwork <i data-lucide="arrow-right" class="h-4 w-4"></i></span></div></button>`;
+}).join('');
+document.querySelectorAll('.gallery-card, .gallery-feature').forEach(card => card.addEventListener('click', () => openArtwork(Number(card.dataset.index))));
+lucide.createIcons();
+}
+function openArtwork(index) {
+activeArtwork = index;
+const item = galleryItems[activeArtwork];
+document.getElementById('modalImage').src = item.image;
+document.getElementById('modalTitle').textContent = item.title;
+document.getElementById('modalCategory').textContent = item.category;
+document.getElementById('modalDescription').textContent = item.description;
+document.getElementById('modalSoftware').textContent = `Software: ${item.software}`;
+document.getElementById('modalDate').textContent = `Date: ${item.date}`;
+document.getElementById('galleryModal').classList.remove('hidden');
+document.getElementById('galleryModal').classList.add('flex');
+}
+function closeArtwork() { document.getElementById('galleryModal').classList.add('hidden'); document.getElementById('galleryModal').classList.remove('flex'); }
+document.getElementById('closeModal').addEventListener('click', closeArtwork);
+document.getElementById('prevArtwork').addEventListener('click', () => openArtwork((activeArtwork - 1 + galleryItems.length) % galleryItems.length));
+document.getElementById('nextArtwork').addEventListener('click', () => openArtwork((activeArtwork + 1) % galleryItems.length));
+renderFilters();
+renderGallery();
+
+const projects = [
+{ number: 'PROJECT_002', title: 'Custom Mechanical Keyboard', category: 'Embedded Systems', status: 'Prototype', link: 'https://github.com/vedant15y/Scotto-cmd-kmk-version', description: 'Handwired mechanical keyboard build based on ScottoKeebs design, KMK/QMK firmware exploration, matrix wiring, soldering, and ergonomic keymap experimentation.', tech: ['QMK', 'KMK', 'Soldering', 'Matrix Wiring', 'CAD'] },
+{ number: 'PROJECT_003', title: 'Tic Tac Toe', category: 'Software Development', status: 'Archived', link: 'https://github.com/vedant15y/Tic-Tac-Toe-Game', description: 'Console-based C programming game with two-player logic, win-state handling, MCQ-based move access, and multiple difficulty levels.', tech: ['C Programming', 'Game Logic', 'MCQ System', 'Difficulty Levels'] },
+{ number: 'PROJECT_004', title: 'Portfolio Drive', category: 'Graphic Design Archive', status: 'Published', link: 'https://drive.google.com/file/d/1TkLYAruQbBPhG1K1tqAD3mNmyNACz7K0/view?usp=sharing', description: 'External portfolio drive containing selected posters, branding concepts, social creatives, visual experiments, and design archive material.', tech: ['Posters', 'Branding', 'Digital Artwork', 'Typography', 'GIMP', 'Photoshop'] }
+];
+document.getElementById('projectGrid').innerHTML = projects.map(project => `<a class="group -skew-x-12 skew-mobile-reset border-l-2 border-neutral-700 bg-gradient-to-r from-void-800 to-black p-6 transition-all duration-300 hover:border-crimson-600 hover:translate-x-1" href="${project.link}" target="_blank" rel="noopener"><div class="project-card-content skew-x-12 unskew-mobile-reset"><span class="font-mono text-[10px] uppercase tracking-[0.24em] text-crimson-500">${project.number} / ${project.category}</span><h3 class="mt-3 font-display text-2xl font-bold uppercase text-white group-hover:text-crimson-500">${project.title}</h3><p class="mt-2 font-mono text-xs uppercase tracking-widest text-neutral-500">Status: ${project.status}</p><p class="mt-4 text-sm leading-relaxed text-neutral-300">${project.description}</p><div class="mt-5 flex flex-wrap gap-2">${project.tech.map(tech => `<span class="border border-neutral-800 px-2 py-1 font-mono text-[10px] uppercase">${tech}</span>`).join('')}</div><div class="mt-6 font-display text-xs font-bold uppercase tracking-widest text-crimson-500">Open Dossier</div></div></a>`).join('');
+const projectSkills = ['AI Experiments', 'Hardware Lab', 'UI Concepts', 'OCR', 'LLM Experiments', 'Translation', 'Medical Analysis', 'Chat Interfaces', 'USB-C Experiments', 'Audio Projects', 'PCB Concepts', 'Cyberpunk UI', 'Landing Pages', 'Application Concepts'];
+document.getElementById('projectSkillTags').innerHTML = `<div class="glass-panel p-6"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Auxiliary Skill Nodes</span><div class="mt-5 flex flex-wrap gap-2">${projectSkills.map(skill => `<span class="border border-neutral-800 px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-neutral-300">${skill}</span>`).join('')}</div></div>`;
+
+const capabilities = [
+['Design', [{ name: 'GIMP', status: 'ONLINE' }, { name: 'Photoshop', status: 'ONLINE' }, { name: 'Typography', status: 'IN_PROGRESS' }, { name: 'Branding', status: 'ONLINE' }, { name: 'Color Theory', status: 'ONLINE' }, { name: 'Composition', status: 'ONLINE' }], 'pen-tool'],
+['Software', [{ name: 'Python', status: 'ONLINE' }, { name: 'FastAPI', status: 'ONLINE' }, { name: 'Java', status: 'IN_PROGRESS' }, { name: 'SQL', status: 'IN_PROGRESS' }, { name: 'Ollama', status: 'ONLINE' }, { name: 'Vertex AI', status: 'ONLINE' }], 'code-2'],
+['Hardware', [{ name: 'Hardware', status: 'IN_PROGRESS' }, { name: 'QMK', status: 'ONLINE' }, { name: 'KMK', status: 'ONLINE' }, { name: 'Fusion360', status: 'ONLINE' }, { name: 'Shapr3D', status: 'ONLINE' }, { name: 'CAD', status: 'ONLINE' }, { name: 'Embedded Systems', status: 'ONLINE' }], 'cpu']
+];
+document.getElementById('capabilityGrid').innerHTML = capabilities.map((capability, index) => `<article class="group glass-panel p-7 transition-all duration-300 hover:border-crimson-600 ${index === 1 ? 'md:translate-y-8' : ''}"><div class="mb-6 flex items-center justify-between"><h3 class="font-display text-2xl font-bold uppercase text-white">${capability[0]}</h3><i data-lucide="${capability[2]}" class="h-6 w-6 text-crimson-500"></i></div><div class="grid gap-3">${capability[1].map(skill => `<div class="flex items-center justify-between gap-4 border-b border-neutral-900 pb-2 font-mono text-sm uppercase tracking-widest"><span>${skill.name}</span><span class="${skill.status === 'IN_PROGRESS' ? 'text-yellow-300' : 'text-crimson-700'}">${skill.status}</span></div>`).join('')}</div></article>`).join('');
+
+const academics = [
+{ title: 'D.G. Ruparel College', degree: 'Bachelor of Commerce', period: '2024 - Present', description: 'Commerce education with exposure to business fundamentals, management principles, economics, and finance.' },
+{ title: 'Institute of Science', degree: 'Business & AI', period: '2025 - Present', description: 'Interdisciplinary studies focused on artificial intelligence, data-driven decision making, emerging technologies, and applied business concepts.' }
+];
+document.getElementById('academicsGrid').innerHTML = academics.map((item, index) => `<button class="academic-card group glass-panel p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-crimson-600" data-index="${index}"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">${item.period}</span><h3 class="mt-4 font-display text-3xl font-bold uppercase text-white group-hover:text-crimson-500">${item.title}</h3><p class="mt-2 font-mono text-matrix-400">${item.degree}</p><p class="mt-5 text-neutral-300">${item.description}</p><span class="mt-6 inline-flex font-mono text-xs uppercase tracking-widest text-crimson-500">Open Academic Record</span></button>`).join('');
+function openAcademic(index) {
+const item = academics[index];
+document.getElementById('academicPeriod').textContent = item.period;
+document.getElementById('academicTitle').textContent = item.title;
+document.getElementById('academicDegree').textContent = item.degree;
+document.getElementById('academicDescription').textContent = item.description;
+document.getElementById('academicModal').classList.remove('hidden');
+document.getElementById('academicModal').classList.add('flex');
+}
+function closeAcademic() {
+document.getElementById('academicModal').classList.add('hidden');
+document.getElementById('academicModal').classList.remove('flex');
+}
+document.querySelectorAll('.academic-card').forEach(card => card.addEventListener('click', () => openAcademic(Number(card.dataset.index))));
+document.getElementById('closeAcademicModal').addEventListener('click', closeAcademic);
+
+const legacyModal = document.getElementById('legacyModal');
+const legacySequence = document.getElementById('legacySequence');
+const tetrisBoard = document.getElementById('tetrisBoard');
+const tetrisScore = document.getElementById('tetrisScore');
+const tetrisState = document.getElementById('tetrisState');
+const soundToggle = document.getElementById('soundToggle');
+const legacyIcon = document.getElementById('legacyIcon');
+const tetrisW = 10;
+const tetrisH = 20;
+const tetrisPieces = [
+[[1, 1, 1, 1]],
+[[1, 1], [1, 1]],
+[[0, 1, 0], [1, 1, 1]],
+[[1, 0, 0], [1, 1, 1]],
+[[0, 0, 1], [1, 1, 1]],
+[[0, 1, 1], [1, 1, 0]],
+[[1, 1, 0], [0, 1, 1]]
+];
+let legacyReady = false;
+let legacyLoop = null;
+let legacySound = false;
+let tetrisGrid = [];
+let tetrisPiece = null;
+let tetrisScoreValue = 0;
+let typeBuffer = '';
+let legacyClicks = 0;
+let konamiIndex = 0;
+const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+function resetTetris() {
+tetrisGrid = Array.from({ length: tetrisH }, () => Array(tetrisW).fill(0));
+tetrisScoreValue = 0;
+tetrisScore.textContent = '0000';
+spawnPiece();
+}
+function spawnPiece() {
+const shape = tetrisPieces[Math.floor(Math.random() * tetrisPieces.length)].map(row => [...row]);
+tetrisPiece = { shape, x: Math.floor((tetrisW - shape[0].length) / 2), y: 0 };
+if (collides(tetrisPiece.x, tetrisPiece.y, tetrisPiece.shape)) {
+resetTetris();
+}
+}
+function rotateShape(shape) {
+return shape[0].map((_, column) => shape.map(row => row[column]).reverse());
+}
+function collides(x, y, shape) {
+return shape.some((row, rowIndex) => row.some((cell, columnIndex) => {
+if (!cell) return false;
+const nextX = x + columnIndex;
+const nextY = y + rowIndex;
+return nextX < 0 || nextX >= tetrisW || nextY >= tetrisH || (nextY >= 0 && tetrisGrid[nextY][nextX]);
+}));
+}
+function mergePiece() {
+tetrisPiece.shape.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+if (cell && tetrisPiece.y + rowIndex >= 0) tetrisGrid[tetrisPiece.y + rowIndex][tetrisPiece.x + columnIndex] = 1;
+}));
+clearLines();
+spawnPiece();
+}
+function clearLines() {
+let cleared = 0;
+tetrisGrid = tetrisGrid.filter(row => {
+if (row.every(Boolean)) {
+cleared++;
+return false;
+}
+return true;
+});
+while (tetrisGrid.length < tetrisH) tetrisGrid.unshift(Array(tetrisW).fill(0));
+if (cleared) {
+tetrisScoreValue += cleared * 100;
+tetrisScore.textContent = String(tetrisScoreValue).padStart(4, '0');
+}
+}
+function movePiece(dx, dy) {
+if (!tetrisPiece) return;
+if (!collides(tetrisPiece.x + dx, tetrisPiece.y + dy, tetrisPiece.shape)) {
+tetrisPiece.x += dx;
+tetrisPiece.y += dy;
+} else if (dy) {
+mergePiece();
+}
+drawTetris();
+}
+function rotatePiece() {
+if (!tetrisPiece) return;
+const rotated = rotateShape(tetrisPiece.shape);
+if (!collides(tetrisPiece.x, tetrisPiece.y, rotated)) tetrisPiece.shape = rotated;
+drawTetris();
+}
+function drawTetris() {
+const frame = tetrisGrid.map(row => [...row]);
+if (tetrisPiece) {
+tetrisPiece.shape.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+const y = tetrisPiece.y + rowIndex;
+const x = tetrisPiece.x + columnIndex;
+if (cell && y >= 0 && y < tetrisH && x >= 0 && x < tetrisW) frame[y][x] = 1;
+}));
+}
+tetrisBoard.innerHTML = frame.flat().map(cell => `<div class="tetris-cell ${cell ? 'on' : ''}"></div>`).join('');
+}
+function openLegacyModule() {
+legacyModal.classList.remove('hidden');
+legacyModal.classList.add('flex');
+legacySequence.innerHTML = '<p>ACCESS GRANTED</p><p>INITIALIZING LEGACY MODULE</p><p>LOADING RETRO ENVIRONMENT</p>';
+tetrisState.textContent = 'Booting';
+setTimeout(() => {
+if (!legacyReady) {
+legacyReady = true;
+resetTetris();
+}
+tetrisState.textContent = 'Running';
+drawTetris();
+clearInterval(legacyLoop);
+legacyLoop = setInterval(() => movePiece(0, 1), 620);
+}, 750);
+}
+function closeLegacyModule() {
+legacyModal.classList.add('hidden');
+legacyModal.classList.remove('flex');
+tetrisState.textContent = 'Standby';
+clearInterval(legacyLoop);
+legacyLoop = null;
+}
+function triggerFromText() {
+const upper = typeBuffer.toUpperCase();
+if (upper.endsWith('RUN GAME') || upper.endsWith('TETRIS') || upper.endsWith('DOOM')) openLegacyModule();
+}
+legacyIcon.addEventListener('click', () => {
+legacyClicks++;
+if (legacyClicks >= 5) {
+legacyClicks = 0;
+openLegacyModule();
+}
+});
+document.getElementById('closeLegacyModal').addEventListener('click', closeLegacyModule);
+soundToggle.addEventListener('click', () => {
+legacySound = !legacySound;
+soundToggle.textContent = `Sound: ${legacySound ? 'On' : 'Off'}`;
+});
+document.addEventListener('keydown', event => {
+if (!legacyModal.classList.contains('hidden')) {
+if (event.key === 'ArrowLeft') { event.preventDefault(); movePiece(-1, 0); }
+if (event.key === 'ArrowRight') { event.preventDefault(); movePiece(1, 0); }
+if (event.key === 'ArrowDown') { event.preventDefault(); movePiece(0, 1); }
+if (event.key === 'ArrowUp') { event.preventDefault(); rotatePiece(); }
+if (event.code === 'Space') { event.preventDefault(); while (tetrisPiece && !collides(tetrisPiece.x, tetrisPiece.y + 1, tetrisPiece.shape)) tetrisPiece.y++; movePiece(0, 1); }
+if (event.key === 'Escape') closeLegacyModule();
+return;
+}
+const expected = konamiCode[konamiIndex];
+konamiIndex = event.key === expected ? konamiIndex + 1 : (event.key === konamiCode[0] ? 1 : 0);
+if (konamiIndex === konamiCode.length) {
+konamiIndex = 0;
+openLegacyModule();
+}
+if (event.key.length === 1) {
+typeBuffer = (typeBuffer + event.key).slice(-12);
+triggerFromText();
+}
+});
+
+const menuBtn = document.getElementById('menuBtn');
+const closeMenuBtn = document.getElementById('closeMenuBtn');
+const mobilePanel = document.getElementById('mobilePanel');
+menuBtn.addEventListener('click', () => mobilePanel.classList.remove('translate-x-full'));
+closeMenuBtn.addEventListener('click', () => mobilePanel.classList.add('translate-x-full'));
+document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => mobilePanel.classList.add('translate-x-full')));
+
+const pages = [...document.querySelectorAll('.page-section')];
+const navLinks = [...document.querySelectorAll('[data-page]')];
+const pageTransition = document.getElementById('pageTransition');
+function showPage(pageId, animate = true) {
+const target = document.getElementById(pageId) ? pageId : 'home';
+if (animate) {
+pageTransition.classList.remove('sweeping');
+void pageTransition.offsetWidth;
+pageTransition.classList.add('sweeping');
+}
+pages.forEach(page => page.classList.toggle('active-page', page.id === target));
+navLinks.forEach(link => {
+const active = link.dataset.page === target;
+link.classList.toggle('active', active);
+if (active && animate) {
+link.classList.remove('pulsing');
+void link.offsetWidth;
+link.classList.add('pulsing');
+}
+});
+history.replaceState(null, '', `#${target}`);
+window.scrollTo({ top: 0, behavior: animate ? 'smooth' : 'auto' });
+}
+navLinks.forEach(link => link.addEventListener('click', event => {
+event.preventDefault();
+showPage(link.dataset.page);
+mobilePanel.classList.add('translate-x-full');
+}));
+window.addEventListener('hashchange', () => showPage(location.hash.replace('#', '') || 'home'));
+showPage(location.hash.replace('#', '') || 'home', false);
+lucide.createIcons();
+</script>
+</body>
+</html>
