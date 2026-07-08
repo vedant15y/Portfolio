@@ -33,25 +33,34 @@ backgroundImage: {
 <style>
 html { scroll-behavior: smooth; }
 body { background: #000; overflow-x: hidden; }
+:root { --accent: #00FF88; --accent-rgb: 0,255,136; --accent-soft: rgba(0,255,136,.15); --accent-faint: rgba(0,255,136,.07); --signal: #7C3AED; --signal-rgb: 124,58,237; --screen-dim: .20; }
 #matrixCanvas { opacity: .78; }
 #boot { background: rgba(0, 0, 0, .72) !important; }
 .scanlines { background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,.26) 50%, rgba(0,0,0,.26)); background-size: 100% 4px; pointer-events: none; }
-.crt { pointer-events: none; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,.3) 50%), linear-gradient(90deg, rgba(0,255,136,.07), rgba(0,255,65,.02), rgba(0,255,136,.05)); background-size: 100% 3px, 4px 100%; }
-.text-glow-red, .text-glow-green { text-shadow: 0 0 10px rgba(0,255,136,.85), 0 0 28px rgba(0,255,136,.42), 0 0 52px rgba(0,255,136,.18); }
-.box-glow-red { box-shadow: 0 0 28px rgba(0,255,136,.18), inset 0 0 20px rgba(0,255,136,.06); }
-.cursor::after { content: '|'; animation: blink 1s step-end infinite; margin-left: 4px; color: #00FF88; }
+.crt { pointer-events: none; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,.3) 50%), linear-gradient(90deg, rgba(var(--accent-rgb),.07), rgba(var(--signal-rgb),.025), rgba(var(--accent-rgb),.05)); background-size: 100% 3px, 4px 100%; }
+.text-glow-red, .text-glow-green { text-shadow: 0 0 10px rgba(var(--accent-rgb),.85), 0 0 28px rgba(var(--accent-rgb),.42), 0 0 52px rgba(var(--accent-rgb),.18); }
+.box-glow-red { box-shadow: 0 0 28px rgba(var(--accent-rgb),.18), inset 0 0 20px rgba(var(--accent-rgb),.06); }
+.cursor::after { content: '|'; animation: blink 1s step-end infinite; margin-left: 4px; color: var(--accent); }
 @keyframes blink { 50% { opacity: 0; } }
 @keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes flicker { 0%, 100% { opacity: 1; filter: brightness(1); } 8% { opacity: .82; } 10% { opacity: 1; } 45% { filter: brightness(1.25); } 46% { filter: brightness(.8); } 48% { filter: brightness(1.15); } }
 @keyframes glitchPulse { 0% { clip-path: inset(0 0 0 0); transform: translateX(0); } 20% { clip-path: inset(20% 0 55% 0); transform: translateX(-2px); } 40% { clip-path: inset(62% 0 18% 0); transform: translateX(2px); } 60% { clip-path: inset(10% 0 70% 0); transform: translateX(-1px); } 100% { clip-path: inset(0 0 0 0); transform: translateX(0); } }
-.nixie-display { display: inline-block; border: 1px solid rgba(0,255,136,.38); background: linear-gradient(180deg, rgba(0,255,136,.14), rgba(0,0,0,.72)); padding: .18em .34em; image-rendering: pixelated; letter-spacing: .08em; text-shadow: 0 0 8px rgba(0,255,136,.95), 0 0 22px rgba(0,255,136,.65), 0 0 48px rgba(0,255,136,.28); box-shadow: inset 0 0 18px rgba(0,255,136,.12), 0 0 38px rgba(0,255,136,.2); animation: flicker 3.8s infinite; }
-.operator-name { font-size: clamp(1.9rem, 6vw, 4.8rem); color: #00FF88; text-shadow: 0 0 12px rgba(0,255,136,.65), 0 0 28px rgba(0,255,136,.28); animation: flicker 5s infinite; }
-.glass-panel { position: relative; overflow: hidden; border: 1px solid rgba(0,255,136,.28); background: linear-gradient(135deg, rgba(255,255,255,.09), rgba(0,255,136,.075) 42%, rgba(0,0,0,.38)); backdrop-filter: blur(18px) saturate(150%); -webkit-backdrop-filter: blur(18px) saturate(150%); box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -18px 38px rgba(0,255,136,.045), 0 0 30px rgba(0,255,136,.1); }
-.glass-panel::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 12%, rgba(255,255,255,.24), transparent 22%), radial-gradient(circle at 82% 0%, rgba(0,255,136,.18), transparent 28%), linear-gradient(115deg, transparent 0 34%, rgba(255,255,255,.08) 42%, transparent 52%); opacity: .78; mix-blend-mode: screen; }
-.glass-panel::after { content: ''; position: absolute; inset: 1px; pointer-events: none; border: 1px solid rgba(255,255,255,.05); background: linear-gradient(180deg, rgba(255,255,255,.035), transparent 32%); }
+.nixie-display { display: inline-block; border: 1px solid rgba(var(--accent-rgb),.38); background: linear-gradient(180deg, rgba(var(--accent-rgb),.14), rgba(0,0,0,.72)); padding: .18em .34em; image-rendering: pixelated; letter-spacing: .08em; text-shadow: 0 0 8px rgba(var(--accent-rgb),.95), 0 0 22px rgba(var(--accent-rgb),.65), 0 0 48px rgba(var(--accent-rgb),.28); box-shadow: inset 0 0 18px rgba(var(--accent-rgb),.12), 0 0 38px rgba(var(--accent-rgb),.2); animation: flicker 3.8s infinite; }
+.operator-name { font-size: clamp(1.9rem, 6vw, 4.8rem); color: var(--accent); text-shadow: 0 0 12px rgba(var(--accent-rgb),.65), 0 0 28px rgba(var(--accent-rgb),.28); animation: flicker 5s infinite; }
+.operator-signature { font-size: clamp(.78rem, 1.8vw, 1rem); color: rgba(255,255,255,.68); text-shadow: 0 0 10px rgba(var(--accent-rgb),.3); }
+.glass-panel { position: relative; overflow: hidden; border: 1px solid rgba(var(--accent-rgb),.2); background: linear-gradient(135deg, rgba(255,255,255,.045), rgba(var(--accent-rgb),.045) 42%, rgba(var(--signal-rgb),.028), rgba(0,0,0,.5)); backdrop-filter: blur(24px) saturate(125%); -webkit-backdrop-filter: blur(24px) saturate(125%); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 -16px 34px rgba(var(--accent-rgb),.025), 0 0 20px rgba(var(--accent-rgb),.055); }
+.glass-panel::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 12%, rgba(255,255,255,.09), transparent 24%), radial-gradient(circle at 82% 0%, rgba(var(--accent-rgb),.09), transparent 30%), linear-gradient(115deg, transparent 0 38%, rgba(255,255,255,.028) 44%, transparent 54%); opacity: .42; mix-blend-mode: screen; }
+.glass-panel::after { content: ''; position: absolute; inset: 1px; pointer-events: none; border: 1px solid rgba(255,255,255,.025); background: linear-gradient(180deg, rgba(255,255,255,.018), transparent 32%); }
 .glass-panel > * { position: relative; z-index: 1; }
 .reveal { animation: slideUp .7s ease both; }
-.nav-link.active { color: #fff; border-color: #00FF88; background: rgba(0,255,136,.15); box-shadow: 0 0 18px rgba(0,255,136,.18); }
+.text-crimson-500, .text-crimson-600, .text-crimson-700, .text-matrix-400 { color: var(--accent) !important; }
+.border-crimson-600, .border-crimson-900, .border-matrix-400, .hover\:border-crimson-600:hover { border-color: var(--accent) !important; }
+.bg-crimson-600, .bg-matrix-400, .hover\:bg-matrix-400:hover { background-color: var(--accent) !important; }
+.bg-crimson-600\/10, .bg-matrix-900 { background-color: var(--accent-soft) !important; }
+.border-neutral-800, .border-neutral-900, .border-neutral-700 { border-color: rgba(var(--accent-rgb),.18) !important; }
+.bg-void-800, .bg-black\/35, .bg-black\/40, .bg-black\/45, .bg-black\/60 { background-color: rgba(0,0,0,.56) !important; }
+.bg-gradient-to-r { --tw-gradient-from: rgba(var(--signal-rgb),.12) var(--tw-gradient-from-position); --tw-gradient-to: rgba(0,0,0,.92) var(--tw-gradient-to-position); }
+.nav-link.active { color: #fff; border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 18px rgba(var(--accent-rgb),.18); }
 .nav-link.pulsing { animation: glitchPulse .34s steps(2), flicker .42s; }
 .page-section { display: none; opacity: 0; transform: translateY(12px); min-height: calc(100vh - 8rem); }
 .page-section.active-page { display: block; animation: slideUp .48s ease both; }
@@ -62,7 +71,7 @@ body { background: #000; overflow-x: hidden; }
 #portfolio .page-section:not(#home) .text-neutral-400 { color: rgba(163,163,163,.72) !important; }
 #portfolio .page-section:not(#home) .text-neutral-500 { color: rgba(115,115,115,.72) !important; }
 #portfolio .page-section:not(#home) .text-glow-green { text-shadow: 0 0 8px rgba(0,255,136,.52), 0 0 18px rgba(0,255,136,.2); }
-#pageTransition { background: linear-gradient(90deg, transparent, rgba(0,255,136,.22), transparent); transform: translateX(-120%); }
+#pageTransition { background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb),.22), transparent); transform: translateX(-120%); }
 #pageTransition.sweeping { animation: scanSweep .52s ease; }
 @keyframes scanSweep { from { transform: translateX(-120%); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
 .gallery-card:nth-child(3n+2) { transform: translateY(18px); }
@@ -70,8 +79,24 @@ body { background: #000; overflow-x: hidden; }
 .gallery-card:nth-child(3n+2):hover { transform: translateY(10px) scale(1.02); }
 .legacy-modal { animation: powerOn .42s ease both; }
 .tetris-board { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px; image-rendering: pixelated; }
-.tetris-cell { aspect-ratio: 1; border: 1px solid rgba(0,255,136,.08); background: rgba(0,255,136,.035); box-shadow: inset 0 0 8px rgba(0,0,0,.5); }
-.tetris-cell.on { background: #00FF88; box-shadow: 0 0 10px rgba(0,255,136,.72), inset 0 0 6px rgba(255,255,255,.35); }
+.tetris-cell { aspect-ratio: 1; border: 1px solid rgba(var(--accent-rgb),.08); background: rgba(var(--accent-rgb),.035); box-shadow: inset 0 0 8px rgba(0,0,0,.5); }
+.tetris-cell.on { background: var(--accent); box-shadow: 0 0 10px rgba(var(--accent-rgb),.72), inset 0 0 6px rgba(255,255,255,.35); }
+.ambient-dim { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: rgba(0,0,0,var(--screen-dim)); transition: background .25s ease; }
+.vibe-shell { position: relative; isolation: isolate; overflow: hidden; }
+.vibe-matrix { position: absolute; inset: 0; z-index: 0; opacity: .55; filter: saturate(1.4); }
+.vibe-shell > *:not(.vibe-matrix) { position: relative; z-index: 1; }
+.album-signal { min-height: 320px; background: radial-gradient(circle at 50% 28%, rgba(var(--accent-rgb),.24), transparent 34%), linear-gradient(135deg, rgba(var(--signal-rgb),.3), rgba(0,0,0,.78)); }
+.album-art-placeholder { background: linear-gradient(135deg, rgba(var(--accent-rgb),.2), rgba(var(--signal-rgb),.2)), repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 8px); }
+.vibe-range { accent-color: var(--accent); }
+.vibe-swatch { height: 2.5rem; width: 2.5rem; border: 1px solid rgba(255,255,255,.14); background: var(--accent); box-shadow: 0 0 18px rgba(var(--accent-rgb),.24); }
+.jukebox-deck { border: 1px solid rgba(var(--accent-rgb),.24); background: linear-gradient(135deg, rgba(0,0,0,.72), rgba(var(--signal-rgb),.12), rgba(0,0,0,.86)); box-shadow: inset 0 0 40px rgba(var(--accent-rgb),.055), 0 0 36px rgba(var(--accent-rgb),.12); }
+.jukebox-rail { border-left: 2px solid var(--accent); padding-left: 1rem; }
+.oscilloscope { height: 132px; width: 100%; border: 1px solid rgba(var(--accent-rgb),.26); background: rgba(0,0,0,.64); box-shadow: inset 0 0 24px rgba(var(--accent-rgb),.08); }
+.knob-readout { display: grid; place-items: center; aspect-ratio: 1; border-radius: 999px; border: 1px solid rgba(var(--accent-rgb),.44); background: radial-gradient(circle, rgba(var(--accent-rgb),.18), rgba(0,0,0,.82) 64%); box-shadow: inset 0 0 20px rgba(0,0,0,.7), 0 0 22px rgba(var(--accent-rgb),.16); }
+.mute-toggle[aria-pressed="true"] { background: var(--accent); color: #000; border-color: var(--accent); }
+.brand-resume { border: 1px solid rgba(var(--accent-rgb),.35); padding: .55rem .75rem; color: #fff; background: rgba(0,0,0,.48); text-shadow: 0 0 10px rgba(var(--accent-rgb),.72), 0 0 24px rgba(var(--accent-rgb),.28); box-shadow: inset 0 0 14px rgba(var(--accent-rgb),.08), 0 0 18px rgba(var(--accent-rgb),.1); }
+.side-drawer-toggle { display: inline-grid; place-items: center; width: 2.45rem; height: 2.45rem; border: 1px solid rgba(var(--accent-rgb),.38); background: linear-gradient(180deg, rgba(var(--accent-rgb),.12), rgba(0,0,0,.72)); color: var(--accent); box-shadow: 0 0 18px rgba(var(--accent-rgb),.12); }
+.left-drawer { background-image: radial-gradient(circle at 12px 12px, rgba(var(--accent-rgb),.58) 0 1px, transparent 1.5px); background-size: 36px 36px; }
 @keyframes powerOn { 0% { opacity: 0; transform: scaleY(.04) scaleX(.8); filter: brightness(3); } 55% { opacity: 1; transform: scaleY(1.04) scaleX(1); } 100% { opacity: 1; transform: scale(1); filter: brightness(1); } }
 @media (max-width: 767px) {
 .gallery-card:nth-child(3n+2), .gallery-card:nth-child(3n+2):hover { transform: none; }
@@ -82,12 +107,15 @@ body { background: #000; overflow-x: hidden; }
 </head>
 <body class="bg-void-950 text-neutral-400 font-body antialiased selection:bg-crimson-600 selection:text-black">
 <canvas id="matrixCanvas" class="fixed inset-0 z-0 h-full w-full bg-black"></canvas>
+<div id="ambientDim" class="ambient-dim"></div>
 <div class="fixed inset-0 z-0 opacity-20 pointer-events-none bg-cyber-grid bg-[length:40px_40px]"></div>
 <div class="fixed inset-0 z-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none"></div>
 <div class="fixed inset-0 z-50 mix-blend-overlay scanlines opacity-25 pointer-events-none"></div>
 <div class="fixed inset-0 z-[58] pointer-events-none opacity-0" id="pageTransition"></div>
 
 <section id="boot" class="fixed inset-0 z-[80] flex min-h-screen flex-col items-center justify-center bg-black px-6 text-center transition-all duration-1000">
+<img src="assets/landing/cosmic-art.png" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-contain opacity-[0.28] mix-blend-screen blur-[0.2px]">
+<div class="absolute inset-0 bg-black/48"></div>
 <div class="absolute inset-0 crt opacity-45"></div>
 <div class="relative z-10 w-full max-w-4xl space-y-8">
 <div class="flex justify-between text-[10px] md:text-xs uppercase tracking-[0.25em] text-matrix-400/70">
@@ -96,7 +124,10 @@ body { background: #000; overflow-x: hidden; }
 <h1 class="min-h-[1.2em] font-mono text-5xl font-bold tracking-tight text-matrix-400 md:text-7xl">
 <span id="typewriter" class="cursor nixie-display"></span>
 </h1>
-<p id="bootSubtitle" class="operator-name mx-auto max-w-xl font-mono uppercase tracking-[0.18em] opacity-0 transition-opacity duration-1000">Vedant Gondhali</p>
+<div id="bootSubtitle" class="opacity-0 transition-opacity duration-1000">
+<p class="operator-name mx-auto max-w-xl font-mono uppercase tracking-[0.18em]">Portfolio</p>
+<p class="operator-signature mt-3 font-mono uppercase tracking-[0.32em]">Vedant Gondhali</p>
+</div>
 <div id="bootCta" class="pt-4 opacity-0 transition-opacity duration-1000">
 <button id="initializeBtn" class="group relative border border-matrix-400 bg-black/60 px-8 py-4 font-mono text-sm uppercase tracking-[0.24em] text-matrix-400 transition-all duration-300 hover:bg-matrix-400 hover:text-black">
 <span class="absolute inset-0 border border-matrix-400 blur-[2px] opacity-60 transition-opacity group-hover:opacity-100"></span>
@@ -112,25 +143,34 @@ body { background: #000; overflow-x: hidden; }
 
 <nav id="navbar" class="fixed left-0 top-0 z-[60] w-full border-b border-neutral-800/80 bg-black/80 backdrop-blur-xl">
 <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
-<a href="#home" class="nav-link font-display text-xl font-black tracking-widest text-glow-red" data-page="home"><span class="text-purple-500">OK</span><span class="text-crimson-500">A</span><span class="text-white">T</span><span class="text-crimson-600">®</span></a>
+<a href="#home" id="okatBrand" class="nav-link brand-resume font-mono text-xs font-bold uppercase tracking-[0.2em]" data-page="home">RESUME.EXE</a>
 <div class="hidden items-center gap-2 md:flex">
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#home" data-page="home">Home</a>
-<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#about" data-page="about">About</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#archive" data-page="archive">Archive</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#projects" data-page="projects">Projects</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#skills" data-page="skills">Skills</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#academics" data-page="academics">Academics</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#dossier" data-page="dossier">Dossier</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#contact" data-page="contact">Contact</a>
+<button id="sideMenuBtn" class="side-drawer-toggle ml-2" aria-label="Open About and Jukebox menu"><i data-lucide="menu" class="h-5 w-5"></i></button>
 </div>
-<button id="menuBtn" class="border border-crimson-600 p-2 text-crimson-500 md:hidden" aria-label="Open navigation"><i data-lucide="menu" class="h-5 w-5"></i></button>
+<div class="flex items-center gap-2 md:hidden">
+<button id="sideMenuMobileBtn" class="side-drawer-toggle" aria-label="Open About and Jukebox menu"><i data-lucide="more-vertical" class="h-5 w-5"></i></button>
+<button id="menuBtn" class="border border-crimson-600 p-2 text-crimson-500" aria-label="Open navigation"><i data-lucide="menu" class="h-5 w-5"></i></button>
+</div>
 </div>
 </nav>
+<aside id="sidePanel" class="left-drawer fixed right-0 top-0 z-[75] h-full w-80 translate-x-full border-l border-crimson-900 bg-black/95 p-7 pt-16 backdrop-blur-xl transition-transform duration-300">
+<button id="closeSideMenuBtn" class="mb-10 text-crimson-500" aria-label="Close side menu"><i data-lucide="x" class="h-7 w-7"></i></button>
+<div class="flex flex-col gap-7 font-mono text-lg uppercase tracking-[0.12em]">
+<a href="#about" data-page="about" class="side-link nav-link text-neutral-200 transition-all hover:text-crimson-500">About</a>
+<a href="#vibe" data-page="vibe" class="side-link nav-link text-neutral-200 transition-all hover:text-crimson-500">Jukebox</a>
+</div>
+</aside>
 <aside id="mobilePanel" class="fixed right-0 top-0 z-[70] h-full w-72 translate-x-full border-l border-crimson-900 bg-black/95 p-6 pt-20 backdrop-blur-xl transition-transform duration-300 md:hidden">
 <button id="closeMenuBtn" class="absolute right-5 top-5 text-crimson-500" aria-label="Close navigation"><i data-lucide="x" class="h-6 w-6"></i></button>
 <div class="flex flex-col gap-3 font-mono text-sm uppercase tracking-[0.22em]">
 <a href="#home" data-page="home" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Home</a>
-<a href="#about" data-page="about" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">About</a>
 <a href="#archive" data-page="archive" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Archive</a>
 <a href="#projects" data-page="projects" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Projects</a>
 <a href="#skills" data-page="skills" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Skills</a>
@@ -225,6 +265,102 @@ body { background: #000; overflow-x: hidden; }
 </div>
 </button>
 <div id="galleryGrid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+</section>
+
+<section id="vibe" class="page-section">
+<div class="mb-10 flex flex-col justify-between gap-6 border-b border-neutral-800 pb-6 md:flex-row md:items-end">
+<div>
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Jukebox</span>
+<h2 class="font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">Jukebox</h2>
+</div>
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-neutral-500">Jukebox Core / Signal Pane</span>
+</div>
+<div class="vibe-shell jukebox-deck p-4 md:p-7">
+<canvas id="vibeMatrixCanvas" class="vibe-matrix"></canvas>
+<div class="grid gap-6 lg:grid-cols-[.82fr_1.18fr]">
+<aside class="album-signal relative overflow-hidden border border-neutral-800 bg-black/35 p-5">
+<div class="crt absolute inset-0 opacity-35"></div>
+<div class="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em]">
+<span class="text-crimson-500">Signal Pane</span>
+<span id="vibeSignalStatus" class="text-neutral-500">Awaiting Audio</span>
+</div>
+<div id="albumArt" class="album-art-placeholder mx-auto mt-6 flex aspect-square w-full max-w-[360px] items-center justify-center border border-neutral-800 bg-cover bg-center text-center">
+<div>
+<i data-lucide="disc-3" class="mx-auto h-16 w-16 text-crimson-500"></i>
+<p class="mt-5 font-display text-2xl font-black uppercase tracking-widest text-white">No Track</p>
+<p class="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-neutral-500">Album art loads here</p>
+</div>
+</div>
+<canvas id="oscilloscopeCanvas" class="oscilloscope mt-5"></canvas>
+<div class="mt-4 flex justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-neutral-500">
+<span>Oscilloscope</span>
+<span id="scopeStatus">Static Wave</span>
+</div>
+<div class="mt-6 grid grid-cols-2 gap-3 font-mono text-xs uppercase tracking-widest">
+<div class="border border-neutral-900 bg-black/45 p-3"><span class="text-neutral-500">Mode</span><p id="vibeMode" class="mt-1 text-crimson-500">Archive Idle</p></div>
+<div class="border border-neutral-900 bg-black/45 p-3"><span class="text-neutral-500">Source</span><p class="mt-1 text-crimson-500">Local Queue</p></div>
+</div>
+</aside>
+<div class="grid gap-6">
+<section class="border border-neutral-800 bg-black/45 p-5">
+<div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+<div class="jukebox-rail">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Jukebox Console</span>
+<h3 id="vibeTrackTitle" class="mt-3 font-display text-3xl font-black uppercase text-white">Signal Slot Empty</h3>
+<p id="vibeTrackMeta" class="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-neutral-500">Queue Armed / Local Signal</p>
+</div>
+<div class="grid grid-cols-2 gap-3 text-center font-mono text-[10px] uppercase tracking-widest text-neutral-500">
+<div class="border border-neutral-800 bg-black/45 p-3"><span>Deck</span><p class="mt-1 text-crimson-500">A</p></div>
+<div class="border border-neutral-800 bg-black/45 p-3"><span>State</span><p id="deckState" class="mt-1 text-crimson-500">Standby</p></div>
+</div>
+</div>
+<div class="mt-7 grid gap-5 lg:grid-cols-[1fr_auto]">
+<div>
+<div class="flex flex-wrap gap-3">
+<button id="prevTrack" type="button" class="border border-neutral-800 px-4 py-3 text-crimson-500 transition-all hover:border-crimson-600" aria-label="Previous track"><i data-lucide="skip-back" class="h-5 w-5"></i></button>
+<button id="playTrack" type="button" class="border border-crimson-600 bg-crimson-600 px-6 py-3 text-black transition-all hover:bg-white" aria-label="Play track"><i data-lucide="play" class="h-5 w-5"></i></button>
+<button id="nextTrack" type="button" class="border border-neutral-800 px-4 py-3 text-crimson-500 transition-all hover:border-crimson-600" aria-label="Next track"><i data-lucide="skip-forward" class="h-5 w-5"></i></button>
+<button id="muteSwitch" type="button" class="mute-toggle min-w-[160px] border-2 border-neutral-800 px-5 py-3 font-mono text-xs uppercase tracking-widest text-crimson-500 transition-all hover:border-crimson-600" aria-label="Mute music" aria-pressed="false">Mute Music: Off</button>
+</div>
+<div class="mt-6 grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
+<input id="volumeKnob" class="vibe-range w-full" type="range" min="0" max="100" value="80" aria-label="Volume">
+<div class="knob-readout h-20 w-20 font-mono text-sm text-white"><span id="volumeValue">80%</span></div>
+</div>
+</div>
+<div class="grid gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-500">
+<span class="text-crimson-500">Output</span>
+<span>Local Signal</span>
+<span>Wave Monitor</span>
+</div>
+</div>
+<audio id="vibeAudio" class="mt-5 w-full accent-[var(--accent)]" preload="metadata" controls playsinline></audio>
+<div id="vibeTrackList" class="mt-6 grid gap-3"></div>
+</section>
+<section class="grid gap-4 md:grid-cols-2">
+<div class="border border-neutral-800 bg-black/45 p-5">
+<label for="immersionKnob" class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Immersion Knob</label>
+<div class="mt-4 flex items-center gap-4">
+<input id="immersionKnob" class="vibe-range w-full" type="range" min="0" max="70" value="20">
+<span id="immersionValue" class="w-12 text-right font-mono text-sm text-white">20%</span>
+</div>
+<p class="mt-3 text-sm text-neutral-500">Archive fog density.</p>
+</div>
+<div class="border border-neutral-800 bg-black/45 p-5">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Colour Panel</span>
+<div class="mt-4 grid grid-cols-[auto_1fr] items-center gap-3">
+<div id="vibeSwatch" class="vibe-swatch"></div>
+<div class="grid gap-3">
+<label class="flex items-center justify-between gap-3 font-mono text-xs uppercase tracking-widest text-neutral-400">Accent <input id="accentColor" type="color" value="#00ff88"></label>
+<label class="flex items-center justify-between gap-3 font-mono text-xs uppercase tracking-widest text-neutral-400">Signal <input id="signalColor" type="color" value="#7c3aed"></label>
+</div>
+</div>
+<div id="colourPresets" class="mt-5 grid grid-cols-3 gap-2"></div>
+<p class="mt-3 text-sm text-neutral-500">Neon bus routing.</p>
+</div>
+</section>
+</div>
+</div>
+</div>
 </section>
 
 <section id="projects" class="page-section">
@@ -368,11 +504,12 @@ ctx.fillStyle = 'rgba(0,0,0,.045)';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 ctx.font = `${matrixFontSize}px Share Tech Mono, monospace`;
 ctx.shadowBlur = 8;
+const activeAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00FF88';
 for (let i = 0; i < drops.length; i++) {
 const x = i * matrixFontSize;
 const y = drops[i] * matrixFontSize;
-ctx.shadowColor = '#00FF88';
-ctx.fillStyle = Math.random() > .975 ? '#D8FFF0' : '#00FF88';
+ctx.shadowColor = activeAccent;
+ctx.fillStyle = Math.random() > .975 ? '#D8FFF0' : activeAccent;
 ctx.fillText(alphabet[Math.floor(Math.random() * alphabet.length)], x, y);
 if (y > canvas.height && Math.random() > .972) drops[i] = 0;
 drops[i]++;
@@ -384,7 +521,7 @@ window.addEventListener('resize', resizeCanvas);
 setInterval(drawMatrix, 33);
 
 const typewriter = document.getElementById('typewriter');
-const titleText = 'RESUME.EXE';
+const titleText = 'WELCOME_USER!';
 let titleIndex = 0;
 function typeIntro() {
 if (titleIndex < titleText.length) {
@@ -419,6 +556,18 @@ document.getElementById('portfolio').classList.remove('hidden');
 showPage('home', false);
 }
 document.getElementById('initializeBtn').addEventListener('click', startBootSequence);
+function returnToLandingPage() {
+document.getElementById('portfolio').classList.add('hidden');
+document.getElementById('boot').classList.remove('opacity-0', 'pointer-events-none');
+document.getElementById('bootConsole').classList.add('hidden');
+document.getElementById('bootText').textContent = '';
+document.getElementById('bootProgress').style.width = '0%';
+document.getElementById('bootCta').classList.remove('hidden', 'opacity-0');
+document.getElementById('bootSubtitle').classList.remove('opacity-0');
+typewriter.textContent = titleText;
+titleIndex = titleText.length;
+history.replaceState(null, '', '#home');
+}
 
 const galleryItems = [
 { title: 'UTOPIA', category: 'Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/utopia.png', description: 'A maximal concert-poster composition built with red heat, layered crowd energy, typography, flames, and heavy grain.' },
@@ -468,6 +617,273 @@ document.getElementById('prevArtwork').addEventListener('click', () => openArtwo
 document.getElementById('nextArtwork').addEventListener('click', () => openArtwork((activeArtwork + 1) % galleryItems.length));
 renderFilters();
 renderGallery();
+
+const vibeCanvas = document.getElementById('vibeMatrixCanvas');
+const vibeCtx = vibeCanvas.getContext('2d');
+let vibeDrops = [];
+function hexToRgb(hex) {
+const clean = hex.replace('#', '');
+const value = parseInt(clean.length === 3 ? clean.split('').map(char => char + char).join('') : clean, 16);
+return `${(value >> 16) & 255},${(value >> 8) & 255},${value & 255}`;
+}
+function resizeVibeCanvas() {
+const rect = vibeCanvas.parentElement.getBoundingClientRect();
+vibeCanvas.width = Math.max(1, Math.floor(rect.width));
+vibeCanvas.height = Math.max(1, Math.floor(rect.height));
+vibeDrops = Array(Math.ceil(vibeCanvas.width / matrixFontSize)).fill(1);
+}
+function drawVibeMatrix() {
+if (!vibeCanvas.width || !vibeCanvas.height) resizeVibeCanvas();
+vibeCtx.fillStyle = 'rgba(0,0,0,.08)';
+vibeCtx.fillRect(0, 0, vibeCanvas.width, vibeCanvas.height);
+vibeCtx.font = `${matrixFontSize}px Share Tech Mono, monospace`;
+vibeCtx.shadowBlur = 8;
+const activeAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00FF88';
+for (let i = 0; i < vibeDrops.length; i++) {
+const x = i * matrixFontSize;
+const y = vibeDrops[i] * matrixFontSize;
+vibeCtx.shadowColor = activeAccent;
+vibeCtx.fillStyle = Math.random() > .965 ? '#EFFFF8' : activeAccent;
+vibeCtx.fillText(alphabet[Math.floor(Math.random() * alphabet.length)], x, y);
+if (y > vibeCanvas.height && Math.random() > .965) vibeDrops[i] = 0;
+vibeDrops[i]++;
+}
+vibeCtx.shadowBlur = 0;
+}
+resizeVibeCanvas();
+window.addEventListener('resize', resizeVibeCanvas);
+setInterval(drawVibeMatrix, 42);
+
+const vibeTracks = [
+{ title: 'GET LUCKY', meta: 'Daft Punk + Pharrell Williams + Nile Rodgers', src: 'assets/audio/daft-punk-get-lucky.mp3', art: '' },
+{ title: '20 MIN', meta: 'Lil Uzi Vert / Instrumental', src: 'assets/audio/lil-uzi-vert-20-min-instrumental.mp3', art: '' },
+{ title: 'COME BACK AS A REDNECK', meta: 'Morgan Wallen + HARDY / Audio', src: 'assets/audio/morgan-wallen-hardy-come-back-as-a-redneck.mp3', art: '' },
+{ title: 'STAY HERE 4 LIFE', meta: 'A$AP Rocky / Lyrics', src: 'assets/audio/asap-rocky-stay-here-4-life.mp3', art: '' }
+];
+let activeVibeTrack = 0;
+const vibeAudio = document.getElementById('vibeAudio');
+const vibeTrackTitle = document.getElementById('vibeTrackTitle');
+const vibeTrackMeta = document.getElementById('vibeTrackMeta');
+const vibeSignalStatus = document.getElementById('vibeSignalStatus');
+const vibeMode = document.getElementById('vibeMode');
+const albumArt = document.getElementById('albumArt');
+const vibeTrackList = document.getElementById('vibeTrackList');
+const oscilloscopeCanvas = document.getElementById('oscilloscopeCanvas');
+const oscilloscopeCtx = oscilloscopeCanvas.getContext('2d');
+const deckState = document.getElementById('deckState');
+const scopeStatus = document.getElementById('scopeStatus');
+const volumeKnob = document.getElementById('volumeKnob');
+const volumeValue = document.getElementById('volumeValue');
+const muteSwitch = document.getElementById('muteSwitch');
+const playTrackButton = document.getElementById('playTrack');
+let scopePhase = 0;
+let lastScopeTime = 0;
+function resizeOscilloscope() {
+const rect = oscilloscopeCanvas.getBoundingClientRect();
+oscilloscopeCanvas.width = Math.max(1, Math.floor(rect.width));
+oscilloscopeCanvas.height = Math.max(1, Math.floor(rect.height));
+}
+function drawOscilloscope() {
+if (!oscilloscopeCanvas.width || !oscilloscopeCanvas.height) resizeOscilloscope();
+const width = oscilloscopeCanvas.width;
+const height = oscilloscopeCanvas.height;
+const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00FF88';
+oscilloscopeCtx.clearRect(0, 0, width, height);
+oscilloscopeCtx.fillStyle = 'rgba(0,0,0,.38)';
+oscilloscopeCtx.fillRect(0, 0, width, height);
+oscilloscopeCtx.strokeStyle = 'rgba(255,255,255,.08)';
+oscilloscopeCtx.lineWidth = 1;
+for (let x = 0; x < width; x += 24) {
+oscilloscopeCtx.beginPath();
+oscilloscopeCtx.moveTo(x, 0);
+oscilloscopeCtx.lineTo(x, height);
+oscilloscopeCtx.stroke();
+}
+for (let y = 0; y < height; y += 22) {
+oscilloscopeCtx.beginPath();
+oscilloscopeCtx.moveTo(0, y);
+oscilloscopeCtx.lineTo(width, y);
+oscilloscopeCtx.stroke();
+}
+oscilloscopeCtx.strokeStyle = accent;
+oscilloscopeCtx.shadowColor = accent;
+oscilloscopeCtx.shadowBlur = 12;
+oscilloscopeCtx.lineWidth = 2;
+oscilloscopeCtx.beginPath();
+const live = !vibeAudio.paused && !vibeAudio.muted && vibeAudio.readyState > 1;
+const timeMoved = live && Math.abs(vibeAudio.currentTime - lastScopeTime) > .002;
+const volumeEnergy = Math.max(.18, vibeAudio.volume || .8);
+scopeStatus.textContent = timeMoved ? 'Reactive' : (live ? 'Signal Live' : 'Static Wave');
+if (live) scopePhase += timeMoved ? .13 + volumeEnergy * .12 : .04;
+else scopePhase += .018;
+lastScopeTime = vibeAudio.currentTime || 0;
+const now = Date.now() / 520;
+for (let x = 0; x <= width; x += 3) {
+const intensity = live ? 1.85 : 1;
+const pulse = Math.sin(scopePhase * 3 + x / 11) * (live ? 16 * volumeEnergy : 5);
+const y = height / 2 + Math.sin((x / 22) + now * intensity) * (live ? 24 : 14) + Math.sin((x / 9) - now * 1.7) * (live ? 9 : 4) + pulse;
+if (x === 0) oscilloscopeCtx.moveTo(x, y);
+else oscilloscopeCtx.lineTo(x, y);
+}
+oscilloscopeCtx.stroke();
+oscilloscopeCtx.shadowBlur = 0;
+requestAnimationFrame(drawOscilloscope);
+}
+resizeOscilloscope();
+window.addEventListener('resize', resizeOscilloscope);
+drawOscilloscope();
+function setPlayIcon(isPlaying) {
+playTrackButton.innerHTML = isPlaying ? '<i data-lucide="pause" class="h-5 w-5"></i>' : '<i data-lucide="play" class="h-5 w-5"></i>';
+lucide.createIcons();
+}
+function prepareVibeAudio(track) {
+if (vibeAudio.getAttribute('src') !== (track.src || '')) {
+vibeAudio.pause();
+vibeAudio.setAttribute('src', track.src || '');
+vibeAudio.load();
+}
+vibeAudio.volume = Number(volumeKnob.value) / 100;
+}
+function renderVibeTrack() {
+const track = vibeTracks[activeVibeTrack];
+vibeTrackTitle.textContent = track.title;
+vibeTrackMeta.textContent = track.meta;
+prepareVibeAudio(track);
+setPlayIcon(false);
+vibeSignalStatus.textContent = track.src ? 'Signal Locked' : 'Awaiting Audio';
+vibeMode.textContent = track.src ? 'Ready' : 'Archive Idle';
+deckState.textContent = track.src ? 'Ready' : 'Standby';
+albumArt.style.backgroundImage = track.art ? `url('${track.art}')` : '';
+albumArt.classList.toggle('album-art-placeholder', !track.art);
+vibeTrackList.innerHTML = vibeTracks.map((item, index) => `<button type="button" class="vibe-track border ${index === activeVibeTrack ? 'border-crimson-600 bg-crimson-600/10 text-white' : 'border-neutral-800 bg-black/35 text-neutral-500'} px-4 py-3 text-left font-mono text-xs uppercase tracking-widest transition-all hover:border-crimson-600" data-index="${index}"><span>${item.title}</span><span class="mt-1 block text-[10px]">${item.meta}</span></button>`).join('');
+document.querySelectorAll('.vibe-track').forEach(button => button.addEventListener('click', () => {
+const selectedTrack = Number(button.dataset.index);
+if (selectedTrack !== activeVibeTrack) {
+activeVibeTrack = selectedTrack;
+renderVibeTrack();
+}
+playVibeTrack();
+}));
+}
+async function playVibeTrack() {
+const track = vibeTracks[activeVibeTrack];
+if (!track.src) {
+vibeSignalStatus.textContent = 'No Audio Loaded';
+vibeMode.textContent = 'No Signal';
+deckState.textContent = 'Empty';
+return;
+}
+if (vibeAudio.paused) {
+vibeSignalStatus.textContent = 'Buffering';
+try {
+prepareVibeAudio(track);
+vibeAudio.muted = false;
+if (vibeAudio.ended) vibeAudio.currentTime = 0;
+muteSwitch.setAttribute('aria-pressed', 'false');
+muteSwitch.textContent = 'Mute Music: Off';
+await vibeAudio.play();
+setPlayIcon(true);
+vibeSignalStatus.textContent = 'Playing';
+deckState.textContent = 'Playing';
+} catch (error) {
+vibeSignalStatus.textContent = 'Playback Blocked';
+deckState.textContent = 'Tap Again';
+setPlayIcon(false);
+}
+} else {
+vibeAudio.pause();
+setPlayIcon(false);
+vibeSignalStatus.textContent = 'Paused';
+deckState.textContent = 'Paused';
+}
+}
+function stepVibeTrack(direction) {
+const shouldResume = !vibeAudio.paused;
+activeVibeTrack = (activeVibeTrack + direction + vibeTracks.length) % vibeTracks.length;
+renderVibeTrack();
+if (shouldResume) playVibeTrack();
+}
+playTrackButton.addEventListener('click', playVibeTrack);
+document.getElementById('prevTrack').addEventListener('click', () => stepVibeTrack(-1));
+document.getElementById('nextTrack').addEventListener('click', () => stepVibeTrack(1));
+vibeAudio.addEventListener('canplay', () => {
+if (vibeSignalStatus.textContent === 'Buffering') vibeSignalStatus.textContent = 'Signal Ready';
+});
+vibeAudio.addEventListener('error', () => {
+vibeSignalStatus.textContent = 'Audio File Error';
+deckState.textContent = 'Fault';
+});
+vibeAudio.addEventListener('play', () => {
+vibeSignalStatus.textContent = 'Playing';
+deckState.textContent = 'Playing';
+setPlayIcon(true);
+});
+vibeAudio.addEventListener('pause', () => {
+if (!vibeAudio.ended) {
+deckState.textContent = 'Paused';
+setPlayIcon(false);
+}
+});
+vibeAudio.addEventListener('ended', () => {
+vibeSignalStatus.textContent = 'Track Complete';
+deckState.textContent = 'Complete';
+setPlayIcon(false);
+});
+volumeKnob.addEventListener('input', event => {
+const value = Number(event.target.value);
+vibeAudio.volume = value / 100;
+volumeValue.textContent = `${value}%`;
+});
+muteSwitch.addEventListener('click', () => {
+vibeAudio.muted = !vibeAudio.muted;
+muteSwitch.setAttribute('aria-pressed', String(vibeAudio.muted));
+muteSwitch.textContent = vibeAudio.muted ? 'Mute Music: On' : 'Mute Music: Off';
+deckState.textContent = vibeAudio.muted ? 'Muted' : (vibeAudio.paused ? 'Standby' : 'Playing');
+});
+document.getElementById('immersionKnob').addEventListener('input', event => {
+const value = Number(event.target.value);
+document.documentElement.style.setProperty('--screen-dim', (value / 100).toFixed(2));
+document.getElementById('immersionValue').textContent = `${value}%`;
+});
+function applyThemeColor(hex) {
+document.documentElement.style.setProperty('--accent', hex);
+document.documentElement.style.setProperty('--accent-rgb', hexToRgb(hex));
+document.documentElement.style.setProperty('--accent-soft', `rgba(${hexToRgb(hex)},.15)`);
+document.documentElement.style.setProperty('--accent-faint', `rgba(${hexToRgb(hex)},.07)`);
+document.getElementById('vibeSwatch').style.background = hex;
+}
+function applySignalColor(hex) {
+document.documentElement.style.setProperty('--signal', hex);
+document.documentElement.style.setProperty('--signal-rgb', hexToRgb(hex));
+albumArt.style.boxShadow = `0 0 34px ${hex}55`;
+}
+function applyPreset(accent, signal) {
+document.getElementById('accentColor').value = accent;
+document.getElementById('signalColor').value = signal;
+applyThemeColor(accent);
+applySignalColor(signal);
+}
+const colourPresets = [
+{ name: 'Cyber Yellow / Cyan', accent: '#F3E600', signal: '#00E5FF' },
+{ name: 'Hot Pink / Blade', accent: '#FF2DAA', signal: '#0313A6' },
+{ name: 'Night Red / Void', accent: '#C5003C', signal: '#050505' },
+{ name: 'Vivid Pink / Cyan', accent: '#FF0080', signal: '#00FFFF' },
+{ name: 'Magenta / Purple', accent: '#FF00FF', signal: '#8000FF' },
+{ name: 'Electric Green / Blue', accent: '#39FF14', signal: '#0080FF' },
+{ name: 'Cyan / Hot Pink', accent: '#00FFFF', signal: '#FF2DAA' },
+{ name: 'Cyber Yellow / Purple', accent: '#F3E600', signal: '#8000FF' },
+{ name: 'Blade / Night Red', accent: '#0313A6', signal: '#C5003C' }
+];
+document.getElementById('colourPresets').innerHTML = colourPresets.map((preset, index) => `<button class="colour-preset group border border-neutral-800 bg-black/45 p-2 text-left transition-all hover:border-crimson-600" data-index="${index}" aria-label="${preset.name}"><span class="flex h-8 overflow-hidden border border-neutral-900"><span class="flex-1" style="background:${preset.accent}"></span><span class="flex-1" style="background:${preset.signal}"></span></span><span class="mt-2 block font-mono text-[9px] uppercase tracking-widest text-neutral-500 group-hover:text-white">P${String(index + 1).padStart(2, '0')}</span></button>`).join('');
+document.querySelectorAll('.colour-preset').forEach(button => button.addEventListener('click', () => {
+const preset = colourPresets[Number(button.dataset.index)];
+applyPreset(preset.accent, preset.signal);
+}));
+document.getElementById('accentColor').addEventListener('input', event => applyThemeColor(event.target.value));
+document.getElementById('signalColor').addEventListener('input', event => applySignalColor(event.target.value));
+applyPreset('#00ff88', '#7c3aed');
+vibeAudio.volume = Number(volumeKnob.value) / 100;
+renderVibeTrack();
 
 const projects = [
 { number: 'PROJECT_002', title: 'Custom Mechanical Keyboard', category: 'Embedded Systems', status: 'Prototype', link: 'https://github.com/vedant15y/Scotto-cmd-kmk-version', description: 'Handwired mechanical keyboard build based on ScottoKeebs design, KMK/QMK firmware exploration, matrix wiring, soldering, and ergonomic keymap experimentation.', tech: ['QMK', 'KMK', 'Soldering', 'Matrix Wiring', 'CAD'] },
@@ -672,9 +1088,23 @@ triggerFromText();
 const menuBtn = document.getElementById('menuBtn');
 const closeMenuBtn = document.getElementById('closeMenuBtn');
 const mobilePanel = document.getElementById('mobilePanel');
+const sideMenuBtn = document.getElementById('sideMenuBtn');
+const sideMenuMobileBtn = document.getElementById('sideMenuMobileBtn');
+const closeSideMenuBtn = document.getElementById('closeSideMenuBtn');
+const sidePanel = document.getElementById('sidePanel');
 menuBtn.addEventListener('click', () => mobilePanel.classList.remove('translate-x-full'));
 closeMenuBtn.addEventListener('click', () => mobilePanel.classList.add('translate-x-full'));
 document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => mobilePanel.classList.add('translate-x-full')));
+function openSidePanel() {
+sidePanel.classList.remove('translate-x-full');
+}
+function closeSidePanel() {
+sidePanel.classList.add('translate-x-full');
+}
+sideMenuBtn.addEventListener('click', openSidePanel);
+sideMenuMobileBtn.addEventListener('click', openSidePanel);
+closeSideMenuBtn.addEventListener('click', closeSidePanel);
+document.querySelectorAll('.side-link').forEach(link => link.addEventListener('click', closeSidePanel));
 
 const pages = [...document.querySelectorAll('.page-section')];
 const navLinks = [...document.querySelectorAll('[data-page]')];
@@ -701,8 +1131,15 @@ window.scrollTo({ top: 0, behavior: animate ? 'smooth' : 'auto' });
 }
 navLinks.forEach(link => link.addEventListener('click', event => {
 event.preventDefault();
+if (link.id === 'okatBrand') {
+returnToLandingPage();
+mobilePanel.classList.add('translate-x-full');
+closeSidePanel();
+return;
+}
 showPage(link.dataset.page);
 mobilePanel.classList.add('translate-x-full');
+closeSidePanel();
 }));
 window.addEventListener('hashchange', () => showPage(location.hash.replace('#', '') || 'home'));
 showPage(location.hash.replace('#', '') || 'home', false);
