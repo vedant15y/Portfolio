@@ -46,6 +46,8 @@ body { background: #000; overflow-x: hidden; }
 @keyframes flicker { 0%, 100% { opacity: 1; filter: brightness(1); } 8% { opacity: .82; } 10% { opacity: 1; } 45% { filter: brightness(1.25); } 46% { filter: brightness(.8); } 48% { filter: brightness(1.15); } }
 @keyframes glitchPulse { 0% { clip-path: inset(0 0 0 0); transform: translateX(0); } 20% { clip-path: inset(20% 0 55% 0); transform: translateX(-2px); } 40% { clip-path: inset(62% 0 18% 0); transform: translateX(2px); } 60% { clip-path: inset(10% 0 70% 0); transform: translateX(-1px); } 100% { clip-path: inset(0 0 0 0); transform: translateX(0); } }
 .nixie-display { display: inline-block; border: 1px solid rgba(var(--accent-rgb),.38); background: linear-gradient(180deg, rgba(var(--accent-rgb),.14), rgba(0,0,0,.72)); padding: .18em .34em; image-rendering: pixelated; letter-spacing: .08em; text-shadow: 0 0 8px rgba(var(--accent-rgb),.95), 0 0 22px rgba(var(--accent-rgb),.65), 0 0 48px rgba(var(--accent-rgb),.28); box-shadow: inset 0 0 18px rgba(var(--accent-rgb),.12), 0 0 38px rgba(var(--accent-rgb),.2); animation: flicker 3.8s infinite; }
+.landing-art-fallback { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: contain; opacity: .24; mix-blend-mode: screen; filter: saturate(1.3) brightness(1.25) blur(.2px); }
+.landing-art { position: absolute; inset: 0; background: var(--accent); opacity: .52; mix-blend-mode: screen; filter: drop-shadow(0 0 28px rgba(var(--accent-rgb),.38)) blur(.2px); -webkit-mask-image: url('assets/landing/cosmic-art-mask.png'); -webkit-mask-position: center; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; mask-image: url('assets/landing/cosmic-art-mask.png'); mask-position: center; mask-size: contain; mask-repeat: no-repeat; transition: background .25s ease, filter .25s ease; }
 .operator-name { font-size: clamp(1.9rem, 6vw, 4.8rem); color: var(--accent); text-shadow: 0 0 12px rgba(var(--accent-rgb),.65), 0 0 28px rgba(var(--accent-rgb),.28); animation: flicker 5s infinite; }
 .operator-signature { font-size: clamp(.78rem, 1.8vw, 1rem); color: rgba(255,255,255,.68); text-shadow: 0 0 10px rgba(var(--accent-rgb),.3); }
 .glass-panel { position: relative; overflow: hidden; border: 1px solid rgba(var(--accent-rgb),.2); background: linear-gradient(135deg, rgba(255,255,255,.045), rgba(var(--accent-rgb),.045) 42%, rgba(var(--signal-rgb),.028), rgba(0,0,0,.5)); backdrop-filter: blur(24px) saturate(125%); -webkit-backdrop-filter: blur(24px) saturate(125%); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 -16px 34px rgba(var(--accent-rgb),.025), 0 0 20px rgba(var(--accent-rgb),.055); }
@@ -77,6 +79,10 @@ body { background: #000; overflow-x: hidden; }
 .gallery-card:nth-child(3n+2) { transform: translateY(18px); }
 .gallery-card:hover { transform: translateY(-4px) scale(1.02); }
 .gallery-card:nth-child(3n+2):hover { transform: translateY(10px) scale(1.02); }
+.certificate-card { min-height: 25rem; }
+.certificate-preview { height: 18rem; background: linear-gradient(135deg, rgba(var(--accent-rgb),.12), rgba(0,0,0,.78)); }
+.certificate-preview img { height: 100%; width: 100%; object-fit: cover; filter: grayscale(.25) contrast(1.05); opacity: .86; transition: transform .5s ease, filter .5s ease, opacity .5s ease; }
+.certificate-card:hover .certificate-preview img { transform: scale(1.035); filter: grayscale(0) contrast(1.08); opacity: .96; }
 .legacy-modal { animation: powerOn .42s ease both; }
 .tetris-board { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px; image-rendering: pixelated; }
 .tetris-cell { aspect-ratio: 1; border: 1px solid rgba(var(--accent-rgb),.08); background: rgba(var(--accent-rgb),.035); box-shadow: inset 0 0 8px rgba(0,0,0,.5); }
@@ -114,8 +120,9 @@ body { background: #000; overflow-x: hidden; }
 <div class="fixed inset-0 z-[58] pointer-events-none opacity-0" id="pageTransition"></div>
 
 <section id="boot" class="fixed inset-0 z-[80] flex min-h-screen flex-col items-center justify-center bg-black px-6 text-center transition-all duration-1000">
-<img src="assets/landing/cosmic-art.png" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-contain opacity-[0.28] mix-blend-screen blur-[0.2px]">
-<div class="absolute inset-0 bg-black/48"></div>
+<img src="assets/landing/cosmic-art.png" alt="" aria-hidden="true" class="landing-art-fallback">
+<div class="landing-art" aria-hidden="true"></div>
+<div class="absolute inset-0 bg-black/38"></div>
 <div class="absolute inset-0 crt opacity-45"></div>
 <div class="relative z-10 w-full max-w-4xl space-y-8">
 <div class="flex justify-between text-[10px] md:text-xs uppercase tracking-[0.25em] text-matrix-400/70">
@@ -150,6 +157,7 @@ body { background: #000; overflow-x: hidden; }
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#projects" data-page="projects">Projects</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#skills" data-page="skills">Skills</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#academics" data-page="academics">Academics</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#certificates" data-page="certificates">Certificates</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#dossier" data-page="dossier">Dossier</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#contact" data-page="contact">Contact</a>
 <button id="sideMenuBtn" class="side-drawer-toggle ml-2" aria-label="Open About and Jukebox menu"><i data-lucide="menu" class="h-5 w-5"></i></button>
@@ -175,6 +183,7 @@ body { background: #000; overflow-x: hidden; }
 <a href="#projects" data-page="projects" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Projects</a>
 <a href="#skills" data-page="skills" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Skills</a>
 <a href="#academics" data-page="academics" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Academics</a>
+<a href="#certificates" data-page="certificates" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Certificates</a>
 <a href="#dossier" data-page="dossier" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Dossier</a>
 <a href="#contact" data-page="contact" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Contact</a>
 </div>
@@ -397,6 +406,14 @@ body { background: #000; overflow-x: hidden; }
 <div id="academicsGrid" class="grid gap-6 md:grid-cols-2"></div>
 </section>
 
+<section id="certificates" class="page-section">
+<div class="mb-10 flex flex-col justify-between gap-5 border-b border-neutral-800 pb-6 md:flex-row md:items-end">
+<div><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Credential Archive</span><h2 class="font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">Certificates</h2></div>
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-neutral-500">3x3 dossier grid / click to inspect</span>
+</div>
+<div id="certificateGrid" class="grid gap-6 md:grid-cols-3"></div>
+</section>
+
 <section id="dossier" class="page-section">
 <div class="grid gap-6 lg:grid-cols-[1fr_.8fr]">
 <article class="border border-neutral-800 bg-black/60 p-8 box-glow-red">
@@ -455,6 +472,20 @@ body { background: #000; overflow-x: hidden; }
 <h3 id="academicTitle" class="mt-3 font-display text-3xl font-bold uppercase text-white"></h3>
 <p id="academicDegree" class="mt-2 font-mono text-matrix-400"></p>
 <p id="academicDescription" class="mt-6 text-lg text-neutral-300"></p>
+</div>
+</div>
+
+<div id="certificateModal" class="fixed inset-0 z-[92] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md">
+<div class="relative grid max-h-[92vh] w-full max-w-6xl overflow-hidden border border-crimson-900 bg-black lg:grid-cols-[1.15fr_.55fr]">
+<button id="closeCertificateModal" class="absolute right-4 top-4 z-10 text-crimson-500" aria-label="Close certificate"><i data-lucide="x" class="h-7 w-7"></i></button>
+<div id="certificateViewer" class="min-h-[70vh] bg-black"></div>
+<div class="p-8">
+<span id="certificateType" class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500"></span>
+<h3 id="certificateTitle" class="mt-3 font-display text-3xl font-bold uppercase text-white"></h3>
+<p id="certificateMeta" class="mt-4 font-mono text-sm uppercase tracking-widest text-neutral-500"></p>
+<p id="certificateDescription" class="mt-5 text-neutral-300"></p>
+<a id="certificateOpenLink" class="mt-8 inline-flex border border-crimson-600 px-5 py-3 font-display text-xs font-bold uppercase tracking-widest text-crimson-500 transition-all hover:bg-crimson-600 hover:text-black" target="_blank" rel="noopener">Open File</a>
+</div>
 </div>
 </div>
 
@@ -921,6 +952,36 @@ document.getElementById('academicModal').classList.remove('flex');
 }
 document.querySelectorAll('.academic-card').forEach(card => card.addEventListener('click', () => openAcademic(Number(card.dataset.index))));
 document.getElementById('closeAcademicModal').addEventListener('click', closeAcademic);
+
+const certificates = [
+{ title: 'CSEET Score Card', type: 'Company Secretary', meta: 'ICSI / Score Record', file: 'assets/certificates/cseet-score-card.pdf', format: 'pdf', description: 'CSEET score card record stored as a credential file in the archive.' },
+{ title: 'TDOP Completion', type: 'Training Certificate', meta: 'ICSI WIRC / 2025', file: 'assets/certificates/tdop.jpeg', format: 'image', description: 'Three Days Orientation Program training completion certificate issued by ICSI WIRC.' },
+{ title: 'AI Symposium Hackathon', type: 'Participation', meta: 'HBSU / 2026', file: 'assets/certificates/hackathon.jpeg', format: 'image', description: 'Certificate of participation for the AI Symposium and Hackathon event.' },
+{ title: 'GBMUN Appreciation 2022', type: 'Letter of Appreciation', meta: 'Gopi Birla Memorial School', file: 'assets/certificates/lor-1.jpeg', format: 'image', description: 'Letter of appreciation for organizing committee work and event execution.' },
+{ title: 'GBMUN Appreciation 2023', type: 'Letter of Appreciation', meta: 'Gopi Birla Memorial School', file: 'assets/certificates/lor-2.jpeg', format: 'image', description: 'Letter of appreciation recognizing leadership and support during GBMUN6.' }
+];
+const certificateGrid = document.getElementById('certificateGrid');
+certificateGrid.innerHTML = certificates.map((certificate, index) => `<button type="button" class="certificate-card group glass-panel p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-crimson-600" data-index="${index}"><div class="certificate-preview overflow-hidden border border-neutral-800">${certificate.format === 'image' ? `<img src="${certificate.file}" alt="${certificate.title} certificate preview">` : `<div class="grid h-full place-items-center bg-black/70 p-6 text-center"><div><i data-lucide="file-text" class="mx-auto h-12 w-12 text-crimson-500"></i><span class="mt-5 block font-mono text-xs uppercase tracking-[0.24em] text-neutral-400">PDF Credential</span></div></div>`}</div><span class="mt-5 block font-mono text-[10px] uppercase tracking-[0.24em] text-crimson-500">${certificate.type}</span><h3 class="mt-2 font-display text-xl font-bold uppercase text-white group-hover:text-crimson-500">${certificate.title}</h3><p class="mt-2 font-mono text-xs uppercase tracking-widest text-neutral-500">${certificate.meta}</p><span class="mt-5 inline-flex font-mono text-xs uppercase tracking-widest text-crimson-500">Open Certificate</span></button>`).join('');
+function openCertificate(index) {
+const certificate = certificates[index];
+document.getElementById('certificateType').textContent = certificate.type;
+document.getElementById('certificateTitle').textContent = certificate.title;
+document.getElementById('certificateMeta').textContent = certificate.meta;
+document.getElementById('certificateDescription').textContent = certificate.description;
+document.getElementById('certificateOpenLink').href = certificate.file;
+document.getElementById('certificateViewer').innerHTML = certificate.format === 'image' ? `<img class="h-full max-h-[92vh] w-full object-contain" src="${certificate.file}" alt="${certificate.title}">` : `<iframe class="h-[78vh] w-full bg-white" src="${certificate.file}" title="${certificate.title}"></iframe>`;
+document.getElementById('certificateModal').classList.remove('hidden');
+document.getElementById('certificateModal').classList.add('flex');
+lucide.createIcons();
+}
+function closeCertificate() {
+document.getElementById('certificateModal').classList.add('hidden');
+document.getElementById('certificateModal').classList.remove('flex');
+document.getElementById('certificateViewer').innerHTML = '';
+}
+document.querySelectorAll('.certificate-card').forEach(card => card.addEventListener('click', () => openCertificate(Number(card.dataset.index))));
+document.getElementById('closeCertificateModal').addEventListener('click', closeCertificate);
+lucide.createIcons();
 
 const legacyModal = document.getElementById('legacyModal');
 const legacySequence = document.getElementById('legacySequence');
