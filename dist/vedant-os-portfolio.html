@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VEDANT_ARCHIVE.EXE | Vedant Gondhali</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&family=Press+Start+2P&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+tailwind.config = {
+theme: {
+extend: {
+colors: {
+crimson: { 500: '#00FF88', 600: '#00FF88', 700: '#00CC6A', 900: '#005C35' },
+matrix: { 400: '#00FF88', 900: '#003B24' },
+void: { 950: '#020202', 900: '#050505', 800: '#0A0A0A', 700: '#121212' }
+},
+fontFamily: {
+display: ['Orbitron', 'sans-serif'],
+body: ['Rajdhani', 'sans-serif'],
+mono: ['Share Tech Mono', 'monospace']
+},
+backgroundImage: {
+'cyber-grid': "linear-gradient(to right, #1a1a1a 1px, transparent 1px), linear-gradient(to bottom, #1a1a1a 1px, transparent 1px)"
+}
+}
+}
+}
+</script>
+<style>
+html { scroll-behavior: smooth; }
+body { background: #000; overflow-x: hidden; }
+:root { --accent: #00FF88; --accent-rgb: 0,255,136; --accent-soft: rgba(0,255,136,.15); --accent-faint: rgba(0,255,136,.07); --signal: #7C3AED; --signal-rgb: 124,58,237; --screen-dim: .20; }
+#matrixCanvas { opacity: .78; }
+#boot { background: rgba(0, 0, 0, .72) !important; }
+.scanlines { background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,.26) 50%, rgba(0,0,0,.26)); background-size: 100% 4px; pointer-events: none; }
+.crt { pointer-events: none; background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,.3) 50%), linear-gradient(90deg, rgba(var(--accent-rgb),.07), rgba(var(--signal-rgb),.025), rgba(var(--accent-rgb),.05)); background-size: 100% 3px, 4px 100%; }
+.text-glow-red, .text-glow-green { text-shadow: 0 0 10px rgba(var(--accent-rgb),.85), 0 0 28px rgba(var(--accent-rgb),.42), 0 0 52px rgba(var(--accent-rgb),.18); }
+.box-glow-red { box-shadow: 0 0 28px rgba(var(--accent-rgb),.18), inset 0 0 20px rgba(var(--accent-rgb),.06); }
+.cursor::after { content: '|'; animation: blink 1s step-end infinite; margin-left: 4px; color: var(--accent); }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes flicker { 0%, 100% { opacity: 1; filter: brightness(1); } 8% { opacity: .82; } 10% { opacity: 1; } 45% { filter: brightness(1.25); } 46% { filter: brightness(.8); } 48% { filter: brightness(1.15); } }
+@keyframes glitchPulse { 0% { clip-path: inset(0 0 0 0); transform: translateX(0); } 20% { clip-path: inset(20% 0 55% 0); transform: translateX(-2px); } 40% { clip-path: inset(62% 0 18% 0); transform: translateX(2px); } 60% { clip-path: inset(10% 0 70% 0); transform: translateX(-1px); } 100% { clip-path: inset(0 0 0 0); transform: translateX(0); } }
+.nixie-display { display: inline-block; border: 1px solid rgba(var(--accent-rgb),.38); background: linear-gradient(180deg, rgba(var(--accent-rgb),.14), rgba(0,0,0,.72)); padding: .18em .34em; image-rendering: pixelated; letter-spacing: .08em; text-shadow: 0 0 8px rgba(var(--accent-rgb),.95), 0 0 22px rgba(var(--accent-rgb),.65), 0 0 48px rgba(var(--accent-rgb),.28); box-shadow: inset 0 0 18px rgba(var(--accent-rgb),.12), 0 0 38px rgba(var(--accent-rgb),.2); animation: flicker 3.8s infinite; }
+.landing-art-fallback { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: contain; opacity: .24; mix-blend-mode: screen; filter: saturate(1.3) brightness(1.25) blur(.2px); }
+.landing-art { position: absolute; inset: 0; background: var(--accent); opacity: .52; mix-blend-mode: screen; filter: drop-shadow(0 0 28px rgba(var(--accent-rgb),.38)) blur(.2px); -webkit-mask-image: url('assets/landing/cosmic-art-mask.png'); -webkit-mask-position: center; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; mask-image: url('assets/landing/cosmic-art-mask.png'); mask-position: center; mask-size: contain; mask-repeat: no-repeat; transition: background .25s ease, filter .25s ease; }
+.operator-name { font-size: clamp(1.9rem, 6vw, 4.8rem); color: var(--accent); text-shadow: 0 0 12px rgba(var(--accent-rgb),.65), 0 0 28px rgba(var(--accent-rgb),.28); animation: flicker 5s infinite; }
+.operator-signature { font-size: clamp(.78rem, 1.8vw, 1rem); color: rgba(255,255,255,.68); text-shadow: 0 0 10px rgba(var(--accent-rgb),.3); }
+.glass-panel { position: relative; overflow: hidden; border: 1px solid rgba(var(--accent-rgb),.2); background: linear-gradient(135deg, rgba(255,255,255,.045), rgba(var(--accent-rgb),.045) 42%, rgba(var(--signal-rgb),.028), rgba(0,0,0,.5)); backdrop-filter: blur(24px) saturate(125%); -webkit-backdrop-filter: blur(24px) saturate(125%); box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 -16px 34px rgba(var(--accent-rgb),.025), 0 0 20px rgba(var(--accent-rgb),.055); }
+.glass-panel::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 12%, rgba(255,255,255,.09), transparent 24%), radial-gradient(circle at 82% 0%, rgba(var(--accent-rgb),.09), transparent 30%), linear-gradient(115deg, transparent 0 38%, rgba(255,255,255,.028) 44%, transparent 54%); opacity: .42; mix-blend-mode: screen; }
+.glass-panel::after { content: ''; position: absolute; inset: 1px; pointer-events: none; border: 1px solid rgba(255,255,255,.025); background: linear-gradient(180deg, rgba(255,255,255,.018), transparent 32%); }
+.glass-panel > * { position: relative; z-index: 1; }
+.reveal { animation: slideUp .7s ease both; }
+.text-crimson-500, .text-crimson-600, .text-crimson-700, .text-matrix-400 { color: var(--accent) !important; }
+.border-crimson-600, .border-crimson-900, .border-matrix-400, .hover\:border-crimson-600:hover { border-color: var(--accent) !important; }
+.bg-crimson-600, .bg-matrix-400, .hover\:bg-matrix-400:hover { background-color: var(--accent) !important; }
+.bg-crimson-600\/10, .bg-matrix-900 { background-color: var(--accent-soft) !important; }
+.border-neutral-800, .border-neutral-900, .border-neutral-700 { border-color: rgba(var(--accent-rgb),.18) !important; }
+.bg-void-800, .bg-black\/35, .bg-black\/40, .bg-black\/45, .bg-black\/60 { background-color: rgba(0,0,0,.56) !important; }
+.bg-gradient-to-r { --tw-gradient-from: rgba(var(--signal-rgb),.12) var(--tw-gradient-from-position); --tw-gradient-to: rgba(0,0,0,.92) var(--tw-gradient-to-position); }
+.nav-link.active { color: #fff; border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 18px rgba(var(--accent-rgb),.18); }
+.nav-link.pulsing { animation: glitchPulse .34s steps(2), flicker .42s; }
+.page-section { display: none; opacity: 0; transform: translateY(12px); min-height: calc(100vh - 8rem); }
+.page-section.active-page { display: block; animation: slideUp .48s ease both; }
+.project-card-content { margin-left: -0.35rem; padding-left: 0.35rem; }
+#portfolio .page-section:not(#home) { color: rgba(163,163,163,.85); }
+#portfolio .page-section:not(#home) .text-white { color: rgba(255,255,255,.85) !important; }
+#portfolio .page-section:not(#home) .text-neutral-300 { color: rgba(212,212,212,.72) !important; }
+#portfolio .page-section:not(#home) .text-neutral-400 { color: rgba(163,163,163,.72) !important; }
+#portfolio .page-section:not(#home) .text-neutral-500 { color: rgba(115,115,115,.72) !important; }
+#portfolio .page-section:not(#home) .text-glow-green { text-shadow: 0 0 8px rgba(0,255,136,.52), 0 0 18px rgba(0,255,136,.2); }
+#pageTransition { background: linear-gradient(90deg, transparent, rgba(var(--accent-rgb),.22), transparent); transform: translateX(-120%); }
+#pageTransition.sweeping { animation: scanSweep .52s ease; }
+@keyframes scanSweep { from { transform: translateX(-120%); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+.gallery-card:nth-child(3n+2) { transform: translateY(18px); }
+.gallery-card:hover { transform: translateY(-4px) scale(1.02); }
+.gallery-card:nth-child(3n+2):hover { transform: translateY(10px) scale(1.02); }
+.certificate-card { min-height: 25rem; }
+.certificate-preview { height: 18rem; background: linear-gradient(135deg, rgba(var(--accent-rgb),.12), rgba(0,0,0,.78)); }
+.certificate-preview img { height: 100%; width: 100%; object-fit: cover; filter: grayscale(.25) contrast(1.05); opacity: .86; transition: transform .5s ease, filter .5s ease, opacity .5s ease; }
+.certificate-card:hover .certificate-preview img { transform: scale(1.035); filter: grayscale(0) contrast(1.08); opacity: .96; }
+.legacy-modal { animation: powerOn .42s ease both; }
+.tetris-board { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 2px; image-rendering: pixelated; }
+.tetris-cell { aspect-ratio: 1; border: 1px solid rgba(var(--accent-rgb),.08); background: rgba(var(--accent-rgb),.035); box-shadow: inset 0 0 8px rgba(0,0,0,.5); }
+.tetris-cell.on { background: var(--accent); box-shadow: 0 0 10px rgba(var(--accent-rgb),.72), inset 0 0 6px rgba(255,255,255,.35); }
+.ambient-dim { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: rgba(0,0,0,var(--screen-dim)); transition: background .25s ease; }
+.vibe-shell { position: relative; isolation: isolate; overflow: hidden; }
+.vibe-matrix { position: absolute; inset: 0; z-index: 0; opacity: .55; filter: saturate(1.4); }
+.vibe-shell > *:not(.vibe-matrix) { position: relative; z-index: 1; }
+.album-signal { min-height: 320px; background: radial-gradient(circle at 50% 28%, rgba(var(--accent-rgb),.24), transparent 34%), linear-gradient(135deg, rgba(var(--signal-rgb),.3), rgba(0,0,0,.78)); }
+.album-art-placeholder { background: linear-gradient(135deg, rgba(var(--accent-rgb),.2), rgba(var(--signal-rgb),.2)), repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 8px); }
+.vibe-range { accent-color: var(--accent); }
+.vibe-swatch { height: 2.5rem; width: 2.5rem; border: 1px solid rgba(255,255,255,.14); background: var(--accent); box-shadow: 0 0 18px rgba(var(--accent-rgb),.24); }
+.jukebox-deck { border: 1px solid rgba(var(--accent-rgb),.24); background: linear-gradient(135deg, rgba(0,0,0,.72), rgba(var(--signal-rgb),.12), rgba(0,0,0,.86)); box-shadow: inset 0 0 40px rgba(var(--accent-rgb),.055), 0 0 36px rgba(var(--accent-rgb),.12); }
+.jukebox-rail { border-left: 2px solid var(--accent); padding-left: 1rem; }
+.oscilloscope { height: 132px; width: 100%; border: 1px solid rgba(var(--accent-rgb),.26); background: rgba(0,0,0,.64); box-shadow: inset 0 0 24px rgba(var(--accent-rgb),.08); }
+.knob-readout { display: grid; place-items: center; aspect-ratio: 1; border-radius: 999px; border: 1px solid rgba(var(--accent-rgb),.44); background: radial-gradient(circle, rgba(var(--accent-rgb),.18), rgba(0,0,0,.82) 64%); box-shadow: inset 0 0 20px rgba(0,0,0,.7), 0 0 22px rgba(var(--accent-rgb),.16); }
+.mute-toggle[aria-pressed="true"] { background: var(--accent); color: #000; border-color: var(--accent); }
+.brand-resume { border: 1px solid rgba(var(--accent-rgb),.35); padding: .55rem .75rem; color: #fff; background: rgba(0,0,0,.48); text-shadow: 0 0 10px rgba(var(--accent-rgb),.72), 0 0 24px rgba(var(--accent-rgb),.28); box-shadow: inset 0 0 14px rgba(var(--accent-rgb),.08), 0 0 18px rgba(var(--accent-rgb),.1); }
+.side-drawer-toggle { display: inline-grid; place-items: center; width: 2.45rem; height: 2.45rem; border: 1px solid rgba(var(--accent-rgb),.38); background: linear-gradient(180deg, rgba(var(--accent-rgb),.12), rgba(0,0,0,.72)); color: var(--accent); box-shadow: 0 0 18px rgba(var(--accent-rgb),.12); }
+.left-drawer { background-image: radial-gradient(circle at 12px 12px, rgba(var(--accent-rgb),.58) 0 1px, transparent 1.5px); background-size: 36px 36px; }
+@keyframes powerOn { 0% { opacity: 0; transform: scaleY(.04) scaleX(.8); filter: brightness(3); } 55% { opacity: 1; transform: scaleY(1.04) scaleX(1); } 100% { opacity: 1; transform: scale(1); filter: brightness(1); } }
+@media (max-width: 767px) {
+.gallery-card:nth-child(3n+2), .gallery-card:nth-child(3n+2):hover { transform: none; }
+.skew-mobile-reset { transform: skewX(0deg) !important; }
+.unskew-mobile-reset { transform: skewX(0deg) !important; }
+}
+
+/* PIXEL.DEV theme integration */
+:root { --accent: #03dffc; --accent-rgb: 3,223,252; --accent-soft: rgba(3,223,252,.18); --accent-faint: rgba(3,223,252,.08); --signal: #ff03fc; --signal-rgb: 255,3,252; --pixel-yellow: #fcff03; --screen-dim: .04; }
+body { background: #fff !important; color: #050505 !important; font-family: 'Space Grotesk', sans-serif !important; }
+#matrixCanvas { opacity: .12; filter: grayscale(1) contrast(1.2); }
+.ambient-dim { background: rgba(255,255,255,var(--screen-dim)); }
+.scanlines { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.12) 2px, rgba(0,0,0,.12) 4px); }
+.crt { background: repeating-linear-gradient(0deg, rgba(0,0,0,.08) 0 1px, transparent 1px 3px), linear-gradient(90deg, rgba(var(--accent-rgb),.08), rgba(var(--signal-rgb),.08), rgba(252,255,3,.08)); }
+#boot { background: #fff !important; color: #050505 !important; }
+#boot::before { content: ''; position: absolute; inset: 0; opacity: .13; background-image: radial-gradient(circle, #000 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; }
+#boot::after { content: ''; position: absolute; left: 8vw; top: 21vh; width: 5rem; height: 5rem; border: 4px solid var(--signal); transform: rotate(45deg); opacity: .75; pointer-events: none; }
+.landing-art-fallback { opacity: .12; mix-blend-mode: multiply; filter: grayscale(1) brightness(.5) contrast(1.2) blur(.2px); }
+.landing-art { background: #000; opacity: .5; mix-blend-mode: normal; filter: none; }
+.nixie-display { font-family: 'Press Start 2P', cursive !important; color: #050505 !important; border: 4px solid #050505; background: #fff; padding: .36em .46em; letter-spacing: .02em; text-shadow: 3px 3px 0 var(--accent); box-shadow: 10px 10px 0 #050505; animation: flicker 4s infinite; }
+.operator-name { font-family: 'Press Start 2P', cursive !important; color: #050505; text-shadow: 3px 3px 0 var(--signal); }
+.operator-signature { color: #050505; text-shadow: 2px 2px 0 var(--accent); }
+#boot .text-matrix-400\/70, #boot .text-matrix-400 { color: #050505 !important; }
+#initializeBtn { border: 4px solid #050505 !important; background: var(--accent) !important; color: #050505 !important; box-shadow: 7px 7px 0 #050505; font-family: 'Press Start 2P', cursive !important; font-size: .65rem; }
+#initializeBtn:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 #050505; }
+#navbar { background: #fff !important; border-bottom: 4px solid #050505 !important; backdrop-filter: none; }
+.brand-resume { border: 4px solid #050505 !important; background: #fff !important; color: #050505 !important; font-family: 'Press Start 2P', cursive !important; font-size: .58rem; text-shadow: 2px 2px 0 var(--accent); box-shadow: 5px 5px 0 #050505; }
+.nav-link { font-family: 'Space Grotesk', sans-serif; color: #050505 !important; border-bottom: 4px solid transparent !important; box-shadow: none !important; }
+.nav-link:hover, .nav-link.active { color: #050505 !important; border-color: var(--accent) !important; background: transparent !important; }
+.side-drawer-toggle, #menuBtn { border: 4px solid #050505 !important; background: var(--pixel-yellow) !important; color: #050505 !important; box-shadow: 4px 4px 0 #050505; }
+#sidePanel, #mobilePanel { background: #fff !important; border-color: #050505 !important; border-width: 4px !important; color: #050505 !important; }
+.left-drawer { background-image: radial-gradient(circle at 10px 10px, rgba(0,0,0,.32) 0 1px, transparent 1.5px); background-size: 24px 24px; }
+#portfolio { color: #050505 !important; }
+.page-section { min-height: calc(100vh - 7rem); }
+.page-section h2, .page-section h3, .font-display { font-family: 'Space Grotesk', sans-serif !important; letter-spacing: -.025em; color: #050505 !important; text-shadow: none !important; }
+.page-section > .mb-10, .page-section > .mb-12, .page-section > .mb-8 { border-bottom: 4px solid #050505 !important; }
+.glass-panel, .bg-black\/35, .bg-black\/40, .bg-black\/45, .bg-black\/60, .bg-void-800, .border, article, .gallery-card, .certificate-card { background: #fff !important; color: #050505 !important; border-color: #050505 !important; border-width: 4px !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 8px 8px 0 #050505 !important; }
+.glass-panel::before, .glass-panel::after { opacity: 0 !important; }
+.glass-panel:hover, .gallery-card:hover, .certificate-card:hover, .academic-card:hover { box-shadow: 12px 12px 0 var(--accent) !important; }
+.text-white, .text-neutral-300, .text-neutral-400, .text-neutral-500, #portfolio .page-section:not(#home) .text-white, #portfolio .page-section:not(#home) .text-neutral-300, #portfolio .page-section:not(#home) .text-neutral-400, #portfolio .page-section:not(#home) .text-neutral-500 { color: #050505 !important; }
+.text-crimson-500, .text-crimson-600, .text-crimson-700, .text-matrix-400 { color: var(--signal) !important; }
+.border-crimson-600, .border-crimson-900, .border-matrix-400, .border-neutral-800, .border-neutral-900, .border-neutral-700, .hover\:border-crimson-600:hover { border-color: #050505 !important; }
+.bg-crimson-600, .bg-matrix-400, .hover\:bg-matrix-400:hover { background-color: var(--accent) !important; color: #050505 !important; }
+.bg-crimson-600\/10, .bg-matrix-900 { background-color: var(--pixel-yellow) !important; }
+.box-glow-red { box-shadow: 8px 8px 0 #050505 !important; }
+.text-glow-red, .text-glow-green { text-shadow: 3px 3px 0 var(--accent) !important; }
+#home .glass-panel { position: relative; }
+#home .glass-panel::before { content: ''; opacity: .65 !important; position: absolute; right: 1.25rem; top: 1.25rem; width: 4rem; height: 4rem; border: 4px solid var(--signal); transform: rotate(45deg); background: transparent; }
+#home .glass-panel::after { content: ''; opacity: .65 !important; position: absolute; right: 6rem; bottom: 2rem; width: 6rem; height: 6rem; background: var(--pixel-yellow); border: 0; }
+.gallery-feature, .project-card-content, .skew-x-12, .-skew-x-12 { transform: none !important; }
+.gallery-feature { border: 4px solid #050505 !important; box-shadow: 10px 10px 0 var(--signal) !important; background: #fff !important; }
+.gallery-feature img, .gallery-card img, .certificate-preview img { filter: grayscale(.05) contrast(1.08) !important; opacity: .94 !important; }
+#archive .gallery-feature, #archive .gallery-card { background: #050505 !important; color: #fff !important; }
+#archive .gallery-feature .absolute.bottom-0, #archive .gallery-card .absolute.bottom-0 { width: 100%; background: linear-gradient(to top, rgba(0,0,0,.94), rgba(0,0,0,.68), transparent); }
+#archive .gallery-feature h3, #archive .gallery-feature p, #archive .gallery-feature span, #archive .gallery-card h3, #archive .gallery-card p, #archive .gallery-card span { color: #fff !important; text-shadow: 2px 2px 0 #000, 0 0 10px rgba(var(--accent-rgb),.38); }
+#archive .gallery-card .text-crimson-500, #archive .gallery-feature .text-crimson-500 { color: var(--pixel-yellow) !important; }
+#archive .gallery-filter { border: 4px solid #050505 !important; background: #fff !important; color: #050505 !important; box-shadow: 4px 4px 0 #050505 !important; }
+#archive .gallery-filter.is-active { background: var(--accent) !important; color: #050505 !important; box-shadow: 4px 4px 0 var(--signal) !important; }
+#archive .gallery-filter:hover { background: var(--pixel-yellow) !important; transform: translate(2px, 2px); box-shadow: 2px 2px 0 #050505 !important; }
+.certificate-preview, .album-signal, .oscilloscope { background: #fff !important; border: 4px solid #050505 !important; box-shadow: inset 0 0 0 2px rgba(0,0,0,.06); }
+.jukebox-deck { background: #fff !important; border: 4px solid #050505 !important; box-shadow: 10px 10px 0 var(--signal) !important; }
+.vibe-matrix { opacity: .12; filter: grayscale(1); }
+.knob-readout { background: var(--pixel-yellow) !important; border: 4px solid #050505 !important; box-shadow: 5px 5px 0 #050505 !important; border-radius: 0; color: #050505 !important; }
+.vibe-track, .colour-preset, input, textarea { border: 4px solid #050505 !important; background: #fff !important; color: #050505 !important; box-shadow: 4px 4px 0 #050505; }
+button, a { transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease; }
+button:hover, .bg-crimson-600:hover, a.bg-crimson-600:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 #050505 !important; }
+#galleryModal > div, #academicModal .glass-panel, #certificateModal > div, #legacyModal .glass-panel { background: #fff !important; color: #050505 !important; border: 4px solid #050505 !important; box-shadow: 12px 12px 0 var(--accent) !important; }
+#galleryModal, #academicModal, #certificateModal, #legacyModal { background: rgba(255,255,255,.86) !important; }
+#modalImage, #certificateViewer { background: #fff !important; }
+#pageTransition { background: linear-gradient(90deg, transparent, rgba(var(--signal-rgb),.45), transparent); }
+@media (max-width: 900px) {
+.brand-resume { font-size: .48rem; padding: .48rem .52rem; }
+}
+</style>
+</head>
+<body class="bg-void-950 text-neutral-400 font-body antialiased selection:bg-crimson-600 selection:text-black">
+<canvas id="matrixCanvas" class="fixed inset-0 z-0 h-full w-full bg-black"></canvas>
+<div id="ambientDim" class="ambient-dim"></div>
+<div class="fixed inset-0 z-0 opacity-20 pointer-events-none bg-cyber-grid bg-[length:40px_40px]"></div>
+<div class="fixed inset-0 z-0 bg-gradient-to-b from-black via-transparent to-black pointer-events-none"></div>
+<div class="fixed inset-0 z-50 mix-blend-overlay scanlines opacity-25 pointer-events-none"></div>
+<div class="fixed inset-0 z-[58] pointer-events-none opacity-0" id="pageTransition"></div>
+
+<section id="boot" class="fixed inset-0 z-[80] flex min-h-screen flex-col items-center justify-center bg-black px-6 text-center transition-all duration-1000">
+<img src="assets/landing/cosmic-art.png" alt="" aria-hidden="true" class="landing-art-fallback">
+<div class="landing-art" aria-hidden="true"></div>
+<div class="absolute inset-0 bg-black/38"></div>
+<div class="absolute inset-0 crt opacity-45"></div>
+<div class="relative z-10 w-full max-w-4xl space-y-8">
+<div class="flex justify-between text-[10px] md:text-xs uppercase tracking-[0.25em] text-matrix-400/70">
+<span class="animate-pulse">System: Online</span><span>Archive Node</span><span>v.2026</span>
+</div>
+<h1 class="min-h-[1.2em] font-mono text-5xl font-bold tracking-tight text-matrix-400 md:text-7xl">
+<span id="typewriter" class="cursor nixie-display"></span>
+</h1>
+<div id="bootSubtitle" class="opacity-0 transition-opacity duration-1000">
+<p class="operator-name mx-auto max-w-xl font-mono uppercase tracking-[0.18em]">Archives</p>
+<p class="operator-signature mt-3 font-mono uppercase tracking-[0.32em]">Vedant Gondhali</p>
+</div>
+<div id="bootCta" class="pt-4 opacity-0 transition-opacity duration-1000">
+<button id="initializeBtn" class="group relative border border-matrix-400 bg-black/60 px-8 py-4 font-mono text-sm uppercase tracking-[0.24em] text-matrix-400 transition-all duration-300 hover:bg-matrix-400 hover:text-black">
+<span class="absolute inset-0 border border-matrix-400 blur-[2px] opacity-60 transition-opacity group-hover:opacity-100"></span>
+<span class="relative flex items-center gap-3">Initialize System <i data-lucide="terminal" class="h-4 w-4"></i></span>
+</button>
+</div>
+<div id="bootConsole" class="mx-auto hidden max-w-2xl text-left font-mono text-lg text-matrix-400 text-glow-green md:text-2xl">
+<div id="bootText" class="min-h-[3rem]"></div>
+<div class="mt-4 h-1 bg-matrix-900"><div id="bootProgress" class="h-full w-0 bg-matrix-400 transition-all duration-300"></div></div>
+</div>
+</div>
+</section>
+
+<nav id="navbar" class="fixed left-0 top-0 z-[60] w-full border-b border-neutral-800/80 bg-black/80 backdrop-blur-xl">
+<div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+<a href="#home" id="okatBrand" class="nav-link brand-resume font-mono text-xs font-bold uppercase tracking-[0.2em]" data-page="home">RESUME.EXE</a>
+<div class="hidden items-center gap-2 md:flex">
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#home" data-page="home">Home</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#archive" data-page="archive">Archive</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#projects" data-page="projects">Projects</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#skills" data-page="skills">Skills</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#academics" data-page="academics">Academics</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#certificates" data-page="certificates">Certificates</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#dossier" data-page="dossier">Dossier</a>
+<a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#contact" data-page="contact">Contact</a>
+<button id="sideMenuBtn" class="side-drawer-toggle ml-2" aria-label="Open About and Jukebox menu"><i data-lucide="menu" class="h-5 w-5"></i></button>
+</div>
+<div class="flex items-center gap-2 md:hidden">
+<button id="sideMenuMobileBtn" class="side-drawer-toggle" aria-label="Open About and Jukebox menu"><i data-lucide="more-vertical" class="h-5 w-5"></i></button>
+<button id="menuBtn" class="border border-crimson-600 p-2 text-crimson-500" aria-label="Open navigation"><i data-lucide="menu" class="h-5 w-5"></i></button>
+</div>
+</div>
+</nav>
+<aside id="sidePanel" class="left-drawer fixed right-0 top-0 z-[75] h-full w-80 translate-x-full border-l border-crimson-900 bg-black/95 p-7 pt-16 backdrop-blur-xl transition-transform duration-300">
+<button id="closeSideMenuBtn" class="mb-10 text-crimson-500" aria-label="Close side menu"><i data-lucide="x" class="h-7 w-7"></i></button>
+<div class="flex flex-col gap-7 font-mono text-lg uppercase tracking-[0.12em]">
+<a href="#about" data-page="about" class="side-link nav-link text-neutral-200 transition-all hover:text-crimson-500">About</a>
+<a href="#vibe" data-page="vibe" class="side-link nav-link text-neutral-200 transition-all hover:text-crimson-500">Jukebox</a>
+</div>
+</aside>
+<aside id="mobilePanel" class="fixed right-0 top-0 z-[70] h-full w-72 translate-x-full border-l border-crimson-900 bg-black/95 p-6 pt-20 backdrop-blur-xl transition-transform duration-300 md:hidden">
+<button id="closeMenuBtn" class="absolute right-5 top-5 text-crimson-500" aria-label="Close navigation"><i data-lucide="x" class="h-6 w-6"></i></button>
+<div class="flex flex-col gap-3 font-mono text-sm uppercase tracking-[0.22em]">
+<a href="#home" data-page="home" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Home</a>
+<a href="#archive" data-page="archive" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Archive</a>
+<a href="#projects" data-page="projects" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Projects</a>
+<a href="#skills" data-page="skills" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Skills</a>
+<a href="#academics" data-page="academics" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Academics</a>
+<a href="#certificates" data-page="certificates" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Certificates</a>
+<a href="#dossier" data-page="dossier" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Dossier</a>
+<a href="#contact" data-page="contact" class="mobile-link border-b border-neutral-800 py-3 text-neutral-300">Contact</a>
+</div>
+</aside>
+
+<main id="portfolio" class="relative z-10 mx-auto hidden w-full max-w-7xl px-4 pb-24 pt-28 md:px-8">
+<section id="home" class="page-section active-page reveal">
+<div class="glass-panel p-8 md:p-12">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Home / Booted Archive</span>
+<h2 class="mt-4 font-mono text-4xl font-black uppercase tracking-[0.12em] text-white text-glow-green md:text-6xl">VEDANT_ARCHIVE.EXE</h2>
+<p class="mt-5 max-w-5xl text-lg leading-relaxed text-neutral-300 md:text-xl">A personal archive documenting my journey across graphic design, artificial intelligence, embedded systems, and academic exploration. This portfolio serves as a living repository of posters, branding concepts, visual experiments, AI-powered applications, hardware projects, and research initiatives. From designing digital experiences in GIMP and Photoshop to developing multimodal AI systems, custom mechanical keyboards, and technical prototypes, each project reflects an ongoing pursuit of creativity, engineering, and continuous learning.</p>
+<div class="mt-10 grid gap-3 font-mono text-sm uppercase tracking-[0.14em] md:grid-cols-2">
+<div class="glass-panel p-4"><span class="text-crimson-500">STATUS</span><p class="mt-1 text-white">ONLINE</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">ENTITY TYPE</span><p class="mt-1 text-white">ORGANIC-&gt;MALE</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">LOCATION</span><p class="mt-1 text-white">✪ MUMBAI_CITY</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">PRIMARY FIELD</span><p class="mt-1 text-white">AI_DEVELOPMENT &amp; COMMERCE</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">SECONDARY FIELD</span><p class="mt-1 text-white">EMBEDDED_SYSTEMS</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">TERTIARY FIELD</span><p class="mt-1 text-white">GRAPHIC DESIGN</p></div>
+<div class="glass-panel p-4 md:col-span-2"><span class="text-crimson-500">CURRENT FOCUS</span><p class="mt-1 text-white">DESIGN_SYSTEMS • AI_EXPERIMENTS • HARDWARE_PROJECTS</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">EDUCATION NODE</span><p class="mt-1 text-white">B.COM + BUSINESS_AI</p></div>
+<div class="glass-panel p-4"><span class="text-crimson-500">CLASSIFICATION</span><p class="mt-1 text-white">PERSONAL_ARCHIVE</p></div>
+<div class="glass-panel p-4 md:col-span-2"><span class="text-crimson-500">BUILD VERSION</span><p class="mt-1 text-white">✪V2.0✪</p></div>
+</div>
+</div>
+</section>
+<section id="about" class="page-section reveal">
+<div class="mb-12 flex flex-col justify-between gap-4 border-b border-neutral-800 pb-6 md:flex-row md:items-end">
+<div>
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">WHY THIS EXISTS</span>
+<h2 class="mt-3 font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">ABOUT THE ARCHIVE</h2>
+</div>
+<button id="legacyIcon" class="group h-10 w-10 border border-neutral-800 text-crimson-500 transition-all hover:border-crimson-600 hover:shadow-[0_0_18px_rgba(0,255,136,.22)]" aria-label="terminal status"><i data-lucide="terminal" class="mx-auto h-5 w-5"></i></button>
+</div>
+<div class="grid gap-6 lg:grid-cols-[1.15fr_.85fr]">
+<article class="glass-panel p-7 md:p-9">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Manifest / Archive Logic</span>
+<div class="mt-5 space-y-5 text-lg leading-relaxed text-neutral-300">
+<p>This portfolio is designed as a digital archive rather than a traditional personal website.</p>
+<p>It documents creative work, technical projects, experiments, academic pursuits, and ideas developed over time.</p>
+<p>The visual identity draws inspiration from terminal interfaces, cyberpunk operating systems, retro computing, and digital preservation aesthetics.</p>
+<p>Rather than presenting information in a conventional format, the archive is intended to feel exploratory - as if navigating a personal operating system containing projects, concepts, and ongoing experiments.</p>
+<p>This site is intentionally built to evolve over time. New projects, experiments, and discoveries are continuously added.</p>
+<p>Think of it less as a portfolio and more as an interactive record of learning, making, designing, and building.</p>
+</div>
+</article>
+<aside class="grid gap-4">
+<div class="glass-panel p-6">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">System Origin</span>
+<div class="mt-5 grid gap-3 font-mono text-sm uppercase tracking-[0.14em]">
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Initialized</span><span class="text-matrix-400">2024</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Status</span><span class="text-matrix-400">Active</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Archive Type</span><span class="text-matrix-400">Personal</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Entity</span><span class="text-matrix-400">Organic_Male</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Mode</span><span class="text-matrix-400">Continuous_Exploration</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Build Method</span><span class="text-matrix-400">Vibe_Coded</span></div>
+<div class="flex justify-between"><span>Version</span><span class="text-matrix-400">2.0</span></div>
+</div>
+</div>
+</aside>
+</div>
+<div class="mt-6 glass-panel p-6">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Inside This Archive</span>
+<div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Graphic Design Work</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Posters</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Branding Studies</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Digital Artwork</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">AI Projects</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Embedded Systems</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Hardware Experiments</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Academic Milestones</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Research Initiatives</span>
+<span class="border border-neutral-800 bg-black/40 p-4 font-mono text-xs uppercase tracking-widest text-neutral-300">Personal Explorations</span>
+</div>
+</div>
+</section>
+
+<section id="archive" class="page-section">
+<div class="mb-10 flex flex-col justify-between gap-6 border-b border-neutral-800 pb-6 md:flex-row md:items-end">
+<div><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Design Archive</span><h2 class="font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">Visual <span class="text-neutral-700">Records</span></h2></div>
+<div id="galleryFilters" class="flex flex-wrap gap-2"></div>
+</div>
+<button class="gallery-feature group relative mb-10 block w-full overflow-hidden border border-crimson-900/60 bg-void-800 p-2 text-left -skew-x-12 skew-mobile-reset box-glow-red" data-index="0">
+<div class="relative h-[320px] skew-x-12 overflow-hidden bg-black md:h-[430px] unskew-mobile-reset">
+<img class="h-full w-full object-contain opacity-80 grayscale transition-all duration-700 group-hover:scale-105 group-hover:opacity-95 group-hover:grayscale-0" src="assets/archive/utopia.png" alt="Featured utopia artwork">
+<div class="absolute inset-0 crt opacity-45"></div>
+<div class="absolute bottom-0 left-0 p-8"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">FEATURED_ARTWORK</span><h3 class="mt-3 font-display text-4xl font-bold uppercase text-white">UTOPIA</h3><p class="mt-2 text-neutral-300">Concert Posters / Concert collage / Photoshop</p></div>
+</div>
+</button>
+<div id="galleryGrid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+</section>
+
+<section id="vibe" class="page-section">
+<div class="mb-10 flex flex-col justify-between gap-6 border-b border-neutral-800 pb-6 md:flex-row md:items-end">
+<div>
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Jukebox</span>
+<h2 class="font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">Jukebox</h2>
+</div>
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-neutral-500">Jukebox Core / Signal Pane</span>
+</div>
+<div class="vibe-shell jukebox-deck p-4 md:p-7">
+<canvas id="vibeMatrixCanvas" class="vibe-matrix"></canvas>
+<div class="grid gap-6 lg:grid-cols-[.82fr_1.18fr]">
+<aside class="album-signal relative overflow-hidden border border-neutral-800 bg-black/35 p-5">
+<div class="crt absolute inset-0 opacity-35"></div>
+<div class="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em]">
+<span class="text-crimson-500">Signal Pane</span>
+<span id="vibeSignalStatus" class="text-neutral-500">Awaiting Audio</span>
+</div>
+<div id="albumArt" class="album-art-placeholder mx-auto mt-6 flex aspect-square w-full max-w-[360px] items-center justify-center border border-neutral-800 bg-cover bg-center text-center">
+<div>
+<i data-lucide="disc-3" class="mx-auto h-16 w-16 text-crimson-500"></i>
+<p class="mt-5 font-display text-2xl font-black uppercase tracking-widest text-white">No Track</p>
+<p class="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-neutral-500">Album art loads here</p>
+</div>
+</div>
+<canvas id="oscilloscopeCanvas" class="oscilloscope mt-5"></canvas>
+<div class="mt-4 flex justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-neutral-500">
+<span>Oscilloscope</span>
+<span id="scopeStatus">Static Wave</span>
+</div>
+<div class="mt-6 grid grid-cols-2 gap-3 font-mono text-xs uppercase tracking-widest">
+<div class="border border-neutral-900 bg-black/45 p-3"><span class="text-neutral-500">Mode</span><p id="vibeMode" class="mt-1 text-crimson-500">Archive Idle</p></div>
+<div class="border border-neutral-900 bg-black/45 p-3"><span class="text-neutral-500">Source</span><p class="mt-1 text-crimson-500">Local Queue</p></div>
+</div>
+</aside>
+<div class="grid gap-6">
+<section class="border border-neutral-800 bg-black/45 p-5">
+<div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+<div class="jukebox-rail">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Jukebox Console</span>
+<h3 id="vibeTrackTitle" class="mt-3 font-display text-3xl font-black uppercase text-white">Signal Slot Empty</h3>
+<p id="vibeTrackMeta" class="mt-2 font-mono text-xs uppercase tracking-[0.2em] text-neutral-500">Queue Armed / Local Signal</p>
+</div>
+<div class="grid grid-cols-2 gap-3 text-center font-mono text-[10px] uppercase tracking-widest text-neutral-500">
+<div class="border border-neutral-800 bg-black/45 p-3"><span>Deck</span><p class="mt-1 text-crimson-500">A</p></div>
+<div class="border border-neutral-800 bg-black/45 p-3"><span>State</span><p id="deckState" class="mt-1 text-crimson-500">Standby</p></div>
+</div>
+</div>
+<div class="mt-7 grid gap-5 lg:grid-cols-[1fr_auto]">
+<div>
+<div class="flex flex-wrap gap-3">
+<button id="prevTrack" type="button" class="border border-neutral-800 px-4 py-3 text-crimson-500 transition-all hover:border-crimson-600" aria-label="Previous track"><i data-lucide="skip-back" class="h-5 w-5"></i></button>
+<button id="playTrack" type="button" class="border border-crimson-600 bg-crimson-600 px-6 py-3 text-black transition-all hover:bg-white" aria-label="Play track"><i data-lucide="play" class="h-5 w-5"></i></button>
+<button id="nextTrack" type="button" class="border border-neutral-800 px-4 py-3 text-crimson-500 transition-all hover:border-crimson-600" aria-label="Next track"><i data-lucide="skip-forward" class="h-5 w-5"></i></button>
+<button id="muteSwitch" type="button" class="mute-toggle min-w-[160px] border-2 border-neutral-800 px-5 py-3 font-mono text-xs uppercase tracking-widest text-crimson-500 transition-all hover:border-crimson-600" aria-label="Mute music" aria-pressed="false">Mute Music: Off</button>
+</div>
+<div class="mt-6 grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
+<input id="volumeKnob" class="vibe-range w-full" type="range" min="0" max="100" value="80" aria-label="Volume">
+<div class="knob-readout h-20 w-20 font-mono text-sm text-white"><span id="volumeValue">80%</span></div>
+</div>
+</div>
+<div class="grid gap-2 font-mono text-[10px] uppercase tracking-widest text-neutral-500">
+<span class="text-crimson-500">Output</span>
+<span>Local Signal</span>
+<span>Wave Monitor</span>
+</div>
+</div>
+<audio id="vibeAudio" class="mt-5 w-full accent-[var(--accent)]" preload="metadata" controls playsinline></audio>
+<div id="vibeTrackList" class="mt-6 grid gap-3"></div>
+</section>
+<section class="grid gap-4 md:grid-cols-2">
+<div class="border border-neutral-800 bg-black/45 p-5">
+<label for="immersionKnob" class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Immersion Knob</label>
+<div class="mt-4 flex items-center gap-4">
+<input id="immersionKnob" class="vibe-range w-full" type="range" min="0" max="70" value="20">
+<span id="immersionValue" class="w-12 text-right font-mono text-sm text-white">20%</span>
+</div>
+<p class="mt-3 text-sm text-neutral-500">Archive fog density.</p>
+</div>
+<div class="border border-neutral-800 bg-black/45 p-5">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Colour Panel</span>
+<div class="mt-4 grid grid-cols-[auto_1fr] items-center gap-3">
+<div id="vibeSwatch" class="vibe-swatch"></div>
+<div class="grid gap-3">
+<label class="flex items-center justify-between gap-3 font-mono text-xs uppercase tracking-widest text-neutral-400">Accent <input id="accentColor" type="color" value="#00ff88"></label>
+<label class="flex items-center justify-between gap-3 font-mono text-xs uppercase tracking-widest text-neutral-400">Signal <input id="signalColor" type="color" value="#7c3aed"></label>
+</div>
+</div>
+<div id="colourPresets" class="mt-5 grid grid-cols-3 gap-2"></div>
+<p class="mt-3 text-sm text-neutral-500">Neon bus routing.</p>
+</div>
+</section>
+</div>
+</div>
+</div>
+</section>
+
+<section id="projects" class="page-section">
+<div class="mb-8 flex items-end justify-between">
+<h2 class="font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">Project <span class="text-neutral-700">Database</span></h2>
+<div class="hidden gap-4 font-mono text-xs text-crimson-600 md:flex"><span>REC - LIVE</span><span>[CLASSIFIED]</span></div>
+</div>
+<a class="-skew-x-12 skew-mobile-reset block border border-crimson-900/70 bg-void-800 p-3 box-glow-red" href="https://github.com/vedant15y/Tic-Tac-Toe-Game" target="_blank" rel="noopener">
+<div class="skew-x-12 overflow-hidden border border-neutral-800 bg-black unskew-mobile-reset lg:grid lg:grid-cols-[1.1fr_.9fr]">
+<div class="relative min-h-[340px]">
+<img class="absolute inset-0 h-full w-full object-cover opacity-55 grayscale transition-all duration-700 hover:opacity-85 hover:grayscale-0" src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=1400&auto=format&fit=crop" alt="Healthcare AI assistant interface">
+<div class="absolute inset-0 crt opacity-40"></div>
+<div class="absolute bottom-6 left-6"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">PROJECT_001</span><h3 class="mt-2 font-display text-4xl font-bold uppercase text-white">GRAM.AI</h3><p class="text-neutral-300">Healthcare AI Assistant</p></div>
+</div>
+<div class="p-8">
+<div class="mb-6 inline-flex border border-crimson-600 px-4 py-2 font-mono text-xs uppercase tracking-widest text-crimson-500">Status: Active Development</div>
+<p class="text-lg text-neutral-300">Featured dossier for GRAM.AI, a healthcare AI assistant concept exploring multimodal input, local models, cloud APIs, patient history, and medical analysis workflows.</p>
+<div class="mt-8 flex flex-wrap gap-2"><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">FastAPI</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">Ollama</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">Vertex AI</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">SQLite</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">MedGemma</span><span class="border border-neutral-700 px-3 py-2 font-mono text-xs">Google APIs</span></div>
+<div class="mt-8 inline-flex font-display text-sm font-bold uppercase tracking-widest text-crimson-500">Open GitHub dossier</div>
+</div>
+</div>
+</a>
+<div id="projectGrid" class="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+<div id="projectSkillTags" class="mt-10"></div>
+</section>
+
+<section id="skills" class="page-section">
+<div class="mb-12 border-l-4 border-crimson-600 py-2 pl-6"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Capability Matrix</span><h2 class="font-display text-4xl font-black uppercase text-white md:text-6xl">Skills</h2></div>
+<div id="capabilityGrid" class="grid gap-6 md:grid-cols-3"></div>
+</section>
+
+<section id="academics" class="page-section">
+<div class="mb-12 flex flex-col justify-between gap-4 border-b border-neutral-800 pb-6 md:flex-row md:items-end"><div><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Academics Page</span><h2 class="font-display text-4xl font-black uppercase text-white md:text-6xl">Academics</h2></div><span class="font-mono text-xs uppercase tracking-[0.24em] text-neutral-500">Click a tile to expand record</span></div>
+<div id="academicsGrid" class="grid gap-6 md:grid-cols-2"></div>
+</section>
+
+<section id="certificates" class="page-section">
+<div class="mb-10 flex flex-col justify-between gap-5 border-b border-neutral-800 pb-6 md:flex-row md:items-end">
+<div><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Credential Archive</span><h2 class="font-display text-4xl font-black uppercase tracking-tight text-white md:text-6xl">Certificates</h2></div>
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-neutral-500">3x3 dossier grid / click to inspect</span>
+</div>
+<div id="certificateGrid" class="grid gap-6 md:grid-cols-3"></div>
+</section>
+
+<section id="dossier" class="page-section">
+<div class="grid gap-6 lg:grid-cols-[1fr_.8fr]">
+<article class="border border-neutral-800 bg-black/60 p-8 box-glow-red">
+<span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Personnel Dossier</span>
+<h2 class="mt-3 font-display text-4xl font-black uppercase text-white md:text-6xl">Resume.pdf</h2>
+<div class="mt-6 inline-flex border border-matrix-400 px-4 py-2 font-mono text-xs uppercase tracking-widest text-matrix-400">Status: Verified</div>
+<p class="mt-6 max-w-xl text-neutral-300">Verified resume record for education, project work, design archive, AI experiments, and hardware lab activity.</p>
+<div class="mt-8 flex flex-wrap gap-3"><a class="bg-crimson-600 px-6 py-3 font-display text-sm font-bold uppercase tracking-widest text-black transition-colors hover:bg-white" href="Resume.pdf" target="_blank" rel="noopener">View Resume</a><a class="border border-neutral-700 px-6 py-3 font-display text-sm font-bold uppercase tracking-widest text-white transition-colors hover:border-crimson-600" href="Resume.pdf" download>Download Resume</a></div>
+</article>
+<article class="-skew-x-12 skew-mobile-reset border border-neutral-800 bg-void-800 p-8">
+<div class="skew-x-12 unskew-mobile-reset"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Certifications</span><div class="mt-6 space-y-4"><div class="border-l-2 border-crimson-600 pl-4"><h3 class="font-display text-xl font-bold uppercase text-white">Autodesk Fusion 360</h3><p>CAD / product modeling record</p></div><div class="border-l-2 border-crimson-600 pl-4"><h3 class="font-display text-xl font-bold uppercase text-white">Udemy</h3><p>Course archive and self-directed learning</p></div></div></div>
+</article>
+</div>
+</section>
+
+<section id="contact" class="page-section">
+<div class="mb-10 border-l-4 border-crimson-600 py-2 pl-6"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Communication Terminal</span><h2 class="font-display text-4xl font-black uppercase text-white md:text-6xl">Contact Terminal</h2></div>
+<div class="grid gap-6 lg:grid-cols-[1fr_.7fr]">
+<div class="glass-panel p-7 font-mono">
+<p class="text-xs uppercase tracking-[0.24em] text-crimson-500">CONTACT TERMINAL</p>
+<div class="mt-6 grid gap-5 text-lg">
+<div><span class="block text-xs text-neutral-500">STATUS:</span><strong class="text-matrix-400">ONLINE</strong></div>
+<div><span class="block text-xs text-neutral-500">IDENTITY:</span><strong class="text-white">Vedant Gondhali</strong></div>
+<div><span class="block text-xs text-neutral-500">LOCATION:</span><strong class="text-white">MUMBAI_NODE / Mumbai, Maharashtra</strong></div>
+<div><span class="block text-xs text-neutral-500">EMAIL:</span><a class="text-matrix-400 hover:text-white" href="mailto:vng280524@gmail.com">vng280524@gmail.com</a></div>
+<div><span class="block text-xs text-neutral-500">PHONE:</span><a class="text-matrix-400 hover:text-white" href="tel:+919131746918">+91 91317469118</a></div>
+</div>
+</div>
+<div class="grid content-start gap-3">
+<a class="group flex items-center justify-between glass-panel px-5 py-4 font-mono uppercase tracking-widest transition-all hover:text-white" href="https://github.com/vedant15y" target="_blank" rel="noopener"><span>GitHub</span><i data-lucide="arrow-up-right" class="h-4 w-4 text-crimson-500"></i></a>
+<a class="group flex items-center justify-between glass-panel px-5 py-4 font-mono uppercase tracking-widest transition-all hover:text-white" href="https://www.linkedin.com/in/vedant-gondhali-49b9343a7/" target="_blank" rel="noopener"><span>LinkedIn</span><i data-lucide="arrow-up-right" class="h-4 w-4 text-crimson-500"></i></a>
+<a class="group flex items-center justify-between glass-panel px-5 py-4 font-mono uppercase tracking-widest transition-all hover:text-white" href="https://drive.google.com/file/d/1TkLYAruQbBPhG1K1tqAD3mNmyNACz7K0/view?usp=sharing" target="_blank" rel="noopener"><span>Portfolio Drive</span><i data-lucide="hard-drive" class="h-4 w-4 text-crimson-500"></i></a>
+</div>
+</div>
+</section>
+</main>
+
+<div id="galleryModal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md">
+<div class="relative grid max-h-[92vh] w-full max-w-5xl overflow-hidden border border-crimson-900 bg-black lg:grid-cols-[1.2fr_.8fr]">
+<button id="closeModal" class="absolute right-4 top-4 z-10 text-crimson-500"><i data-lucide="x" class="h-7 w-7"></i></button>
+<img id="modalImage" class="h-full min-h-[320px] w-full object-cover" alt="Selected design project">
+<div class="p-8">
+<span id="modalCategory" class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500"></span>
+<h3 id="modalTitle" class="mt-3 font-display text-3xl font-bold uppercase text-white"></h3>
+<p id="modalDescription" class="mt-4 text-neutral-300"></p>
+<div class="mt-6 grid gap-3 font-mono text-sm"><span id="modalSoftware" class="border border-neutral-800 p-3"></span><span id="modalDate" class="border border-neutral-800 p-3"></span></div>
+<div class="mt-8 flex gap-3"><button id="prevArtwork" class="border border-neutral-700 px-5 py-3 font-display text-xs font-bold uppercase tracking-widest text-white hover:border-crimson-600">Previous</button><button id="nextArtwork" class="bg-crimson-600 px-5 py-3 font-display text-xs font-bold uppercase tracking-widest text-black hover:bg-white">Next</button></div>
+</div>
+</div>
+</div>
+
+<div id="academicModal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md">
+<div class="glass-panel relative w-full max-w-2xl p-8">
+<button id="closeAcademicModal" class="absolute right-4 top-4 text-crimson-500"><i data-lucide="x" class="h-7 w-7"></i></button>
+<span id="academicPeriod" class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500"></span>
+<h3 id="academicTitle" class="mt-3 font-display text-3xl font-bold uppercase text-white"></h3>
+<p id="academicDegree" class="mt-2 font-mono text-matrix-400"></p>
+<p id="academicDescription" class="mt-6 text-lg text-neutral-300"></p>
+</div>
+</div>
+
+<div id="certificateModal" class="fixed inset-0 z-[92] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md">
+<div class="relative grid max-h-[92vh] w-full max-w-6xl overflow-hidden border border-crimson-900 bg-black lg:grid-cols-[1.15fr_.55fr]">
+<button id="closeCertificateModal" class="absolute right-4 top-4 z-10 text-crimson-500" aria-label="Close certificate"><i data-lucide="x" class="h-7 w-7"></i></button>
+<div id="certificateViewer" class="min-h-[70vh] bg-black"></div>
+<div class="p-8">
+<span id="certificateType" class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500"></span>
+<h3 id="certificateTitle" class="mt-3 font-display text-3xl font-bold uppercase text-white"></h3>
+<p id="certificateMeta" class="mt-4 font-mono text-sm uppercase tracking-widest text-neutral-500"></p>
+<p id="certificateDescription" class="mt-5 text-neutral-300"></p>
+<a id="certificateOpenLink" class="mt-8 inline-flex border border-crimson-600 px-5 py-3 font-display text-xs font-bold uppercase tracking-widest text-crimson-500 transition-all hover:bg-crimson-600 hover:text-black" target="_blank" rel="noopener">Open File</a>
+</div>
+</div>
+</div>
+
+<div id="legacyModal" class="fixed inset-0 z-[95] hidden items-center justify-center bg-black/90 p-4 backdrop-blur-md">
+<div class="legacy-modal glass-panel relative max-h-[92vh] w-full max-w-4xl overflow-y-auto p-5 md:p-7">
+<button id="closeLegacyModal" class="fixed right-6 top-6 z-[120] border border-crimson-900 bg-black/80 p-2 text-crimson-500 transition-all hover:border-crimson-500 hover:text-white"><i data-lucide="x" class="h-7 w-7"></i></button>
+<div class="crt absolute inset-0 opacity-30"></div>
+<div class="relative z-10 grid gap-6 lg:grid-cols-[.72fr_1fr]">
+<aside class="font-mono">
+<span class="text-xs uppercase tracking-[0.24em] text-crimson-500">Legacy Module</span>
+<h3 class="mt-3 font-display text-3xl font-black uppercase text-white text-glow-green">CRT_TETRIS</h3>
+<div id="legacySequence" class="mt-6 space-y-2 text-sm uppercase tracking-[0.16em] text-matrix-400">
+<p>ACCESS GRANTED</p>
+<p>INITIALIZING LEGACY MODULE</p>
+<p>LOADING RETRO ENVIRONMENT</p>
+</div>
+<div class="mt-6 grid gap-3 text-xs uppercase tracking-[0.16em]">
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>Score</span><span id="tetrisScore" class="text-matrix-400">0000</span></div>
+<div class="flex justify-between border-b border-neutral-900 pb-2"><span>State</span><span id="tetrisState" class="text-matrix-400">Standby</span></div>
+<button id="soundToggle" class="border border-neutral-800 px-3 py-2 text-left text-crimson-500 transition-all hover:border-crimson-600">Sound: Off</button>
+</div>
+<p class="mt-6 text-xs leading-relaxed text-neutral-500">Controls: arrows move/rotate, space drops. Close exits the legacy runtime.</p>
+</aside>
+<section>
+<div id="tetrisBoard" class="tetris-board mx-auto w-full max-w-[360px] border border-crimson-900 bg-black/70 p-2 shadow-[0_0_28px_rgba(0,255,136,.16)]"></div>
+</section>
+</div>
+</div>
+</div>
+
+<script>
+lucide.createIcons();
+
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
+const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+const alphabet = katakana + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+const matrixFontSize = 16;
+let drops = [];
+function resizeCanvas() {
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+drops = Array(Math.ceil(canvas.width / matrixFontSize)).fill(1);
+}
+function drawMatrix() {
+ctx.fillStyle = 'rgba(0,0,0,.045)';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.font = `${matrixFontSize}px Share Tech Mono, monospace`;
+ctx.shadowBlur = 8;
+const activeAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00FF88';
+for (let i = 0; i < drops.length; i++) {
+const x = i * matrixFontSize;
+const y = drops[i] * matrixFontSize;
+ctx.shadowColor = activeAccent;
+ctx.fillStyle = Math.random() > .975 ? '#D8FFF0' : activeAccent;
+ctx.fillText(alphabet[Math.floor(Math.random() * alphabet.length)], x, y);
+if (y > canvas.height && Math.random() > .972) drops[i] = 0;
+drops[i]++;
+}
+ctx.shadowBlur = 0;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+setInterval(drawMatrix, 33);
+
+const typewriter = document.getElementById('typewriter');
+const titleText = 'WELCOME_USER!';
+let titleIndex = 0;
+function typeIntro() {
+if (titleIndex < titleText.length) {
+typewriter.textContent += titleText[titleIndex++];
+setTimeout(typeIntro, 90);
+} else {
+document.getElementById('bootSubtitle').classList.remove('opacity-0');
+document.getElementById('bootCta').classList.remove('opacity-0');
+}
+}
+setTimeout(typeIntro, 500);
+
+async function startBootSequence() {
+const bootConsole = document.getElementById('bootConsole');
+const bootText = document.getElementById('bootText');
+const bootProgress = document.getElementById('bootProgress');
+document.getElementById('bootCta').classList.add('hidden');
+bootConsole.classList.remove('hidden');
+const lines = ['Authenticating operator...', 'Mounting design archive...', 'Loading project database...', 'Skills matrix online.', 'Portfolio initialized.'];
+for (let line of lines) {
+bootText.textContent = '';
+bootProgress.style.width = '0%';
+for (let i = 0; i <= line.length; i++) {
+bootText.textContent = line.slice(0, i) + (i < line.length ? '|' : '');
+bootProgress.style.width = `${(i / line.length) * 100}%`;
+await new Promise(resolve => setTimeout(resolve, 28));
+}
+await new Promise(resolve => setTimeout(resolve, 360));
+}
+document.getElementById('boot').classList.add('opacity-0', 'pointer-events-none');
+document.getElementById('portfolio').classList.remove('hidden');
+showPage('home', false);
+}
+document.getElementById('initializeBtn').addEventListener('click', startBootSequence);
+function returnToLandingPage() {
+document.getElementById('portfolio').classList.add('hidden');
+document.getElementById('boot').classList.remove('opacity-0', 'pointer-events-none');
+document.getElementById('bootConsole').classList.add('hidden');
+document.getElementById('bootText').textContent = '';
+document.getElementById('bootProgress').style.width = '0%';
+document.getElementById('bootCta').classList.remove('hidden', 'opacity-0');
+document.getElementById('bootSubtitle').classList.remove('opacity-0');
+typewriter.textContent = titleText;
+titleIndex = titleText.length;
+history.replaceState(null, '', '#home');
+}
+
+const galleryItems = [
+{ title: 'UTOPIA', category: 'Concert Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/utopia.png', description: 'A maximal concert-poster composition built with red heat, layered crowd energy, typography, flames, and heavy grain.' },
+{ title: 'Night Drive Signal', category: 'Automotive Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/audi-poster.png', description: 'Automotive poster experiment using radial distortion, deep blue shadows, red light trails, and aggressive display typography.' },
+{ title: 'Ambient Jack System', category: 'Abstract Visuals', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/cactus-ambient.png', description: 'Soft abstract visual study with liquid gradients, central sigil placement, blur fields, and low-light atmosphere.' },
+{ title: 'Moonline Interface', category: 'Cyberpunk Layouts', software: 'Photoshop', date: '2026', image: 'assets/archive/cyberpunk-layout.png', description: 'Cyberpunk-inspired layout with high-contrast yellow UI framing, anime composition, and poster-grid structure.' },
+{ title: 'Storm Signal', category: 'Photo Manipulations', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/cactus-storm.png', description: 'Photo manipulation and texture study mixing portrait overlays, lightning, bloom, and chromatic haze.' },
+{ title: 'GOVO Product Grid', category: 'Product Branding', software: 'Photoshop', date: '2026', image: 'assets/archive/govo-ad.png', description: 'Product-focused earbud creative with repeated brand marks, neon green contrast, and technical callout styling.' },
+{ title: 'Manga Garage Board', category: 'Editorial Collage', software: 'GIMP', date: '2026', image: 'assets/archive/manga-cars.png', description: 'Automotive manga collage built from panel framing, monochrome car imagery, and illustrated motion marks.' },
+{ title: 'Sushi Collage', category: 'Food Collage', software: 'Photoshop', date: '2026', image: 'assets/archive/sushi-collage.png', description: 'Food collage visual with layered sushi assets, Japanese print references, and noisy editorial texture.' },
+{ title: 'Market Survey Sheet', category: 'Academic Creatives', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/market-survey.png', description: 'Academic and entrepreneurship poster using diagram fragments, stamp motifs, type experiments, and paper texture.' },
+{ title: 'Vandalizer Study', category: 'Digital Art Studies', software: 'Photoshop', date: '2026', image: 'assets/archive/vandalize.png', description: 'Statue-based digital artwork with neon vandal marks, repeated typography, and purple-green contrast.' }
+];
+const categories = ['All Records', 'Concert Posters', 'Automotive Posters', 'Abstract Visuals', 'Cyberpunk Layouts', 'Photo Manipulations', 'Product Branding', 'Editorial Collage', 'Food Collage', 'Academic Creatives', 'Digital Art Studies'];
+const galleryGrid = document.getElementById('galleryGrid');
+const filters = document.getElementById('galleryFilters');
+let activeCategory = 'All Records';
+let activeArtwork = 0;
+function renderFilters() {
+filters.innerHTML = categories.map(category => `<button class="gallery-filter ${category === activeCategory ? 'is-active' : ''} border ${category === activeCategory ? 'border-crimson-600 text-white bg-crimson-600/10' : 'border-neutral-800 text-neutral-500'} px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition-all hover:border-crimson-600" data-category="${category}">${category}</button>`).join('');
+document.querySelectorAll('.gallery-filter').forEach(button => button.addEventListener('click', () => { activeCategory = button.dataset.category; renderFilters(); renderGallery(); }));
+}
+function renderGallery() {
+const visible = galleryItems.filter(item => activeCategory === 'All Records' || item.category === activeCategory);
+galleryGrid.innerHTML = visible.map(item => {
+const index = galleryItems.indexOf(item);
+return `<button class="gallery-card group relative h-80 overflow-hidden border border-neutral-800 bg-void-800 text-left transition-all duration-300 hover:border-crimson-600" data-index="${index}"><img class="h-full w-full object-cover opacity-60 grayscale transition-all duration-500 group-hover:scale-110 group-hover:opacity-90 group-hover:grayscale-0" src="${item.image}" alt="${item.title}"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent"></div><div class="absolute inset-0 crt opacity-0 transition-opacity group-hover:opacity-40"></div><div class="absolute bottom-0 p-5"><span class="font-mono text-[10px] uppercase tracking-[0.24em] text-crimson-500">${item.category}</span><h3 class="mt-2 font-display text-xl font-bold uppercase text-white">${item.title}</h3><p class="font-mono text-xs text-neutral-400">${item.software}</p><span class="mt-4 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-crimson-500 opacity-0 transition-opacity group-hover:opacity-100">View Artwork <i data-lucide="arrow-right" class="h-4 w-4"></i></span></div></button>`;
+}).join('');
+document.querySelectorAll('.gallery-card, .gallery-feature').forEach(card => card.addEventListener('click', () => openArtwork(Number(card.dataset.index))));
+lucide.createIcons();
+}
+function openArtwork(index) {
+activeArtwork = index;
+const item = galleryItems[activeArtwork];
+document.getElementById('modalImage').src = item.image;
+document.getElementById('modalTitle').textContent = item.title;
+document.getElementById('modalCategory').textContent = item.category;
+document.getElementById('modalDescription').textContent = item.description;
+document.getElementById('modalSoftware').textContent = `Software: ${item.software}`;
+document.getElementById('modalDate').textContent = `Date: ${item.date}`;
+document.getElementById('galleryModal').classList.remove('hidden');
+document.getElementById('galleryModal').classList.add('flex');
+}
+function closeArtwork() { document.getElementById('galleryModal').classList.add('hidden'); document.getElementById('galleryModal').classList.remove('flex'); }
+document.getElementById('closeModal').addEventListener('click', closeArtwork);
+document.getElementById('prevArtwork').addEventListener('click', () => openArtwork((activeArtwork - 1 + galleryItems.length) % galleryItems.length));
+document.getElementById('nextArtwork').addEventListener('click', () => openArtwork((activeArtwork + 1) % galleryItems.length));
+renderFilters();
+renderGallery();
+
+const vibeCanvas = document.getElementById('vibeMatrixCanvas');
+const vibeCtx = vibeCanvas.getContext('2d');
+let vibeDrops = [];
+function hexToRgb(hex) {
+const clean = hex.replace('#', '');
+const value = parseInt(clean.length === 3 ? clean.split('').map(char => char + char).join('') : clean, 16);
+return `${(value >> 16) & 255},${(value >> 8) & 255},${value & 255}`;
+}
+function resizeVibeCanvas() {
+const rect = vibeCanvas.parentElement.getBoundingClientRect();
+vibeCanvas.width = Math.max(1, Math.floor(rect.width));
+vibeCanvas.height = Math.max(1, Math.floor(rect.height));
+vibeDrops = Array(Math.ceil(vibeCanvas.width / matrixFontSize)).fill(1);
+}
+function drawVibeMatrix() {
+if (!vibeCanvas.width || !vibeCanvas.height) resizeVibeCanvas();
+vibeCtx.fillStyle = 'rgba(0,0,0,.08)';
+vibeCtx.fillRect(0, 0, vibeCanvas.width, vibeCanvas.height);
+vibeCtx.font = `${matrixFontSize}px Share Tech Mono, monospace`;
+vibeCtx.shadowBlur = 8;
+const activeAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00FF88';
+for (let i = 0; i < vibeDrops.length; i++) {
+const x = i * matrixFontSize;
+const y = vibeDrops[i] * matrixFontSize;
+vibeCtx.shadowColor = activeAccent;
+vibeCtx.fillStyle = Math.random() > .965 ? '#EFFFF8' : activeAccent;
+vibeCtx.fillText(alphabet[Math.floor(Math.random() * alphabet.length)], x, y);
+if (y > vibeCanvas.height && Math.random() > .965) vibeDrops[i] = 0;
+vibeDrops[i]++;
+}
+vibeCtx.shadowBlur = 0;
+}
+resizeVibeCanvas();
+window.addEventListener('resize', resizeVibeCanvas);
+setInterval(drawVibeMatrix, 42);
+
+const vibeTracks = [
+{ title: 'GET LUCKY', meta: 'Daft Punk + Pharrell Williams + Nile Rodgers', src: 'assets/audio/daft-punk-get-lucky.mp3', art: '' },
+{ title: '20 MIN', meta: 'Lil Uzi Vert / Instrumental', src: 'assets/audio/lil-uzi-vert-20-min-instrumental.mp3', art: '' },
+{ title: 'COME BACK AS A REDNECK', meta: 'Morgan Wallen + HARDY / Audio', src: 'assets/audio/morgan-wallen-hardy-come-back-as-a-redneck.mp3', art: '' },
+{ title: 'STAY HERE 4 LIFE', meta: 'A$AP Rocky / Lyrics', src: 'assets/audio/asap-rocky-stay-here-4-life.mp3', art: '' }
+];
+let activeVibeTrack = 0;
+const vibeAudio = document.getElementById('vibeAudio');
+const vibeTrackTitle = document.getElementById('vibeTrackTitle');
+const vibeTrackMeta = document.getElementById('vibeTrackMeta');
+const vibeSignalStatus = document.getElementById('vibeSignalStatus');
+const vibeMode = document.getElementById('vibeMode');
+const albumArt = document.getElementById('albumArt');
+const vibeTrackList = document.getElementById('vibeTrackList');
+const oscilloscopeCanvas = document.getElementById('oscilloscopeCanvas');
+const oscilloscopeCtx = oscilloscopeCanvas.getContext('2d');
+const deckState = document.getElementById('deckState');
+const scopeStatus = document.getElementById('scopeStatus');
+const volumeKnob = document.getElementById('volumeKnob');
+const volumeValue = document.getElementById('volumeValue');
+const muteSwitch = document.getElementById('muteSwitch');
+const playTrackButton = document.getElementById('playTrack');
+let scopePhase = 0;
+let lastScopeTime = 0;
+function resizeOscilloscope() {
+const rect = oscilloscopeCanvas.getBoundingClientRect();
+oscilloscopeCanvas.width = Math.max(1, Math.floor(rect.width));
+oscilloscopeCanvas.height = Math.max(1, Math.floor(rect.height));
+}
+function drawOscilloscope() {
+if (!oscilloscopeCanvas.width || !oscilloscopeCanvas.height) resizeOscilloscope();
+const width = oscilloscopeCanvas.width;
+const height = oscilloscopeCanvas.height;
+const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00FF88';
+oscilloscopeCtx.clearRect(0, 0, width, height);
+oscilloscopeCtx.fillStyle = 'rgba(0,0,0,.38)';
+oscilloscopeCtx.fillRect(0, 0, width, height);
+oscilloscopeCtx.strokeStyle = 'rgba(255,255,255,.08)';
+oscilloscopeCtx.lineWidth = 1;
+for (let x = 0; x < width; x += 24) {
+oscilloscopeCtx.beginPath();
+oscilloscopeCtx.moveTo(x, 0);
+oscilloscopeCtx.lineTo(x, height);
+oscilloscopeCtx.stroke();
+}
+for (let y = 0; y < height; y += 22) {
+oscilloscopeCtx.beginPath();
+oscilloscopeCtx.moveTo(0, y);
+oscilloscopeCtx.lineTo(width, y);
+oscilloscopeCtx.stroke();
+}
+oscilloscopeCtx.strokeStyle = accent;
+oscilloscopeCtx.shadowColor = accent;
+oscilloscopeCtx.shadowBlur = 12;
+oscilloscopeCtx.lineWidth = 2;
+oscilloscopeCtx.beginPath();
+const live = !vibeAudio.paused && !vibeAudio.muted && vibeAudio.readyState > 1;
+const timeMoved = live && Math.abs(vibeAudio.currentTime - lastScopeTime) > .002;
+const volumeEnergy = Math.max(.18, vibeAudio.volume || .8);
+scopeStatus.textContent = timeMoved ? 'Reactive' : (live ? 'Signal Live' : 'Static Wave');
+if (live) scopePhase += timeMoved ? .13 + volumeEnergy * .12 : .04;
+else scopePhase += .018;
+lastScopeTime = vibeAudio.currentTime || 0;
+const now = Date.now() / 520;
+for (let x = 0; x <= width; x += 3) {
+const intensity = live ? 1.85 : 1;
+const pulse = Math.sin(scopePhase * 3 + x / 11) * (live ? 16 * volumeEnergy : 5);
+const y = height / 2 + Math.sin((x / 22) + now * intensity) * (live ? 24 : 14) + Math.sin((x / 9) - now * 1.7) * (live ? 9 : 4) + pulse;
+if (x === 0) oscilloscopeCtx.moveTo(x, y);
+else oscilloscopeCtx.lineTo(x, y);
+}
+oscilloscopeCtx.stroke();
+oscilloscopeCtx.shadowBlur = 0;
+requestAnimationFrame(drawOscilloscope);
+}
+resizeOscilloscope();
+window.addEventListener('resize', resizeOscilloscope);
+drawOscilloscope();
+function setPlayIcon(isPlaying) {
+playTrackButton.innerHTML = isPlaying ? '<i data-lucide="pause" class="h-5 w-5"></i>' : '<i data-lucide="play" class="h-5 w-5"></i>';
+lucide.createIcons();
+}
+function prepareVibeAudio(track) {
+if (vibeAudio.getAttribute('src') !== (track.src || '')) {
+vibeAudio.pause();
+vibeAudio.setAttribute('src', track.src || '');
+vibeAudio.load();
+}
+vibeAudio.volume = Number(volumeKnob.value) / 100;
+}
+function renderVibeTrack() {
+const track = vibeTracks[activeVibeTrack];
+vibeTrackTitle.textContent = track.title;
+vibeTrackMeta.textContent = track.meta;
+prepareVibeAudio(track);
+setPlayIcon(false);
+vibeSignalStatus.textContent = track.src ? 'Signal Locked' : 'Awaiting Audio';
+vibeMode.textContent = track.src ? 'Ready' : 'Archive Idle';
+deckState.textContent = track.src ? 'Ready' : 'Standby';
+albumArt.style.backgroundImage = track.art ? `url('${track.art}')` : '';
+albumArt.classList.toggle('album-art-placeholder', !track.art);
+vibeTrackList.innerHTML = vibeTracks.map((item, index) => `<button type="button" class="vibe-track border ${index === activeVibeTrack ? 'border-crimson-600 bg-crimson-600/10 text-white' : 'border-neutral-800 bg-black/35 text-neutral-500'} px-4 py-3 text-left font-mono text-xs uppercase tracking-widest transition-all hover:border-crimson-600" data-index="${index}"><span>${item.title}</span><span class="mt-1 block text-[10px]">${item.meta}</span></button>`).join('');
+document.querySelectorAll('.vibe-track').forEach(button => button.addEventListener('click', () => {
+const selectedTrack = Number(button.dataset.index);
+if (selectedTrack !== activeVibeTrack) {
+activeVibeTrack = selectedTrack;
+renderVibeTrack();
+}
+playVibeTrack();
+}));
+}
+async function playVibeTrack() {
+const track = vibeTracks[activeVibeTrack];
+if (!track.src) {
+vibeSignalStatus.textContent = 'No Audio Loaded';
+vibeMode.textContent = 'No Signal';
+deckState.textContent = 'Empty';
+return;
+}
+if (vibeAudio.paused) {
+vibeSignalStatus.textContent = 'Buffering';
+try {
+prepareVibeAudio(track);
+vibeAudio.muted = false;
+if (vibeAudio.ended) vibeAudio.currentTime = 0;
+muteSwitch.setAttribute('aria-pressed', 'false');
+muteSwitch.textContent = 'Mute Music: Off';
+await vibeAudio.play();
+setPlayIcon(true);
+vibeSignalStatus.textContent = 'Playing';
+deckState.textContent = 'Playing';
+} catch (error) {
+vibeSignalStatus.textContent = 'Playback Blocked';
+deckState.textContent = 'Tap Again';
+setPlayIcon(false);
+}
+} else {
+vibeAudio.pause();
+setPlayIcon(false);
+vibeSignalStatus.textContent = 'Paused';
+deckState.textContent = 'Paused';
+}
+}
+function stepVibeTrack(direction) {
+const shouldResume = !vibeAudio.paused;
+activeVibeTrack = (activeVibeTrack + direction + vibeTracks.length) % vibeTracks.length;
+renderVibeTrack();
+if (shouldResume) playVibeTrack();
+}
+playTrackButton.addEventListener('click', playVibeTrack);
+document.getElementById('prevTrack').addEventListener('click', () => stepVibeTrack(-1));
+document.getElementById('nextTrack').addEventListener('click', () => stepVibeTrack(1));
+vibeAudio.addEventListener('canplay', () => {
+if (vibeSignalStatus.textContent === 'Buffering') vibeSignalStatus.textContent = 'Signal Ready';
+});
+vibeAudio.addEventListener('error', () => {
+vibeSignalStatus.textContent = 'Audio File Error';
+deckState.textContent = 'Fault';
+});
+vibeAudio.addEventListener('play', () => {
+vibeSignalStatus.textContent = 'Playing';
+deckState.textContent = 'Playing';
+setPlayIcon(true);
+});
+vibeAudio.addEventListener('pause', () => {
+if (!vibeAudio.ended) {
+deckState.textContent = 'Paused';
+setPlayIcon(false);
+}
+});
+vibeAudio.addEventListener('ended', () => {
+vibeSignalStatus.textContent = 'Track Complete';
+deckState.textContent = 'Complete';
+setPlayIcon(false);
+});
+volumeKnob.addEventListener('input', event => {
+const value = Number(event.target.value);
+vibeAudio.volume = value / 100;
+volumeValue.textContent = `${value}%`;
+});
+muteSwitch.addEventListener('click', () => {
+vibeAudio.muted = !vibeAudio.muted;
+muteSwitch.setAttribute('aria-pressed', String(vibeAudio.muted));
+muteSwitch.textContent = vibeAudio.muted ? 'Mute Music: On' : 'Mute Music: Off';
+deckState.textContent = vibeAudio.muted ? 'Muted' : (vibeAudio.paused ? 'Standby' : 'Playing');
+});
+document.getElementById('immersionKnob').addEventListener('input', event => {
+const value = Number(event.target.value);
+document.documentElement.style.setProperty('--screen-dim', (value / 100).toFixed(2));
+document.getElementById('immersionValue').textContent = `${value}%`;
+});
+function applyThemeColor(hex) {
+document.documentElement.style.setProperty('--accent', hex);
+document.documentElement.style.setProperty('--accent-rgb', hexToRgb(hex));
+document.documentElement.style.setProperty('--accent-soft', `rgba(${hexToRgb(hex)},.15)`);
+document.documentElement.style.setProperty('--accent-faint', `rgba(${hexToRgb(hex)},.07)`);
+document.getElementById('vibeSwatch').style.background = hex;
+}
+function applySignalColor(hex) {
+document.documentElement.style.setProperty('--signal', hex);
+document.documentElement.style.setProperty('--signal-rgb', hexToRgb(hex));
+albumArt.style.boxShadow = `0 0 34px ${hex}55`;
+}
+function applyPreset(accent, signal) {
+document.getElementById('accentColor').value = accent;
+document.getElementById('signalColor').value = signal;
+applyThemeColor(accent);
+applySignalColor(signal);
+}
+const colourPresets = [
+{ name: 'Cyber Yellow / Cyan', accent: '#F3E600', signal: '#00E5FF' },
+{ name: 'Hot Pink / Blade', accent: '#FF2DAA', signal: '#0313A6' },
+{ name: 'Night Red / Void', accent: '#C5003C', signal: '#050505' },
+{ name: 'Vivid Pink / Cyan', accent: '#FF0080', signal: '#00FFFF' },
+{ name: 'Magenta / Purple', accent: '#FF00FF', signal: '#8000FF' },
+{ name: 'Electric Green / Blue', accent: '#39FF14', signal: '#0080FF' },
+{ name: 'Cyan / Hot Pink', accent: '#00FFFF', signal: '#FF2DAA' },
+{ name: 'Cyber Yellow / Purple', accent: '#F3E600', signal: '#8000FF' },
+{ name: 'Blade / Night Red', accent: '#0313A6', signal: '#C5003C' }
+];
+document.getElementById('colourPresets').innerHTML = colourPresets.map((preset, index) => `<button class="colour-preset group border border-neutral-800 bg-black/45 p-2 text-left transition-all hover:border-crimson-600" data-index="${index}" aria-label="${preset.name}"><span class="flex h-8 overflow-hidden border border-neutral-900"><span class="flex-1" style="background:${preset.accent}"></span><span class="flex-1" style="background:${preset.signal}"></span></span><span class="mt-2 block font-mono text-[9px] uppercase tracking-widest text-neutral-500 group-hover:text-white">P${String(index + 1).padStart(2, '0')}</span></button>`).join('');
+document.querySelectorAll('.colour-preset').forEach(button => button.addEventListener('click', () => {
+const preset = colourPresets[Number(button.dataset.index)];
+applyPreset(preset.accent, preset.signal);
+}));
+document.getElementById('accentColor').addEventListener('input', event => applyThemeColor(event.target.value));
+document.getElementById('signalColor').addEventListener('input', event => applySignalColor(event.target.value));
+applyPreset('#00ff88', '#7c3aed');
+vibeAudio.volume = Number(volumeKnob.value) / 100;
+renderVibeTrack();
+
+const projects = [
+{ number: 'PROJECT_002', title: 'Custom Mechanical Keyboard', category: 'Embedded Systems', status: 'Prototype', link: 'https://github.com/vedant15y/Scotto-cmd-kmk-version', description: 'Handwired mechanical keyboard build based on ScottoKeebs design, KMK/QMK firmware exploration, matrix wiring, soldering, and ergonomic keymap experimentation.', tech: ['QMK', 'KMK', 'Soldering', 'Matrix Wiring', 'CAD'] },
+{ number: 'PROJECT_003', title: 'Tic Tac Toe', category: 'Software Development', status: 'Archived', link: 'https://github.com/vedant15y/Tic-Tac-Toe-Game', description: 'Console-based C programming game with two-player logic, win-state handling, MCQ-based move access, and multiple difficulty levels.', tech: ['C Programming', 'Game Logic', 'MCQ System', 'Difficulty Levels'] },
+{ number: 'PROJECT_004', title: 'Portfolio Drive', category: 'Graphic Design Archive', status: 'Published', link: 'https://drive.google.com/file/d/1TkLYAruQbBPhG1K1tqAD3mNmyNACz7K0/view?usp=sharing', description: 'External portfolio drive containing selected posters, branding concepts, social creatives, visual experiments, and design archive material.', tech: ['Posters', 'Branding', 'Digital Artwork', 'Typography', 'GIMP', 'Photoshop'] }
+];
+document.getElementById('projectGrid').innerHTML = projects.map(project => `<a class="group -skew-x-12 skew-mobile-reset border-l-2 border-neutral-700 bg-gradient-to-r from-void-800 to-black p-6 transition-all duration-300 hover:border-crimson-600 hover:translate-x-1" href="${project.link}" target="_blank" rel="noopener"><div class="project-card-content skew-x-12 unskew-mobile-reset"><span class="font-mono text-[10px] uppercase tracking-[0.24em] text-crimson-500">${project.number} / ${project.category}</span><h3 class="mt-3 font-display text-2xl font-bold uppercase text-white group-hover:text-crimson-500">${project.title}</h3><p class="mt-2 font-mono text-xs uppercase tracking-widest text-neutral-500">Status: ${project.status}</p><p class="mt-4 text-sm leading-relaxed text-neutral-300">${project.description}</p><div class="mt-5 flex flex-wrap gap-2">${project.tech.map(tech => `<span class="border border-neutral-800 px-2 py-1 font-mono text-[10px] uppercase">${tech}</span>`).join('')}</div><div class="mt-6 font-display text-xs font-bold uppercase tracking-widest text-crimson-500">Open Dossier</div></div></a>`).join('');
+const projectSkills = ['AI Experiments', 'Hardware Lab', 'UI Concepts', 'OCR', 'LLM Experiments', 'Translation', 'Medical Analysis', 'Chat Interfaces', 'USB-C Experiments', 'Audio Projects', 'PCB Concepts', 'Cyberpunk UI', 'Landing Pages', 'Application Concepts'];
+document.getElementById('projectSkillTags').innerHTML = `<div class="glass-panel p-6"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">Auxiliary Skill Nodes</span><div class="mt-5 flex flex-wrap gap-2">${projectSkills.map(skill => `<span class="border border-neutral-800 px-3 py-2 font-mono text-[10px] uppercase tracking-widest text-neutral-300">${skill}</span>`).join('')}</div></div>`;
+
+const capabilities = [
+['Design', [{ name: 'GIMP', status: 'ONLINE' }, { name: 'Photoshop', status: 'ONLINE' }, { name: 'Typography', status: 'IN_PROGRESS' }, { name: 'Branding', status: 'ONLINE' }, { name: 'Color Theory', status: 'ONLINE' }, { name: 'Composition', status: 'ONLINE' }], 'pen-tool'],
+['Software', [{ name: 'Python', status: 'ONLINE' }, { name: 'FastAPI', status: 'ONLINE' }, { name: 'Java', status: 'IN_PROGRESS' }, { name: 'SQL', status: 'IN_PROGRESS' }, { name: 'Ollama', status: 'ONLINE' }, { name: 'Vertex AI', status: 'ONLINE' }], 'code-2'],
+['Hardware', [{ name: 'Hardware', status: 'IN_PROGRESS' }, { name: 'QMK', status: 'ONLINE' }, { name: 'KMK', status: 'ONLINE' }, { name: 'Fusion360', status: 'ONLINE' }, { name: 'Shapr3D', status: 'ONLINE' }, { name: 'CAD', status: 'ONLINE' }, { name: 'Embedded Systems', status: 'ONLINE' }], 'cpu']
+];
+document.getElementById('capabilityGrid').innerHTML = capabilities.map((capability, index) => `<article class="group glass-panel p-7 transition-all duration-300 hover:border-crimson-600 ${index === 1 ? 'md:translate-y-8' : ''}"><div class="mb-6 flex items-center justify-between"><h3 class="font-display text-2xl font-bold uppercase text-white">${capability[0]}</h3><i data-lucide="${capability[2]}" class="h-6 w-6 text-crimson-500"></i></div><div class="grid gap-3">${capability[1].map(skill => `<div class="flex items-center justify-between gap-4 border-b border-neutral-900 pb-2 font-mono text-sm uppercase tracking-widest"><span>${skill.name}</span><span class="${skill.status === 'IN_PROGRESS' ? 'text-yellow-300' : 'text-crimson-700'}">${skill.status}</span></div>`).join('')}</div></article>`).join('');
+
+const academics = [
+{ title: 'D.G. Ruparel College', degree: 'Bachelor of Commerce', period: '2024 - Present', description: 'Commerce education with exposure to business fundamentals, management principles, economics, and finance.' },
+{ title: 'Institute of Science', degree: 'Business & AI', period: '2025 - Present', description: 'Interdisciplinary studies focused on artificial intelligence, data-driven decision making, emerging technologies, and applied business concepts.' }
+];
+document.getElementById('academicsGrid').innerHTML = academics.map((item, index) => `<button class="academic-card group glass-panel p-7 text-left transition-all duration-300 hover:-translate-y-1 hover:border-crimson-600" data-index="${index}"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">${item.period}</span><h3 class="mt-4 font-display text-3xl font-bold uppercase text-white group-hover:text-crimson-500">${item.title}</h3><p class="mt-2 font-mono text-matrix-400">${item.degree}</p><p class="mt-5 text-neutral-300">${item.description}</p><span class="mt-6 inline-flex font-mono text-xs uppercase tracking-widest text-crimson-500">Open Academic Record</span></button>`).join('');
+function openAcademic(index) {
+const item = academics[index];
+document.getElementById('academicPeriod').textContent = item.period;
+document.getElementById('academicTitle').textContent = item.title;
+document.getElementById('academicDegree').textContent = item.degree;
+document.getElementById('academicDescription').textContent = item.description;
+document.getElementById('academicModal').classList.remove('hidden');
+document.getElementById('academicModal').classList.add('flex');
+}
+function closeAcademic() {
+document.getElementById('academicModal').classList.add('hidden');
+document.getElementById('academicModal').classList.remove('flex');
+}
+document.querySelectorAll('.academic-card').forEach(card => card.addEventListener('click', () => openAcademic(Number(card.dataset.index))));
+document.getElementById('closeAcademicModal').addEventListener('click', closeAcademic);
+
+const certificates = [
+{ title: 'CSEET Score Card', type: 'Company Secretary Entry Test', meta: 'ICSI / Candidate Score Record', file: 'assets/certificates/cseet-score-card.pdf', format: 'pdf', description: 'Official CSEET score card record from the Institute of Company Secretaries of India candidate portal.' },
+{ title: 'ICSI TDOP Training Completion', type: 'Orientation Program', meta: 'ICSI WIRC / August 2025', file: 'assets/certificates/tdop.jpeg', format: 'image', description: 'Three Days Orientation Program completion certificate for CS Executive students conducted by ICSI WIRC.' },
+{ title: 'AI Symposium & Hackathon', type: 'Hackathon Participation', meta: 'Dr. Homi Bhabha State University / 2026', file: 'assets/certificates/hackathon.jpeg', format: 'image', description: 'Participation certificate for the AI Symposium and Hackathon organized by Dr. Homi Bhabha State University.' },
+{ title: 'GBMUN 2022 Appreciation', type: 'Model United Nations', meta: 'Gopi Birla Memorial School / 2022', file: 'assets/certificates/lor-1.jpeg', format: 'image', description: 'Letter of appreciation for organizing committee work during the fifth edition of Gopi Birla Model United Nations.' },
+{ title: 'GBMUN 2023 Appreciation', type: 'Model United Nations', meta: 'Gopi Birla Memorial School / 2023', file: 'assets/certificates/lor-2.jpeg', format: 'image', description: 'Letter of appreciation recognizing leadership, support, and coordination during GBMUN6.' },
+{ title: 'Internship Certificate', type: 'Business Development Internship', meta: 'Zeex AI / June 2026', file: 'assets/certificates/internship-certificate.png', format: 'image', description: 'Certificate of internship for completing a Business Development Executive Intern role at Zeex AI.' }
+];
+const certificateGrid = document.getElementById('certificateGrid');
+certificateGrid.innerHTML = certificates.map((certificate, index) => `<button type="button" class="certificate-card group glass-panel p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-crimson-600" data-index="${index}"><div class="certificate-preview overflow-hidden border border-neutral-800">${certificate.format === 'image' ? `<img src="${certificate.file}" alt="${certificate.title} certificate preview">` : `<div class="grid h-full place-items-center bg-black/70 p-6 text-center"><div><i data-lucide="file-text" class="mx-auto h-12 w-12 text-crimson-500"></i><span class="mt-5 block font-mono text-xs uppercase tracking-[0.24em] text-neutral-400">PDF Credential</span></div></div>`}</div><span class="mt-5 block font-mono text-[10px] uppercase tracking-[0.24em] text-crimson-500">${certificate.type}</span><h3 class="mt-2 font-display text-xl font-bold uppercase text-white group-hover:text-crimson-500">${certificate.title}</h3><p class="mt-2 font-mono text-xs uppercase tracking-widest text-neutral-500">${certificate.meta}</p><span class="mt-5 inline-flex font-mono text-xs uppercase tracking-widest text-crimson-500">Open Certificate</span></button>`).join('');
+function openCertificate(index) {
+const certificate = certificates[index];
+document.getElementById('certificateType').textContent = certificate.type;
+document.getElementById('certificateTitle').textContent = certificate.title;
+document.getElementById('certificateMeta').textContent = certificate.meta;
+document.getElementById('certificateDescription').textContent = certificate.description;
+document.getElementById('certificateOpenLink').href = certificate.file;
+document.getElementById('certificateViewer').innerHTML = certificate.format === 'image' ? `<img class="h-full max-h-[92vh] w-full object-contain" src="${certificate.file}" alt="${certificate.title}">` : `<iframe class="h-[78vh] w-full bg-white" src="${certificate.file}" title="${certificate.title}"></iframe>`;
+document.getElementById('certificateModal').classList.remove('hidden');
+document.getElementById('certificateModal').classList.add('flex');
+lucide.createIcons();
+}
+function closeCertificate() {
+document.getElementById('certificateModal').classList.add('hidden');
+document.getElementById('certificateModal').classList.remove('flex');
+document.getElementById('certificateViewer').innerHTML = '';
+}
+document.querySelectorAll('.certificate-card').forEach(card => card.addEventListener('click', () => openCertificate(Number(card.dataset.index))));
+document.getElementById('closeCertificateModal').addEventListener('click', closeCertificate);
+lucide.createIcons();
+
+const legacyModal = document.getElementById('legacyModal');
+const legacySequence = document.getElementById('legacySequence');
+const tetrisBoard = document.getElementById('tetrisBoard');
+const tetrisScore = document.getElementById('tetrisScore');
+const tetrisState = document.getElementById('tetrisState');
+const soundToggle = document.getElementById('soundToggle');
+const legacyIcon = document.getElementById('legacyIcon');
+const tetrisW = 10;
+const tetrisH = 20;
+const tetrisPieces = [
+[[1, 1, 1, 1]],
+[[1, 1], [1, 1]],
+[[0, 1, 0], [1, 1, 1]],
+[[1, 0, 0], [1, 1, 1]],
+[[0, 0, 1], [1, 1, 1]],
+[[0, 1, 1], [1, 1, 0]],
+[[1, 1, 0], [0, 1, 1]]
+];
+let legacyReady = false;
+let legacyLoop = null;
+let legacySound = false;
+let tetrisGrid = [];
+let tetrisPiece = null;
+let tetrisScoreValue = 0;
+let typeBuffer = '';
+let legacyClicks = 0;
+let konamiIndex = 0;
+const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+
+function resetTetris() {
+tetrisGrid = Array.from({ length: tetrisH }, () => Array(tetrisW).fill(0));
+tetrisScoreValue = 0;
+tetrisScore.textContent = '0000';
+spawnPiece();
+}
+function spawnPiece() {
+const shape = tetrisPieces[Math.floor(Math.random() * tetrisPieces.length)].map(row => [...row]);
+tetrisPiece = { shape, x: Math.floor((tetrisW - shape[0].length) / 2), y: 0 };
+if (collides(tetrisPiece.x, tetrisPiece.y, tetrisPiece.shape)) {
+resetTetris();
+}
+}
+function rotateShape(shape) {
+return shape[0].map((_, column) => shape.map(row => row[column]).reverse());
+}
+function collides(x, y, shape) {
+return shape.some((row, rowIndex) => row.some((cell, columnIndex) => {
+if (!cell) return false;
+const nextX = x + columnIndex;
+const nextY = y + rowIndex;
+return nextX < 0 || nextX >= tetrisW || nextY >= tetrisH || (nextY >= 0 && tetrisGrid[nextY][nextX]);
+}));
+}
+function mergePiece() {
+tetrisPiece.shape.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+if (cell && tetrisPiece.y + rowIndex >= 0) tetrisGrid[tetrisPiece.y + rowIndex][tetrisPiece.x + columnIndex] = 1;
+}));
+clearLines();
+spawnPiece();
+}
+function clearLines() {
+let cleared = 0;
+tetrisGrid = tetrisGrid.filter(row => {
+if (row.every(Boolean)) {
+cleared++;
+return false;
+}
+return true;
+});
+while (tetrisGrid.length < tetrisH) tetrisGrid.unshift(Array(tetrisW).fill(0));
+if (cleared) {
+tetrisScoreValue += cleared * 100;
+tetrisScore.textContent = String(tetrisScoreValue).padStart(4, '0');
+}
+}
+function movePiece(dx, dy) {
+if (!tetrisPiece) return;
+if (!collides(tetrisPiece.x + dx, tetrisPiece.y + dy, tetrisPiece.shape)) {
+tetrisPiece.x += dx;
+tetrisPiece.y += dy;
+} else if (dy) {
+mergePiece();
+}
+drawTetris();
+}
+function rotatePiece() {
+if (!tetrisPiece) return;
+const rotated = rotateShape(tetrisPiece.shape);
+if (!collides(tetrisPiece.x, tetrisPiece.y, rotated)) tetrisPiece.shape = rotated;
+drawTetris();
+}
+function drawTetris() {
+const frame = tetrisGrid.map(row => [...row]);
+if (tetrisPiece) {
+tetrisPiece.shape.forEach((row, rowIndex) => row.forEach((cell, columnIndex) => {
+const y = tetrisPiece.y + rowIndex;
+const x = tetrisPiece.x + columnIndex;
+if (cell && y >= 0 && y < tetrisH && x >= 0 && x < tetrisW) frame[y][x] = 1;
+}));
+}
+tetrisBoard.innerHTML = frame.flat().map(cell => `<div class="tetris-cell ${cell ? 'on' : ''}"></div>`).join('');
+}
+function openLegacyModule() {
+legacyModal.classList.remove('hidden');
+legacyModal.classList.add('flex');
+legacySequence.innerHTML = '<p>ACCESS GRANTED</p><p>INITIALIZING LEGACY MODULE</p><p>LOADING RETRO ENVIRONMENT</p>';
+tetrisState.textContent = 'Booting';
+setTimeout(() => {
+if (!legacyReady) {
+legacyReady = true;
+resetTetris();
+}
+tetrisState.textContent = 'Running';
+drawTetris();
+clearInterval(legacyLoop);
+legacyLoop = setInterval(() => movePiece(0, 1), 620);
+}, 750);
+}
+function closeLegacyModule() {
+legacyModal.classList.add('hidden');
+legacyModal.classList.remove('flex');
+tetrisState.textContent = 'Standby';
+clearInterval(legacyLoop);
+legacyLoop = null;
+}
+function triggerFromText() {
+const upper = typeBuffer.toUpperCase();
+if (upper.endsWith('RUN GAME') || upper.endsWith('TETRIS') || upper.endsWith('DOOM')) openLegacyModule();
+}
+legacyIcon.addEventListener('click', () => {
+legacyClicks++;
+if (legacyClicks >= 5) {
+legacyClicks = 0;
+openLegacyModule();
+}
+});
+document.getElementById('closeLegacyModal').addEventListener('click', closeLegacyModule);
+soundToggle.addEventListener('click', () => {
+legacySound = !legacySound;
+soundToggle.textContent = `Sound: ${legacySound ? 'On' : 'Off'}`;
+});
+document.addEventListener('keydown', event => {
+if (!legacyModal.classList.contains('hidden')) {
+if (event.key === 'ArrowLeft') { event.preventDefault(); movePiece(-1, 0); }
+if (event.key === 'ArrowRight') { event.preventDefault(); movePiece(1, 0); }
+if (event.key === 'ArrowDown') { event.preventDefault(); movePiece(0, 1); }
+if (event.key === 'ArrowUp') { event.preventDefault(); rotatePiece(); }
+if (event.code === 'Space') { event.preventDefault(); while (tetrisPiece && !collides(tetrisPiece.x, tetrisPiece.y + 1, tetrisPiece.shape)) tetrisPiece.y++; movePiece(0, 1); }
+if (event.key === 'Escape') closeLegacyModule();
+return;
+}
+const expected = konamiCode[konamiIndex];
+konamiIndex = event.key === expected ? konamiIndex + 1 : (event.key === konamiCode[0] ? 1 : 0);
+if (konamiIndex === konamiCode.length) {
+konamiIndex = 0;
+openLegacyModule();
+}
+if (event.key.length === 1) {
+typeBuffer = (typeBuffer + event.key).slice(-12);
+triggerFromText();
+}
+});
+
+const menuBtn = document.getElementById('menuBtn');
+const closeMenuBtn = document.getElementById('closeMenuBtn');
+const mobilePanel = document.getElementById('mobilePanel');
+const sideMenuBtn = document.getElementById('sideMenuBtn');
+const sideMenuMobileBtn = document.getElementById('sideMenuMobileBtn');
+const closeSideMenuBtn = document.getElementById('closeSideMenuBtn');
+const sidePanel = document.getElementById('sidePanel');
+menuBtn.addEventListener('click', () => mobilePanel.classList.remove('translate-x-full'));
+closeMenuBtn.addEventListener('click', () => mobilePanel.classList.add('translate-x-full'));
+document.querySelectorAll('.mobile-link').forEach(link => link.addEventListener('click', () => mobilePanel.classList.add('translate-x-full')));
+function openSidePanel() {
+sidePanel.classList.remove('translate-x-full');
+}
+function closeSidePanel() {
+sidePanel.classList.add('translate-x-full');
+}
+sideMenuBtn.addEventListener('click', openSidePanel);
+sideMenuMobileBtn.addEventListener('click', openSidePanel);
+closeSideMenuBtn.addEventListener('click', closeSidePanel);
+document.querySelectorAll('.side-link').forEach(link => link.addEventListener('click', closeSidePanel));
+
+const pages = [...document.querySelectorAll('.page-section')];
+const navLinks = [...document.querySelectorAll('[data-page]')];
+const pageTransition = document.getElementById('pageTransition');
+function showPage(pageId, animate = true) {
+const target = document.getElementById(pageId) ? pageId : 'home';
+if (animate) {
+pageTransition.classList.remove('sweeping');
+void pageTransition.offsetWidth;
+pageTransition.classList.add('sweeping');
+}
+pages.forEach(page => page.classList.toggle('active-page', page.id === target));
+navLinks.forEach(link => {
+const active = link.dataset.page === target;
+link.classList.toggle('active', active);
+if (active && animate) {
+link.classList.remove('pulsing');
+void link.offsetWidth;
+link.classList.add('pulsing');
+}
+});
+history.replaceState(null, '', `#${target}`);
+window.scrollTo({ top: 0, behavior: animate ? 'smooth' : 'auto' });
+}
+navLinks.forEach(link => link.addEventListener('click', event => {
+event.preventDefault();
+if (link.id === 'okatBrand') {
+returnToLandingPage();
+mobilePanel.classList.add('translate-x-full');
+closeSidePanel();
+return;
+}
+showPage(link.dataset.page);
+mobilePanel.classList.add('translate-x-full');
+closeSidePanel();
+}));
+window.addEventListener('hashchange', () => showPage(location.hash.replace('#', '') || 'home'));
+showPage(location.hash.replace('#', '') || 'home', false);
+lucide.createIcons();
+</script>
+</body>
+</html>
