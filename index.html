@@ -6,7 +6,7 @@
 <title>VEDANT_ARCHIVE.EXE | Vedant Gondhali</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Space+Grotesk:wght@300;400;500;600;700&family=Press+Start+2P&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
@@ -109,6 +109,73 @@ body { background: #000; overflow-x: hidden; }
 .skew-mobile-reset { transform: skewX(0deg) !important; }
 .unskew-mobile-reset { transform: skewX(0deg) !important; }
 }
+
+/* PIXEL.DEV theme integration */
+:root { --accent: #03dffc; --accent-rgb: 3,223,252; --accent-soft: rgba(3,223,252,.18); --accent-faint: rgba(3,223,252,.08); --signal: #ff03fc; --signal-rgb: 255,3,252; --pixel-yellow: #fcff03; --screen-dim: .04; }
+body { background: #fff !important; color: #050505 !important; font-family: 'Space Grotesk', sans-serif !important; }
+#matrixCanvas { opacity: .12; filter: grayscale(1) contrast(1.2); }
+.ambient-dim { background: rgba(255,255,255,var(--screen-dim)); }
+.scanlines { background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.12) 2px, rgba(0,0,0,.12) 4px); }
+.crt { background: repeating-linear-gradient(0deg, rgba(0,0,0,.08) 0 1px, transparent 1px 3px), linear-gradient(90deg, rgba(var(--accent-rgb),.08), rgba(var(--signal-rgb),.08), rgba(252,255,3,.08)); }
+#boot { background: #fff !important; color: #050505 !important; }
+#boot::before { content: ''; position: absolute; inset: 0; opacity: .13; background-image: radial-gradient(circle, #000 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; }
+#boot::after { content: ''; position: absolute; left: 8vw; top: 21vh; width: 5rem; height: 5rem; border: 4px solid var(--signal); transform: rotate(45deg); opacity: .75; pointer-events: none; }
+.landing-art-fallback { opacity: .12; mix-blend-mode: multiply; filter: grayscale(1) brightness(.5) contrast(1.2) blur(.2px); }
+.landing-art { background: #000; opacity: .5; mix-blend-mode: normal; filter: none; }
+.nixie-display { font-family: 'Press Start 2P', cursive !important; color: #050505 !important; border: 4px solid #050505; background: #fff; padding: .36em .46em; letter-spacing: .02em; text-shadow: 3px 3px 0 var(--accent); box-shadow: 10px 10px 0 #050505; animation: flicker 4s infinite; }
+.operator-name { font-family: 'Press Start 2P', cursive !important; color: #050505; text-shadow: 3px 3px 0 var(--signal); }
+.operator-signature { color: #050505; text-shadow: 2px 2px 0 var(--accent); }
+#boot .text-matrix-400\/70, #boot .text-matrix-400 { color: #050505 !important; }
+#initializeBtn { border: 4px solid #050505 !important; background: var(--accent) !important; color: #050505 !important; box-shadow: 7px 7px 0 #050505; font-family: 'Press Start 2P', cursive !important; font-size: .65rem; }
+#initializeBtn:hover { transform: translate(3px, 3px); box-shadow: 3px 3px 0 #050505; }
+#navbar { background: #fff !important; border-bottom: 4px solid #050505 !important; backdrop-filter: none; }
+.brand-resume { border: 4px solid #050505 !important; background: #fff !important; color: #050505 !important; font-family: 'Press Start 2P', cursive !important; font-size: .58rem; text-shadow: 2px 2px 0 var(--accent); box-shadow: 5px 5px 0 #050505; }
+.nav-link { font-family: 'Space Grotesk', sans-serif; color: #050505 !important; border-bottom: 4px solid transparent !important; box-shadow: none !important; }
+.nav-link:hover, .nav-link.active { color: #050505 !important; border-color: var(--accent) !important; background: transparent !important; }
+.side-drawer-toggle, #menuBtn { border: 4px solid #050505 !important; background: var(--pixel-yellow) !important; color: #050505 !important; box-shadow: 4px 4px 0 #050505; }
+#sidePanel, #mobilePanel { background: #fff !important; border-color: #050505 !important; border-width: 4px !important; color: #050505 !important; }
+.left-drawer { background-image: radial-gradient(circle at 10px 10px, rgba(0,0,0,.32) 0 1px, transparent 1.5px); background-size: 24px 24px; }
+#portfolio { color: #050505 !important; }
+.page-section { min-height: calc(100vh - 7rem); }
+.page-section h2, .page-section h3, .font-display { font-family: 'Space Grotesk', sans-serif !important; letter-spacing: -.025em; color: #050505 !important; text-shadow: none !important; }
+.page-section > .mb-10, .page-section > .mb-12, .page-section > .mb-8 { border-bottom: 4px solid #050505 !important; }
+.glass-panel, .bg-black\/35, .bg-black\/40, .bg-black\/45, .bg-black\/60, .bg-void-800, .border, article, .gallery-card, .certificate-card { background: #fff !important; color: #050505 !important; border-color: #050505 !important; border-width: 4px !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 8px 8px 0 #050505 !important; }
+.glass-panel::before, .glass-panel::after { opacity: 0 !important; }
+.glass-panel:hover, .gallery-card:hover, .certificate-card:hover, .academic-card:hover { box-shadow: 12px 12px 0 var(--accent) !important; }
+.text-white, .text-neutral-300, .text-neutral-400, .text-neutral-500, #portfolio .page-section:not(#home) .text-white, #portfolio .page-section:not(#home) .text-neutral-300, #portfolio .page-section:not(#home) .text-neutral-400, #portfolio .page-section:not(#home) .text-neutral-500 { color: #050505 !important; }
+.text-crimson-500, .text-crimson-600, .text-crimson-700, .text-matrix-400 { color: var(--signal) !important; }
+.border-crimson-600, .border-crimson-900, .border-matrix-400, .border-neutral-800, .border-neutral-900, .border-neutral-700, .hover\:border-crimson-600:hover { border-color: #050505 !important; }
+.bg-crimson-600, .bg-matrix-400, .hover\:bg-matrix-400:hover { background-color: var(--accent) !important; color: #050505 !important; }
+.bg-crimson-600\/10, .bg-matrix-900 { background-color: var(--pixel-yellow) !important; }
+.box-glow-red { box-shadow: 8px 8px 0 #050505 !important; }
+.text-glow-red, .text-glow-green { text-shadow: 3px 3px 0 var(--accent) !important; }
+#home .glass-panel { position: relative; }
+#home .glass-panel::before { content: ''; opacity: .65 !important; position: absolute; right: 1.25rem; top: 1.25rem; width: 4rem; height: 4rem; border: 4px solid var(--signal); transform: rotate(45deg); background: transparent; }
+#home .glass-panel::after { content: ''; opacity: .65 !important; position: absolute; right: 6rem; bottom: 2rem; width: 6rem; height: 6rem; background: var(--pixel-yellow); border: 0; }
+.gallery-feature, .project-card-content, .skew-x-12, .-skew-x-12 { transform: none !important; }
+.gallery-feature { border: 4px solid #050505 !important; box-shadow: 10px 10px 0 var(--signal) !important; background: #fff !important; }
+.gallery-feature img, .gallery-card img, .certificate-preview img { filter: grayscale(.05) contrast(1.08) !important; opacity: .94 !important; }
+#archive .gallery-feature, #archive .gallery-card { background: #050505 !important; color: #fff !important; }
+#archive .gallery-feature .absolute.bottom-0, #archive .gallery-card .absolute.bottom-0 { width: 100%; background: linear-gradient(to top, rgba(0,0,0,.94), rgba(0,0,0,.68), transparent); }
+#archive .gallery-feature h3, #archive .gallery-feature p, #archive .gallery-feature span, #archive .gallery-card h3, #archive .gallery-card p, #archive .gallery-card span { color: #fff !important; text-shadow: 2px 2px 0 #000, 0 0 10px rgba(var(--accent-rgb),.38); }
+#archive .gallery-card .text-crimson-500, #archive .gallery-feature .text-crimson-500 { color: var(--pixel-yellow) !important; }
+#archive .gallery-filter { border: 4px solid #050505 !important; background: #fff !important; color: #050505 !important; box-shadow: 4px 4px 0 #050505 !important; }
+#archive .gallery-filter.is-active { background: var(--accent) !important; color: #050505 !important; box-shadow: 4px 4px 0 var(--signal) !important; }
+#archive .gallery-filter:hover { background: var(--pixel-yellow) !important; transform: translate(2px, 2px); box-shadow: 2px 2px 0 #050505 !important; }
+.certificate-preview, .album-signal, .oscilloscope { background: #fff !important; border: 4px solid #050505 !important; box-shadow: inset 0 0 0 2px rgba(0,0,0,.06); }
+.jukebox-deck { background: #fff !important; border: 4px solid #050505 !important; box-shadow: 10px 10px 0 var(--signal) !important; }
+.vibe-matrix { opacity: .12; filter: grayscale(1); }
+.knob-readout { background: var(--pixel-yellow) !important; border: 4px solid #050505 !important; box-shadow: 5px 5px 0 #050505 !important; border-radius: 0; color: #050505 !important; }
+.vibe-track, .colour-preset, input, textarea { border: 4px solid #050505 !important; background: #fff !important; color: #050505 !important; box-shadow: 4px 4px 0 #050505; }
+button, a { transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease; }
+button:hover, .bg-crimson-600:hover, a.bg-crimson-600:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 #050505 !important; }
+#galleryModal > div, #academicModal .glass-panel, #certificateModal > div, #legacyModal .glass-panel { background: #fff !important; color: #050505 !important; border: 4px solid #050505 !important; box-shadow: 12px 12px 0 var(--accent) !important; }
+#galleryModal, #academicModal, #certificateModal, #legacyModal { background: rgba(255,255,255,.86) !important; }
+#modalImage, #certificateViewer { background: #fff !important; }
+#pageTransition { background: linear-gradient(90deg, transparent, rgba(var(--signal-rgb),.45), transparent); }
+@media (max-width: 900px) {
+.brand-resume { font-size: .48rem; padding: .48rem .52rem; }
+}
 </style>
 </head>
 <body class="bg-void-950 text-neutral-400 font-body antialiased selection:bg-crimson-600 selection:text-black">
@@ -132,7 +199,7 @@ body { background: #000; overflow-x: hidden; }
 <span id="typewriter" class="cursor nixie-display"></span>
 </h1>
 <div id="bootSubtitle" class="opacity-0 transition-opacity duration-1000">
-<p class="operator-name mx-auto max-w-xl font-mono uppercase tracking-[0.18em]">Portfolio</p>
+<p class="operator-name mx-auto max-w-xl font-mono uppercase tracking-[0.18em]">Archives</p>
 <p class="operator-signature mt-3 font-mono uppercase tracking-[0.32em]">Vedant Gondhali</p>
 </div>
 <div id="bootCta" class="pt-4 opacity-0 transition-opacity duration-1000">
@@ -270,7 +337,7 @@ body { background: #000; overflow-x: hidden; }
 <div class="relative h-[320px] skew-x-12 overflow-hidden bg-black md:h-[430px] unskew-mobile-reset">
 <img class="h-full w-full object-contain opacity-80 grayscale transition-all duration-700 group-hover:scale-105 group-hover:opacity-95 group-hover:grayscale-0" src="assets/archive/utopia.png" alt="Featured utopia artwork">
 <div class="absolute inset-0 crt opacity-45"></div>
-<div class="absolute bottom-0 left-0 p-8"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">FEATURED_ARTWORK</span><h3 class="mt-3 font-display text-4xl font-bold uppercase text-white">UTOPIA</h3><p class="mt-2 text-neutral-300">Poster / Concert collage / Photoshop</p></div>
+<div class="absolute bottom-0 left-0 p-8"><span class="font-mono text-xs uppercase tracking-[0.24em] text-crimson-500">FEATURED_ARTWORK</span><h3 class="mt-3 font-display text-4xl font-bold uppercase text-white">UTOPIA</h3><p class="mt-2 text-neutral-300">Concert Posters / Concert collage / Photoshop</p></div>
 </div>
 </button>
 <div id="galleryGrid" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
@@ -601,28 +668,28 @@ history.replaceState(null, '', '#home');
 }
 
 const galleryItems = [
-{ title: 'UTOPIA', category: 'Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/utopia.png', description: 'A maximal concert-poster composition built with red heat, layered crowd energy, typography, flames, and heavy grain.' },
-{ title: 'Night Drive Signal', category: 'Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/audi-poster.png', description: 'Automotive poster experiment using radial distortion, deep blue shadows, red light trails, and aggressive display typography.' },
-{ title: 'Ambient Jack System', category: 'Digital Art', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/cactus-ambient.png', description: 'Soft abstract visual study with liquid gradients, central sigil placement, blur fields, and low-light atmosphere.' },
-{ title: 'Moonline Interface', category: 'UI Concepts', software: 'Photoshop', date: '2026', image: 'assets/archive/cyberpunk-layout.png', description: 'Cyberpunk-inspired layout with high-contrast yellow UI framing, anime composition, and poster-grid structure.' },
-{ title: 'Storm Signal', category: 'Photo Manipulation', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/cactus-storm.png', description: 'Photo manipulation and texture study mixing portrait overlays, lightning, bloom, and chromatic haze.' },
-{ title: 'GOVO Product Grid', category: 'Branding', software: 'Photoshop', date: '2026', image: 'assets/archive/govo-ad.png', description: 'Product-focused earbud creative with repeated brand marks, neon green contrast, and technical callout styling.' },
-{ title: 'Manga Garage Board', category: 'Digital Art', software: 'GIMP', date: '2026', image: 'assets/archive/manga-cars.png', description: 'Automotive manga collage built from panel framing, monochrome car imagery, and illustrated motion marks.' },
-{ title: 'Sushi Collage', category: 'Social Media', software: 'Photoshop', date: '2026', image: 'assets/archive/sushi-collage.png', description: 'Food collage visual with layered sushi assets, Japanese print references, and noisy editorial texture.' },
-{ title: 'Market Survey Sheet', category: 'Event Creatives', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/market-survey.png', description: 'Academic and entrepreneurship poster using diagram fragments, stamp motifs, type experiments, and paper texture.' },
-{ title: 'Vandalizer Study', category: 'Digital Art', software: 'Photoshop', date: '2026', image: 'assets/archive/vandalize.png', description: 'Statue-based digital artwork with neon vandal marks, repeated typography, and purple-green contrast.' }
+{ title: 'UTOPIA', category: 'Concert Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/utopia.png', description: 'A maximal concert-poster composition built with red heat, layered crowd energy, typography, flames, and heavy grain.' },
+{ title: 'Night Drive Signal', category: 'Automotive Posters', software: 'Photoshop', date: '2026', image: 'assets/archive/audi-poster.png', description: 'Automotive poster experiment using radial distortion, deep blue shadows, red light trails, and aggressive display typography.' },
+{ title: 'Ambient Jack System', category: 'Abstract Visuals', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/cactus-ambient.png', description: 'Soft abstract visual study with liquid gradients, central sigil placement, blur fields, and low-light atmosphere.' },
+{ title: 'Moonline Interface', category: 'Cyberpunk Layouts', software: 'Photoshop', date: '2026', image: 'assets/archive/cyberpunk-layout.png', description: 'Cyberpunk-inspired layout with high-contrast yellow UI framing, anime composition, and poster-grid structure.' },
+{ title: 'Storm Signal', category: 'Photo Manipulations', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/cactus-storm.png', description: 'Photo manipulation and texture study mixing portrait overlays, lightning, bloom, and chromatic haze.' },
+{ title: 'GOVO Product Grid', category: 'Product Branding', software: 'Photoshop', date: '2026', image: 'assets/archive/govo-ad.png', description: 'Product-focused earbud creative with repeated brand marks, neon green contrast, and technical callout styling.' },
+{ title: 'Manga Garage Board', category: 'Editorial Collage', software: 'GIMP', date: '2026', image: 'assets/archive/manga-cars.png', description: 'Automotive manga collage built from panel framing, monochrome car imagery, and illustrated motion marks.' },
+{ title: 'Sushi Collage', category: 'Food Collage', software: 'Photoshop', date: '2026', image: 'assets/archive/sushi-collage.png', description: 'Food collage visual with layered sushi assets, Japanese print references, and noisy editorial texture.' },
+{ title: 'Market Survey Sheet', category: 'Academic Creatives', software: 'GIMP + Photoshop', date: '2026', image: 'assets/archive/market-survey.png', description: 'Academic and entrepreneurship poster using diagram fragments, stamp motifs, type experiments, and paper texture.' },
+{ title: 'Vandalizer Study', category: 'Digital Art Studies', software: 'Photoshop', date: '2026', image: 'assets/archive/vandalize.png', description: 'Statue-based digital artwork with neon vandal marks, repeated typography, and purple-green contrast.' }
 ];
-const categories = ['All', 'Posters', 'Social Media', 'Branding', 'Digital Art', 'Thumbnails', 'Photo Manipulation', 'Event Creatives', 'UI Concepts'];
+const categories = ['All Records', 'Concert Posters', 'Automotive Posters', 'Abstract Visuals', 'Cyberpunk Layouts', 'Photo Manipulations', 'Product Branding', 'Editorial Collage', 'Food Collage', 'Academic Creatives', 'Digital Art Studies'];
 const galleryGrid = document.getElementById('galleryGrid');
 const filters = document.getElementById('galleryFilters');
-let activeCategory = 'All';
+let activeCategory = 'All Records';
 let activeArtwork = 0;
 function renderFilters() {
-filters.innerHTML = categories.map(category => `<button class="gallery-filter border ${category === activeCategory ? 'border-crimson-600 text-white bg-crimson-600/10' : 'border-neutral-800 text-neutral-500'} px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition-all hover:border-crimson-600" data-category="${category}">${category}</button>`).join('');
+filters.innerHTML = categories.map(category => `<button class="gallery-filter ${category === activeCategory ? 'is-active' : ''} border ${category === activeCategory ? 'border-crimson-600 text-white bg-crimson-600/10' : 'border-neutral-800 text-neutral-500'} px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition-all hover:border-crimson-600" data-category="${category}">${category}</button>`).join('');
 document.querySelectorAll('.gallery-filter').forEach(button => button.addEventListener('click', () => { activeCategory = button.dataset.category; renderFilters(); renderGallery(); }));
 }
 function renderGallery() {
-const visible = galleryItems.filter(item => activeCategory === 'All' || item.category === activeCategory);
+const visible = galleryItems.filter(item => activeCategory === 'All Records' || item.category === activeCategory);
 galleryGrid.innerHTML = visible.map(item => {
 const index = galleryItems.indexOf(item);
 return `<button class="gallery-card group relative h-80 overflow-hidden border border-neutral-800 bg-void-800 text-left transition-all duration-300 hover:border-crimson-600" data-index="${index}"><img class="h-full w-full object-cover opacity-60 grayscale transition-all duration-500 group-hover:scale-110 group-hover:opacity-90 group-hover:grayscale-0" src="${item.image}" alt="${item.title}"><div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent"></div><div class="absolute inset-0 crt opacity-0 transition-opacity group-hover:opacity-40"></div><div class="absolute bottom-0 p-5"><span class="font-mono text-[10px] uppercase tracking-[0.24em] text-crimson-500">${item.category}</span><h3 class="mt-2 font-display text-xl font-bold uppercase text-white">${item.title}</h3><p class="font-mono text-xs text-neutral-400">${item.software}</p><span class="mt-4 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-crimson-500 opacity-0 transition-opacity group-hover:opacity-100">View Artwork <i data-lucide="arrow-right" class="h-4 w-4"></i></span></div></button>`;
@@ -954,11 +1021,12 @@ document.querySelectorAll('.academic-card').forEach(card => card.addEventListene
 document.getElementById('closeAcademicModal').addEventListener('click', closeAcademic);
 
 const certificates = [
-{ title: 'CSEET Score Card', type: 'Company Secretary', meta: 'ICSI / Score Record', file: 'assets/certificates/cseet-score-card.pdf', format: 'pdf', description: 'CSEET score card record stored as a credential file in the archive.' },
-{ title: 'TDOP Completion', type: 'Training Certificate', meta: 'ICSI WIRC / 2025', file: 'assets/certificates/tdop.jpeg', format: 'image', description: 'Three Days Orientation Program training completion certificate issued by ICSI WIRC.' },
-{ title: 'AI Symposium Hackathon', type: 'Participation', meta: 'HBSU / 2026', file: 'assets/certificates/hackathon.jpeg', format: 'image', description: 'Certificate of participation for the AI Symposium and Hackathon event.' },
-{ title: 'GBMUN Appreciation 2022', type: 'Letter of Appreciation', meta: 'Gopi Birla Memorial School', file: 'assets/certificates/lor-1.jpeg', format: 'image', description: 'Letter of appreciation for organizing committee work and event execution.' },
-{ title: 'GBMUN Appreciation 2023', type: 'Letter of Appreciation', meta: 'Gopi Birla Memorial School', file: 'assets/certificates/lor-2.jpeg', format: 'image', description: 'Letter of appreciation recognizing leadership and support during GBMUN6.' }
+{ title: 'CSEET Score Card', type: 'Company Secretary Entry Test', meta: 'ICSI / Candidate Score Record', file: 'assets/certificates/cseet-score-card.pdf', format: 'pdf', description: 'Official CSEET score card record from the Institute of Company Secretaries of India candidate portal.' },
+{ title: 'ICSI TDOP Training Completion', type: 'Orientation Program', meta: 'ICSI WIRC / August 2025', file: 'assets/certificates/tdop.jpeg', format: 'image', description: 'Three Days Orientation Program completion certificate for CS Executive students conducted by ICSI WIRC.' },
+{ title: 'AI Symposium & Hackathon', type: 'Hackathon Participation', meta: 'Dr. Homi Bhabha State University / 2026', file: 'assets/certificates/hackathon.jpeg', format: 'image', description: 'Participation certificate for the AI Symposium and Hackathon organized by Dr. Homi Bhabha State University.' },
+{ title: 'GBMUN 2022 Appreciation', type: 'Model United Nations', meta: 'Gopi Birla Memorial School / 2022', file: 'assets/certificates/lor-1.jpeg', format: 'image', description: 'Letter of appreciation for organizing committee work during the fifth edition of Gopi Birla Model United Nations.' },
+{ title: 'GBMUN 2023 Appreciation', type: 'Model United Nations', meta: 'Gopi Birla Memorial School / 2023', file: 'assets/certificates/lor-2.jpeg', format: 'image', description: 'Letter of appreciation recognizing leadership, support, and coordination during GBMUN6.' },
+{ title: 'Internship Certificate', type: 'Business Development Internship', meta: 'Zeex AI / June 2026', file: 'assets/certificates/internship-certificate.png', format: 'image', description: 'Certificate of internship for completing a Business Development Executive Intern role at Zeex AI.' }
 ];
 const certificateGrid = document.getElementById('certificateGrid');
 certificateGrid.innerHTML = certificates.map((certificate, index) => `<button type="button" class="certificate-card group glass-panel p-4 text-left transition-all duration-300 hover:-translate-y-1 hover:border-crimson-600" data-index="${index}"><div class="certificate-preview overflow-hidden border border-neutral-800">${certificate.format === 'image' ? `<img src="${certificate.file}" alt="${certificate.title} certificate preview">` : `<div class="grid h-full place-items-center bg-black/70 p-6 text-center"><div><i data-lucide="file-text" class="mx-auto h-12 w-12 text-crimson-500"></i><span class="mt-5 block font-mono text-xs uppercase tracking-[0.24em] text-neutral-400">PDF Credential</span></div></div>`}</div><span class="mt-5 block font-mono text-[10px] uppercase tracking-[0.24em] text-crimson-500">${certificate.type}</span><h3 class="mt-2 font-display text-xl font-bold uppercase text-white group-hover:text-crimson-500">${certificate.title}</h3><p class="mt-2 font-mono text-xs uppercase tracking-widest text-neutral-500">${certificate.meta}</p><span class="mt-5 inline-flex font-mono text-xs uppercase tracking-widest text-crimson-500">Open Certificate</span></button>`).join('');
