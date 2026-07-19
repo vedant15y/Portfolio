@@ -46,7 +46,7 @@ body { background: #000; overflow-x: hidden; }
 @keyframes flicker { 0%, 100% { opacity: 1; filter: brightness(1); } 8% { opacity: .82; } 10% { opacity: 1; } 45% { filter: brightness(1.25); } 46% { filter: brightness(.8); } 48% { filter: brightness(1.15); } }
 @keyframes glitchPulse { 0% { clip-path: inset(0 0 0 0); transform: translateX(0); } 20% { clip-path: inset(20% 0 55% 0); transform: translateX(-2px); } 40% { clip-path: inset(62% 0 18% 0); transform: translateX(2px); } 60% { clip-path: inset(10% 0 70% 0); transform: translateX(-1px); } 100% { clip-path: inset(0 0 0 0); transform: translateX(0); } }
 .nixie-display { display: inline-block; border: 1px solid rgba(var(--accent-rgb),.38); background: linear-gradient(180deg, rgba(var(--accent-rgb),.14), rgba(0,0,0,.72)); padding: .18em .34em; image-rendering: pixelated; letter-spacing: .08em; text-shadow: 0 0 8px rgba(var(--accent-rgb),.95), 0 0 22px rgba(var(--accent-rgb),.65), 0 0 48px rgba(var(--accent-rgb),.28); box-shadow: inset 0 0 18px rgba(var(--accent-rgb),.12), 0 0 38px rgba(var(--accent-rgb),.2); animation: flicker 3.8s infinite; }
-.landing-art-fallback { position: absolute; inset: 0; height: 100%; width: 100%; object-fit: cover; opacity: 1; mix-blend-mode: normal; filter: brightness(.25) saturate(1.08) blur(.2px); }
+.landing-art-fallback { position: absolute; inset: clamp(2cm, 6vw, 4cm); height: auto; width: auto; object-fit: cover; object-position: center; opacity: 1; mix-blend-mode: normal; filter: brightness(.25) saturate(1.08) blur(.2px); }
 .landing-art { position: absolute; inset: 0; background: var(--accent); opacity: .52; mix-blend-mode: screen; filter: drop-shadow(0 0 28px rgba(var(--accent-rgb),.38)) blur(.2px); -webkit-mask-image: url('assets/landing/cosmic-art-mask.png'); -webkit-mask-position: center; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; mask-image: url('assets/landing/cosmic-art-mask.png'); mask-position: center; mask-size: contain; mask-repeat: no-repeat; transition: background .25s ease, filter .25s ease; }
 .operator-name { font-size: clamp(1.9rem, 6vw, 4.8rem); color: var(--accent); text-shadow: 0 0 12px rgba(var(--accent-rgb),.65), 0 0 28px rgba(var(--accent-rgb),.28); animation: flicker 5s infinite; }
 .operator-signature { font-size: clamp(.78rem, 1.8vw, 1rem); color: rgba(255,255,255,.68); text-shadow: 0 0 10px rgba(var(--accent-rgb),.3); }
@@ -187,7 +187,7 @@ button:hover, .bg-crimson-600:hover, a.bg-crimson-600:hover { transform: transla
 <div class="fixed inset-0 z-[58] pointer-events-none opacity-0" id="pageTransition"></div>
 
 <section id="boot" class="fixed inset-0 z-[80] flex min-h-screen flex-col items-center justify-center bg-black px-6 text-center transition-all duration-1000">
-<img src="assets/landing/landing-gif.gif" alt="" aria-hidden="true" class="landing-art-fallback">
+<video class="landing-art-fallback" src="assets/landing/landing-video.mp4" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
 <div class="landing-art" aria-hidden="true"></div>
 <div class="absolute inset-0 bg-black/38"></div>
 <div class="absolute inset-0 crt opacity-45"></div>
