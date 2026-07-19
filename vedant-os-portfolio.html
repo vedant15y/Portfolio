@@ -176,6 +176,42 @@ button:hover, .bg-crimson-600:hover, a.bg-crimson-600:hover { transform: transla
 @media (max-width: 900px) {
 .brand-resume { font-size: .48rem; padding: .48rem .52rem; }
 }
+
+/* Black neon theme override */
+:root { --accent: #fff200; --accent-rgb: 255,242,0; --accent-soft: rgba(255,242,0,.18); --accent-faint: rgba(255,242,0,.08); --signal: #00e5ff; --signal-rgb: 0,229,255; --pixel-yellow: #fff200; --screen-dim: .18; }
+body { background: #020202 !important; color: #f7fbff !important; }
+#boot { background: #020202 !important; color: #f7fbff !important; }
+#boot::before { opacity: .18; background-image: radial-gradient(circle, rgba(var(--signal-rgb),.44) 1px, transparent 1px); }
+#boot::after { border-color: var(--accent); box-shadow: 0 0 18px rgba(var(--accent-rgb),.28); }
+.landing-art-fallback { filter: brightness(.5); }
+.ambient-dim { background: rgba(0,0,0,var(--screen-dim)); }
+#matrixCanvas { opacity: .18; filter: none; }
+#navbar { background: rgba(2,2,2,.92) !important; border-bottom-color: var(--accent) !important; }
+.brand-resume, .side-drawer-toggle, #menuBtn { background: #050505 !important; color: #f7fbff !important; border-color: var(--accent) !important; box-shadow: 5px 5px 0 var(--signal) !important; text-shadow: 2px 2px 0 rgba(var(--signal-rgb),.7); }
+.nav-link, #portfolio { color: #f7fbff !important; }
+.nav-link:hover, .nav-link.active { color: var(--accent) !important; border-color: var(--signal) !important; background: rgba(var(--signal-rgb),.08) !important; }
+#sidePanel, #mobilePanel { background: #020202 !important; border-color: var(--accent) !important; color: #f7fbff !important; }
+.left-drawer { background-color: #020202 !important; background-image: radial-gradient(circle at 10px 10px, rgba(var(--signal-rgb),.55) 0 1px, transparent 1.5px); }
+.page-section h2, .page-section h3, .font-display { color: #f7fbff !important; text-shadow: 0 0 12px rgba(var(--signal-rgb),.24) !important; }
+.page-section > .mb-10, .page-section > .mb-12, .page-section > .mb-8 { border-bottom-color: var(--accent) !important; }
+.glass-panel, .bg-black\/35, .bg-black\/40, .bg-black\/45, .bg-black\/60, .bg-void-800, .border, article, .gallery-card, .certificate-card { background: rgba(3,3,3,.92) !important; color: #f7fbff !important; border-color: var(--accent) !important; box-shadow: 8px 8px 0 rgba(var(--signal-rgb),.72) !important; }
+.glass-panel:hover, .gallery-card:hover, .certificate-card:hover, .academic-card:hover { box-shadow: 12px 12px 0 var(--accent) !important; }
+.text-white, .text-neutral-300, .text-neutral-400, .text-neutral-500, #portfolio .page-section:not(#home) .text-white, #portfolio .page-section:not(#home) .text-neutral-300, #portfolio .page-section:not(#home) .text-neutral-400, #portfolio .page-section:not(#home) .text-neutral-500 { color: #f7fbff !important; }
+.text-crimson-500, .text-crimson-600, .text-crimson-700, .text-matrix-400 { color: var(--signal) !important; }
+.border-crimson-600, .border-crimson-900, .border-matrix-400, .border-neutral-800, .border-neutral-900, .border-neutral-700, .hover\:border-crimson-600:hover { border-color: var(--accent) !important; }
+.bg-crimson-600, .bg-matrix-400, .hover\:bg-matrix-400:hover { background-color: var(--accent) !important; color: #020202 !important; }
+.bg-crimson-600\/10, .bg-matrix-900 { background-color: rgba(var(--signal-rgb),.14) !important; }
+.nixie-display { background: #050505 !important; color: #f7fbff !important; border-color: var(--accent) !important; text-shadow: 3px 3px 0 var(--signal), 0 0 18px rgba(var(--signal-rgb),.34); box-shadow: 10px 10px 0 var(--signal); }
+.operator-name { color: #f7fbff !important; text-shadow: 3px 3px 0 var(--accent), 0 0 18px rgba(var(--signal-rgb),.38); }
+.operator-signature, #boot .text-matrix-400\/70, #boot .text-matrix-400 { color: #f7fbff !important; }
+#initializeBtn { background: var(--accent) !important; color: #020202 !important; border-color: var(--signal) !important; box-shadow: 7px 7px 0 var(--signal) !important; }
+.gallery-feature { background: #050505 !important; border-color: var(--accent) !important; box-shadow: 10px 10px 0 var(--signal) !important; }
+#archive .gallery-filter { background: #050505 !important; color: #f7fbff !important; border-color: var(--accent) !important; box-shadow: 4px 4px 0 var(--signal) !important; }
+#archive .gallery-filter.is-active, #archive .gallery-filter:hover { background: var(--accent) !important; color: #020202 !important; box-shadow: 4px 4px 0 var(--signal) !important; }
+.certificate-preview, .album-signal, .oscilloscope, .jukebox-deck { background: #050505 !important; border-color: var(--accent) !important; box-shadow: 8px 8px 0 var(--signal) !important; }
+.vibe-track, .colour-preset, input, textarea { background: #050505 !important; color: #f7fbff !important; border-color: var(--accent) !important; box-shadow: 4px 4px 0 var(--signal) !important; }
+#galleryModal > div, #academicModal .glass-panel, #certificateModal > div, #legacyModal .glass-panel { background: #050505 !important; color: #f7fbff !important; border-color: var(--accent) !important; box-shadow: 12px 12px 0 var(--signal) !important; }
+#galleryModal, #academicModal, #certificateModal, #legacyModal { background: rgba(0,0,0,.88) !important; }
 </style>
 </head>
 <body class="bg-void-950 text-neutral-400 font-body antialiased selection:bg-crimson-600 selection:text-black">
