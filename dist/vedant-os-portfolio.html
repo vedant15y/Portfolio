@@ -46,7 +46,7 @@ body { background: #000; overflow-x: hidden; }
 @keyframes flicker { 0%, 100% { opacity: 1; filter: brightness(1); } 8% { opacity: .82; } 10% { opacity: 1; } 45% { filter: brightness(1.25); } 46% { filter: brightness(.8); } 48% { filter: brightness(1.15); } }
 @keyframes glitchPulse { 0% { clip-path: inset(0 0 0 0); transform: translateX(0); } 20% { clip-path: inset(20% 0 55% 0); transform: translateX(-2px); } 40% { clip-path: inset(62% 0 18% 0); transform: translateX(2px); } 60% { clip-path: inset(10% 0 70% 0); transform: translateX(-1px); } 100% { clip-path: inset(0 0 0 0); transform: translateX(0); } }
 .nixie-display { display: inline-block; border: 1px solid rgba(var(--accent-rgb),.38); background: linear-gradient(180deg, rgba(var(--accent-rgb),.14), rgba(0,0,0,.72)); padding: .18em .34em; image-rendering: pixelated; letter-spacing: .08em; text-shadow: 0 0 8px rgba(var(--accent-rgb),.95), 0 0 22px rgba(var(--accent-rgb),.65), 0 0 48px rgba(var(--accent-rgb),.28); box-shadow: inset 0 0 18px rgba(var(--accent-rgb),.12), 0 0 38px rgba(var(--accent-rgb),.2); animation: flicker 3.8s infinite; }
-.landing-art-fallback { --landing-inset: clamp(2rem, 6vw, 4cm); position: absolute; left: var(--landing-inset); top: var(--landing-inset); width: calc(100% - (var(--landing-inset) * 2)); height: calc(100% - (var(--landing-inset) * 2)); object-fit: contain; object-position: center center; opacity: 1; mix-blend-mode: normal; filter: brightness(.25) saturate(1.08) blur(.2px); }
+.landing-art-fallback { --landing-inset: clamp(2rem, 6vw, 4cm); position: absolute; left: var(--landing-inset); top: var(--landing-inset); width: calc(100% - (var(--landing-inset) * 2)); height: calc(100% - (var(--landing-inset) * 2)); object-fit: contain; object-position: center center; opacity: 1; mix-blend-mode: normal; filter: brightness(.28); transform: translateZ(0); will-change: transform; }
 .landing-art { position: absolute; inset: 0; background: var(--accent); opacity: .52; mix-blend-mode: screen; filter: drop-shadow(0 0 28px rgba(var(--accent-rgb),.38)) blur(.2px); -webkit-mask-image: url('assets/landing/cosmic-art-mask.png'); -webkit-mask-position: center; -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; mask-image: url('assets/landing/cosmic-art-mask.png'); mask-position: center; mask-size: contain; mask-repeat: no-repeat; transition: background .25s ease, filter .25s ease; }
 .operator-name { font-size: clamp(1.9rem, 6vw, 4.8rem); color: var(--accent); text-shadow: 0 0 12px rgba(var(--accent-rgb),.65), 0 0 28px rgba(var(--accent-rgb),.28); animation: flicker 5s infinite; }
 .operator-signature { font-size: clamp(.78rem, 1.8vw, 1rem); color: rgba(255,255,255,.68); text-shadow: 0 0 10px rgba(var(--accent-rgb),.3); }
@@ -120,7 +120,7 @@ body { background: #fff !important; color: #050505 !important; font-family: 'Spa
 #boot { background: #fff !important; color: #050505 !important; }
 #boot::before { content: ''; position: absolute; inset: 0; opacity: .13; background-image: radial-gradient(circle, #000 1px, transparent 1px); background-size: 20px 20px; pointer-events: none; }
 #boot::after { content: ''; position: absolute; left: 8vw; top: 21vh; width: 5rem; height: 5rem; border: 4px solid var(--signal); transform: rotate(45deg); opacity: .75; pointer-events: none; }
-.landing-art-fallback { opacity: 1; mix-blend-mode: normal; filter: brightness(.25) saturate(1.08) contrast(1.05) blur(.2px); }
+.landing-art-fallback { opacity: 1; mix-blend-mode: normal; filter: brightness(.28); }
 .landing-art { display: none; }
 .nixie-display { font-family: 'Press Start 2P', cursive !important; color: #050505 !important; border: 4px solid #050505; background: #fff; padding: .36em .46em; letter-spacing: .02em; text-shadow: 3px 3px 0 var(--accent); box-shadow: 10px 10px 0 #050505; animation: flicker 4s infinite; }
 .operator-name { font-family: 'Press Start 2P', cursive !important; color: #050505; text-shadow: 3px 3px 0 var(--signal); }
@@ -588,6 +588,7 @@ lucide.createIcons();
 
 const canvas = document.getElementById('matrixCanvas');
 const ctx = canvas.getContext('2d');
+const bootScreen = document.getElementById('boot');
 const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
 const alphabet = katakana + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const matrixFontSize = 16;
@@ -598,6 +599,7 @@ canvas.height = window.innerHeight;
 drops = Array(Math.ceil(canvas.width / matrixFontSize)).fill(1);
 }
 function drawMatrix() {
+if (bootScreen && !bootScreen.classList.contains('opacity-0')) return;
 ctx.fillStyle = 'rgba(0,0,0,.045)';
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 ctx.font = `${matrixFontSize}px Share Tech Mono, monospace`;
