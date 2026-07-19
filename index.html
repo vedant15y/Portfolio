@@ -252,6 +252,25 @@ body { background: #020202 !important; color: #f7fbff !important; }
 #initializeBtn:hover { transform: translateY(4px) !important; box-shadow: none !important; color: var(--signal) !important; }
 #initializeBtn i { width: clamp(2rem, 3.6vw, 3rem); height: clamp(2rem, 3.6vw, 3rem); stroke-width: 1.8; }
 .oscilloscope { display: block; height: 150px !important; image-rendering: pixelated; }
+
+/* Final landing hierarchy */
+#boot .relative.z-10 { justify-content: center !important; gap: clamp(.75rem, 1.4vw, 1.35rem) !important; }
+#boot .relative.z-10 > .flex.justify-between { position: relative !important; top: auto !important; left: auto !important; transform: none !important; width: min(34rem, 72vw) !important; margin-bottom: clamp(.15rem, .8vw, .7rem); color: rgba(255,255,255,.72) !important; }
+#boot .relative.z-10::after { width: min(86vw, 78rem); height: min(78vh, 47rem); border-top-color: rgba(var(--accent-rgb),.72); border-bottom-color: rgba(var(--signal-rgb),.62); filter: drop-shadow(0 -14px 18px rgba(var(--accent-rgb),.18)) drop-shadow(0 14px 18px rgba(var(--signal-rgb),.16)) blur(.18px); }
+#boot h1 { position: relative !important; top: auto !important; left: auto !important; transform: none !important; width: auto !important; max-width: 90vw !important; font-size: clamp(3rem, 8vw, 7.5rem) !important; line-height: .95 !important; letter-spacing: .04em !important; }
+.nixie-display { border: 0 !important; background: transparent !important; padding: 0 !important; box-shadow: none !important; color: #fff !important; text-shadow: 4px 4px 0 rgba(var(--accent-rgb),.88), -3px -3px 0 rgba(var(--signal-rgb),.76), 0 0 24px rgba(255,255,255,.24) !important; }
+#bootSubtitle { display: block !important; min-height: clamp(1.4rem, 3.2vw, 3rem); }
+.operator-signature { display: block !important; font-family: "Brush Script MT", "Segoe Script", "Lucida Handwriting", cursive !important; font-size: clamp(1.2rem, 3.2vw, 3rem) !important; line-height: 1 !important; letter-spacing: .015em !important; color: #fff !important; text-transform: none !important; text-shadow: 2px 2px 0 rgba(var(--accent-rgb),.76), -1px -1px 0 rgba(var(--signal-rgb),.72), 0 0 18px rgba(255,255,255,.18) !important; }
+#bootCta { position: relative !important; bottom: auto !important; left: auto !important; transform: none !important; padding-top: clamp(.6rem, 1.4vw, 1.2rem) !important; }
+#initializeBtn { width: auto !important; height: auto !important; min-width: 0 !important; padding: .85rem 1.4rem !important; border: 2px solid var(--accent) !important; background: rgba(0,0,0,.36) !important; color: #fff !important; box-shadow: 5px 5px 0 rgba(var(--signal-rgb),.86) !important; text-shadow: 1px 1px 0 rgba(var(--accent-rgb),.88) !important; }
+#initializeBtn:hover { transform: translate(2px, 2px) !important; box-shadow: 2px 2px 0 rgba(var(--signal-rgb),.86) !important; color: var(--accent) !important; }
+#initializeBtn i { width: 1rem !important; height: 1rem !important; }
+@media (max-width: 700px) {
+#boot .relative.z-10 > .flex.justify-between { width: 86vw !important; }
+#boot h1 { font-size: clamp(2.25rem, 14vw, 4.25rem) !important; }
+.operator-signature { font-size: clamp(1.1rem, 7vw, 2rem) !important; }
+#initializeBtn { padding: .75rem 1rem !important; font-size: .55rem !important; }
+}
 </style>
 </head>
 <body class="bg-void-950 text-neutral-400 font-body antialiased selection:bg-crimson-600 selection:text-black">
@@ -275,7 +294,7 @@ body { background: #020202 !important; color: #f7fbff !important; }
 <span id="typewriter" class="cursor nixie-display"></span>
 </h1>
 <div id="bootSubtitle" class="opacity-0 transition-opacity duration-1000">
-<p class="operator-name mx-auto max-w-xl font-mono uppercase tracking-[0.18em]">Archives</p>
+<p class="operator-signature mx-auto max-w-xl">by Vedant Gondhali</p>
 </div>
 <div id="bootCta" class="pt-4 opacity-0 transition-opacity duration-1000">
 <button id="initializeBtn" class="group relative border border-matrix-400 bg-black/60 px-8 py-4 font-mono text-sm uppercase tracking-[0.24em] text-matrix-400 transition-all duration-300 hover:bg-matrix-400 hover:text-black">
@@ -696,7 +715,7 @@ window.addEventListener('resize', resizeCanvas);
 setInterval(drawMatrix, 33);
 
 const typewriter = document.getElementById('typewriter');
-const titleText = 'Welcome _ user!';
+const titleText = 'Archive';
 let titleIndex = 0;
 function typeIntro() {
 if (titleIndex < titleText.length) {
