@@ -874,6 +874,7 @@ oscilloscopeCanvas.height = Math.max(1, Math.floor(rect.height * ratio));
 oscilloscopeCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
 }
 function ensureAudioScope() {
+try {
 if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
 if (!analyserNode) {
 analyserNode = audioContext.createAnalyser();
@@ -887,6 +888,11 @@ audioSourceNode.connect(analyserNode);
 analyserNode.connect(audioContext.destination);
 }
 if (audioContext.state === 'suspended') audioContext.resume();
+return true;
+} catch (error) {
+scopeStatus.textContent = 'Static Wave';
+return false;
+}
 }
 function drawOscilloscope() {
 if (!oscilloscopeCanvas.width || !oscilloscopeCanvas.height) resizeOscilloscope();
@@ -995,17 +1001,17 @@ if (vibeAudio.paused) {
 vibeSignalStatus.textContent = 'Buffering';
 try {
 prepareVibeAudio(track);
-ensureAudioScope();
 vibeAudio.muted = false;
 if (vibeAudio.ended) vibeAudio.currentTime = 0;
 muteSwitch.setAttribute('aria-pressed', 'false');
 muteSwitch.textContent = 'Mute Music: Off';
 await vibeAudio.play();
+ensureAudioScope();
 setPlayIcon(true);
 vibeSignalStatus.textContent = 'Playing';
 deckState.textContent = 'Playing';
 } catch (error) {
-vibeSignalStatus.textContent = 'Playback Blocked';
+vibeSignalStatus.textContent = vibeAudio.error ? 'Audio File Error' : 'Playback Blocked';
 deckState.textContent = 'Tap Again';
 setPlayIcon(false);
 }
