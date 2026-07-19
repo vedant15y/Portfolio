@@ -212,6 +212,30 @@ body { background: #020202 !important; color: #f7fbff !important; }
 .vibe-track, .colour-preset, input, textarea { background: #050505 !important; color: #f7fbff !important; border-color: var(--accent) !important; box-shadow: 4px 4px 0 var(--signal) !important; }
 #galleryModal > div, #academicModal .glass-panel, #certificateModal > div, #legacyModal .glass-panel { background: #050505 !important; color: #f7fbff !important; border-color: var(--accent) !important; box-shadow: 12px 12px 0 var(--signal) !important; }
 #galleryModal, #academicModal, #certificateModal, #legacyModal { background: rgba(0,0,0,.88) !important; }
+
+/* Landing scale + terminal grid polish */
+#boot { overflow: hidden; }
+#boot .relative.z-10 { max-width: min(76rem, 82vw) !important; min-height: min(72vh, 44rem); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(.65rem, 1.2vw, 1.15rem); padding-block: clamp(5rem, 10vh, 7rem); }
+#boot .relative.z-10::before { content: ''; position: absolute; inset: clamp(.7rem, 2vw, 1.5rem) 0; pointer-events: none; box-shadow: inset 0 28px 34px rgba(0,0,0,.72), inset 0 -28px 34px rgba(0,0,0,.72), 0 -12px 24px rgba(var(--signal-rgb),.16), 0 12px 24px rgba(var(--signal-rgb),.16); }
+#boot .relative.z-10 > .flex.justify-between { position: absolute; top: clamp(4.7rem, 15vh, 8.4rem); left: 50%; width: min(33rem, 58vw); transform: translateX(-50%); font-size: clamp(4px, .45vw, 7px) !important; letter-spacing: .18em !important; }
+#boot h1 { position: absolute; top: clamp(5.8rem, 18vh, 10rem); left: 50%; width: max-content; max-width: 82vw; margin: 0 !important; transform: translateX(-50%); font-size: clamp(1.15rem, 3.1vw, 2.85rem) !important; line-height: 1.05 !important; }
+.nixie-display { padding: .22em .38em !important; letter-spacing: .015em !important; box-shadow: 6px 6px 0 var(--signal) !important; text-transform: none; }
+.operator-name { font-size: clamp(1.8rem, 4.2vw, 3.35rem) !important; line-height: 1.04 !important; letter-spacing: .16em !important; }
+.operator-signature { display: none !important; }
+.landing-art-fallback { --landing-inset: clamp(1rem, 3.6vw, 2.6cm) !important; filter: brightness(.5) saturate(1.05) blur(.12px) !important; }
+.nav-link, .mobile-link, .side-link { background-image: radial-gradient(circle, rgba(var(--signal-rgb),.45) 0 1px, transparent 1.5px) !important; background-size: 13px 13px !important; background-position: 3px 3px !important; }
+.nav-link:hover, .nav-link.active, .mobile-link:hover, .side-link:hover { background-color: rgba(var(--signal-rgb),.08) !important; }
+#home .mt-10 .glass-panel { min-height: 5.1rem; padding-left: clamp(6.5rem, 12vw, 7.5rem) !important; background: linear-gradient(90deg, rgba(var(--accent-rgb),.62) 0 5.8rem, rgba(3,3,3,.94) 5.8rem 100%) !important; }
+#home .mt-10 .glass-panel::before, #home .mt-10 .glass-panel::after { display: none !important; }
+#home .mt-10 .glass-panel span, #home .mt-10 .glass-panel p { position: relative; z-index: 1; }
+#home .mt-10 .glass-panel span { color: var(--signal) !important; }
+@media (max-width: 700px) {
+#boot .relative.z-10 { max-width: 92vw !important; min-height: 74vh; }
+#boot .relative.z-10 > .flex.justify-between { width: 78vw; top: 13vh; }
+#boot h1 { top: 17vh; font-size: clamp(.95rem, 6vw, 1.8rem) !important; }
+.operator-name { font-size: clamp(1.55rem, 9vw, 2.55rem) !important; letter-spacing: .08em !important; }
+#home .mt-10 .glass-panel { padding-left: 5.8rem !important; background: linear-gradient(90deg, rgba(var(--accent-rgb),.62) 0 4.9rem, rgba(3,3,3,.94) 4.9rem 100%) !important; }
+}
 </style>
 </head>
 <body class="bg-void-950 text-neutral-400 font-body antialiased selection:bg-crimson-600 selection:text-black">
@@ -236,7 +260,6 @@ body { background: #020202 !important; color: #f7fbff !important; }
 </h1>
 <div id="bootSubtitle" class="opacity-0 transition-opacity duration-1000">
 <p class="operator-name mx-auto max-w-xl font-mono uppercase tracking-[0.18em]">Archives</p>
-<p class="operator-signature mt-3 font-mono uppercase tracking-[0.32em]">Vedant Gondhali</p>
 </div>
 <div id="bootCta" class="pt-4 opacity-0 transition-opacity duration-1000">
 <button id="initializeBtn" class="group relative border border-matrix-400 bg-black/60 px-8 py-4 font-mono text-sm uppercase tracking-[0.24em] text-matrix-400 transition-all duration-300 hover:bg-matrix-400 hover:text-black">
@@ -253,7 +276,7 @@ body { background: #020202 !important; color: #f7fbff !important; }
 
 <nav id="navbar" class="fixed left-0 top-0 z-[60] w-full border-b border-neutral-800/80 bg-black/80 backdrop-blur-xl">
 <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-8">
-<a href="#home" id="okatBrand" class="nav-link brand-resume font-mono text-xs font-bold uppercase tracking-[0.2em]" data-page="home">RESUME.EXE</a>
+<a href="#home" id="okatBrand" class="nav-link brand-resume font-mono text-xs font-bold uppercase tracking-[0.2em]" data-page="home">Archive</a>
 <div class="hidden items-center gap-2 md:flex">
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#home" data-page="home">Home</a>
 <a class="nav-link border border-transparent px-3 py-2 font-mono text-xs uppercase tracking-widest text-neutral-500 transition-all hover:text-white" href="#archive" data-page="archive">Archive</a>
@@ -657,7 +680,7 @@ window.addEventListener('resize', resizeCanvas);
 setInterval(drawMatrix, 33);
 
 const typewriter = document.getElementById('typewriter');
-const titleText = 'WELCOME_USER!';
+const titleText = 'Welcome _ user!';
 let titleIndex = 0;
 function typeIntro() {
 if (titleIndex < titleText.length) {
