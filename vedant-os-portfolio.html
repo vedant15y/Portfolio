@@ -236,6 +236,22 @@ body { background: #020202 !important; color: #f7fbff !important; }
 .operator-name { font-size: clamp(1.55rem, 9vw, 2.55rem) !important; letter-spacing: .08em !important; }
 #home .mt-10 .glass-panel { padding-left: 5.8rem !important; background: linear-gradient(90deg, rgba(var(--accent-rgb),.62) 0 4.9rem, rgba(3,3,3,.94) 4.9rem 100%) !important; }
 }
+
+/* Landing rail layout */
+#boot { transition: transform .9s cubic-bezier(.76,0,.24,1), opacity .65s ease !important; }
+#boot.boot-scroll-out { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+#boot .relative.z-10 { justify-content: center; }
+#boot .relative.z-10::before { display: none !important; }
+#boot .relative.z-10::after { content: ''; position: absolute; left: 50%; top: 50%; width: min(78vw, 72rem); height: min(72vh, 43rem); transform: translate(-50%, -50%); pointer-events: none; border-top: 3px solid var(--accent); border-bottom: 3px solid var(--accent); filter: drop-shadow(0 -10px 16px rgba(var(--accent-rgb),.2)) drop-shadow(0 10px 16px rgba(var(--signal-rgb),.16)); }
+#boot h1 { top: clamp(3.4rem, 9vh, 5.7rem) !important; }
+.nixie-display { border: 0 !important; background: transparent !important; padding: 0 !important; box-shadow: none !important; color: #f7fbff !important; text-shadow: 3px 3px 0 var(--signal), 0 0 18px rgba(var(--signal-rgb),.32) !important; }
+.operator-name { margin-top: 0 !important; }
+#bootCta { position: absolute; bottom: clamp(3.2rem, 8vh, 5.4rem); left: 50%; transform: translateX(-50%); padding-top: 0 !important; }
+#initializeBtn { display: grid !important; place-items: center; width: clamp(3.1rem, 5vw, 4.2rem); height: clamp(3.1rem, 5vw, 4.2rem); padding: 0 !important; border: 0 !important; background: transparent !important; color: var(--accent) !important; box-shadow: none !important; text-shadow: 0 0 16px rgba(var(--accent-rgb),.45); }
+#initializeBtn > span:first-child { display: none !important; }
+#initializeBtn:hover { transform: translateY(4px) !important; box-shadow: none !important; color: var(--signal) !important; }
+#initializeBtn i { width: clamp(2rem, 3.6vw, 3rem); height: clamp(2rem, 3.6vw, 3rem); stroke-width: 1.8; }
+.oscilloscope { display: block; height: 150px !important; image-rendering: pixelated; }
 </style>
 </head>
 <body class="bg-void-950 text-neutral-400 font-body antialiased selection:bg-crimson-600 selection:text-black">
@@ -264,7 +280,7 @@ body { background: #020202 !important; color: #f7fbff !important; }
 <div id="bootCta" class="pt-4 opacity-0 transition-opacity duration-1000">
 <button id="initializeBtn" class="group relative border border-matrix-400 bg-black/60 px-8 py-4 font-mono text-sm uppercase tracking-[0.24em] text-matrix-400 transition-all duration-300 hover:bg-matrix-400 hover:text-black">
 <span class="absolute inset-0 border border-matrix-400 blur-[2px] opacity-60 transition-opacity group-hover:opacity-100"></span>
-<span class="relative flex items-center gap-3">Initialize System <i data-lucide="terminal" class="h-4 w-4"></i></span>
+<span class="relative flex items-center gap-3"><i data-lucide="arrow-down" class="h-6 w-6"></i></span>
 </button>
 </div>
 <div id="bootConsole" class="mx-auto hidden max-w-2xl text-left font-mono text-lg text-matrix-400 text-glow-green md:text-2xl">
@@ -694,30 +710,17 @@ document.getElementById('bootCta').classList.remove('opacity-0');
 setTimeout(typeIntro, 500);
 
 async function startBootSequence() {
-const bootConsole = document.getElementById('bootConsole');
-const bootText = document.getElementById('bootText');
-const bootProgress = document.getElementById('bootProgress');
-document.getElementById('bootCta').classList.add('hidden');
-bootConsole.classList.remove('hidden');
-const lines = ['Authenticating operator...', 'Mounting design archive...', 'Loading project database...', 'Skills matrix online.', 'Portfolio initialized.'];
-for (let line of lines) {
-bootText.textContent = '';
-bootProgress.style.width = '0%';
-for (let i = 0; i <= line.length; i++) {
-bootText.textContent = line.slice(0, i) + (i < line.length ? '|' : '');
-bootProgress.style.width = `${(i / line.length) * 100}%`;
-await new Promise(resolve => setTimeout(resolve, 28));
-}
-await new Promise(resolve => setTimeout(resolve, 360));
-}
-document.getElementById('boot').classList.add('opacity-0', 'pointer-events-none');
 document.getElementById('portfolio').classList.remove('hidden');
 showPage('home', false);
+requestAnimationFrame(() => {
+document.getElementById('boot').classList.add('boot-scroll-out');
+window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 }
 document.getElementById('initializeBtn').addEventListener('click', startBootSequence);
 function returnToLandingPage() {
 document.getElementById('portfolio').classList.add('hidden');
-document.getElementById('boot').classList.remove('opacity-0', 'pointer-events-none');
+document.getElementById('boot').classList.remove('boot-scroll-out', 'opacity-0', 'pointer-events-none');
 document.getElementById('bootConsole').classList.add('hidden');
 document.getElementById('bootText').textContent = '';
 document.getElementById('bootProgress').style.width = '0%';
@@ -837,15 +840,37 @@ const muteSwitch = document.getElementById('muteSwitch');
 const playTrackButton = document.getElementById('playTrack');
 let scopePhase = 0;
 let lastScopeTime = 0;
+let audioContext = null;
+let analyserNode = null;
+let audioSourceNode = null;
+let waveformData = null;
 function resizeOscilloscope() {
 const rect = oscilloscopeCanvas.getBoundingClientRect();
-oscilloscopeCanvas.width = Math.max(1, Math.floor(rect.width));
-oscilloscopeCanvas.height = Math.max(1, Math.floor(rect.height));
+const ratio = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
+oscilloscopeCanvas.width = Math.max(1, Math.floor(rect.width * ratio));
+oscilloscopeCanvas.height = Math.max(1, Math.floor(rect.height * ratio));
+oscilloscopeCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+}
+function ensureAudioScope() {
+if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+if (!analyserNode) {
+analyserNode = audioContext.createAnalyser();
+analyserNode.fftSize = 1024;
+analyserNode.smoothingTimeConstant = .72;
+waveformData = new Uint8Array(analyserNode.fftSize);
+}
+if (!audioSourceNode) {
+audioSourceNode = audioContext.createMediaElementSource(vibeAudio);
+audioSourceNode.connect(analyserNode);
+analyserNode.connect(audioContext.destination);
+}
+if (audioContext.state === 'suspended') audioContext.resume();
 }
 function drawOscilloscope() {
 if (!oscilloscopeCanvas.width || !oscilloscopeCanvas.height) resizeOscilloscope();
-const width = oscilloscopeCanvas.width;
-const height = oscilloscopeCanvas.height;
+const rect = oscilloscopeCanvas.getBoundingClientRect();
+const width = rect.width;
+const height = rect.height;
 const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#00FF88';
 oscilloscopeCtx.clearRect(0, 0, width, height);
 oscilloscopeCtx.fillStyle = 'rgba(0,0,0,.38)';
@@ -872,17 +897,29 @@ oscilloscopeCtx.beginPath();
 const live = !vibeAudio.paused && !vibeAudio.muted && vibeAudio.readyState > 1;
 const timeMoved = live && Math.abs(vibeAudio.currentTime - lastScopeTime) > .002;
 const volumeEnergy = Math.max(.18, vibeAudio.volume || .8);
-scopeStatus.textContent = timeMoved ? 'Reactive' : (live ? 'Signal Live' : 'Static Wave');
+const hasAnalyser = live && analyserNode && waveformData;
+if (hasAnalyser) analyserNode.getByteTimeDomainData(waveformData);
+scopeStatus.textContent = hasAnalyser ? 'Reactive' : (live ? 'Signal Live' : 'Static Wave');
 if (live) scopePhase += timeMoved ? .13 + volumeEnergy * .12 : .04;
 else scopePhase += .018;
 lastScopeTime = vibeAudio.currentTime || 0;
 const now = Date.now() / 520;
+if (hasAnalyser) {
+const slice = width / waveformData.length;
+for (let i = 0; i < waveformData.length; i++) {
+const x = i * slice;
+const y = (waveformData[i] / 255) * height;
+if (i === 0) oscilloscopeCtx.moveTo(x, y);
+else oscilloscopeCtx.lineTo(x, y);
+}
+} else {
 for (let x = 0; x <= width; x += 3) {
 const intensity = live ? 1.85 : 1;
 const pulse = Math.sin(scopePhase * 3 + x / 11) * (live ? 16 * volumeEnergy : 5);
 const y = height / 2 + Math.sin((x / 22) + now * intensity) * (live ? 24 : 14) + Math.sin((x / 9) - now * 1.7) * (live ? 9 : 4) + pulse;
 if (x === 0) oscilloscopeCtx.moveTo(x, y);
 else oscilloscopeCtx.lineTo(x, y);
+}
 }
 oscilloscopeCtx.stroke();
 oscilloscopeCtx.shadowBlur = 0;
@@ -936,6 +973,7 @@ if (vibeAudio.paused) {
 vibeSignalStatus.textContent = 'Buffering';
 try {
 prepareVibeAudio(track);
+ensureAudioScope();
 vibeAudio.muted = false;
 if (vibeAudio.ended) vibeAudio.currentTime = 0;
 muteSwitch.setAttribute('aria-pressed', 'false');
